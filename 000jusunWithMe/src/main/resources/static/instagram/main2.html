@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* 기본 스타일 초기화 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #f8f8f8;
+            padding: 20px 0;
+            /* 위아래 패딩 추가 */
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            height: 80px;
+            /* 헤더 높이 설정 */
+        }
+
+        .header .left-button,
+        .header .center,
+        .header .myPage {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .header .left-button {
+            justify-content: flex-start;
+            padding-left: 50px;
+        }
+
+        .header .center {
+            justify-content: center;
+        }
+
+        .header .myPage {
+            justify-content: flex-end;
+            padding-right: 50px;
+        }
+
+        .header img {
+            height: 40px;
+            /* 이미지 크기 조정 */
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            margin: 0 auto;
+            padding: 120px 50px 100px;
+            /* 패딩 설정 */
+        }
+
+        .post {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .post img {
+            width: 100%;
+            max-width: 1000px;
+            max-height: 1000px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            object-fit: cover;
+        }
+
+        .post-content {
+            padding: 16px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .comments {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .comments .txtComment {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            /* 스크롤 숨김처리 */
+            overflow: hidden;
+            /* 사용자가 크기 조절 못하게 설정 */
+            resize: none;
+        }
+
+        .comments .confirmBtn {
+            padding: 8px 16px;
+            /* 버튼 패딩 조정 */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: gray;
+            color: white;
+            cursor: pointer;
+            white-space: nowrap;
+            /* 글자가 줄바꿈되지 않도록 설정 */
+        }
+
+        .comments .confirmBtn:hover {
+            background-color: orange;
+            /* 색깔 변경 */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0;
+            border-top: 1px solid #ddd;
+            background-color: #f8f8f8;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            /* 네비게이션 바 높이 설정 */
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-button img {
+            height: 24px;
+            /* 아이콘 크기 조정 */
+        }
+
+        .nav-button:hover {
+            background-color: orange;
+        }
+
+        /* 가로 길이가 768px 이상일 때 네비게이션 바가 왼쪽으로 이동함 */
+        @media (min-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                /* 좌우 정렬 맞춤용 */
+                height: auto;
+                width: 200px;
+                position: fixed;
+                left: 0;
+                top: 100px;
+                border-top: none;
+                border-right: 1px solid #ddd;
+                padding-top: 20px;
+                background-color: #fff;
+            }
+
+            .nav-button {
+                width: 100%;
+                text-align: left;
+                padding: 10px 20px;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                height: 70px;
+                border-bottom: 1px solid #ddd;
+                flex: none;
+                /* 부모인 .navbar 높이와 관계없이 유지됨 */
+            }
+
+            .nav-button:hover {
+                background-color: orange;
+            }
+
+            .content {
+                margin-left: 200px;
+                padding-top: 120px;
+            }
+        }
+    </style>
+    <script>
+        /* 댓글 입력 시 스크롤없이 textarea 칸 조절 */
+        function resize(obj) {
+            obj.style.height = '1px';
+            /* textarea 높이를 1px로 초기화 */
+            obj.style.height = (13 + obj.scrollHeight) + 'px';
+            /* 실제 높이 + texarea의 패딩, 보더 등에 의한 여유공간으로 13px 추가함 */
+        }
+    </script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="left-button">
+            <a href="#"><img src="/images/back.png" alt="뒤로가기"></a>
+        </div>
+        <div class="center">
+            <h1>칭구칭구</h1>
+        </div>
+        <div class="myPage">
+            <a href="#"><img src="/images/myPage.png" alt="마이페이지"></a>
+        </div>
+    </header>
+    <div class="content">
+        <div class="post">
+            <!-- 임시로 이미지 크기 확인용 -->
+            <img src="https://via.placeholder.com/1000x1000" alt="포스팅 이미지">
+            <div class="post-content">
+                <p>글쓰기~~~~</p>
+                <div class="comments">
+                    <!--키보드로 누르고 떼는 순간마다 resize 함수 실행 -->
+                    <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)"
+                        onkeyup="resize(this)"></textarea>
+                    <button class="confirmBtn">확인</button>
+                </div>
+            </div>
+        </div>
+        <div class="post">
+            <img src="https://via.placeholder.com/1000x1000" alt="포스팅 이미지">
+            <div class="post-content">
+                <p>포스트 내용 쓰기</p>
+                <div class="comments">
+                    <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)"
+                        onkeyup="resize(this)"></textarea>
+                    <button class="confirmBtn">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar">
+        <button class="nav-button"><img src="/images/home.png" alt="홈"></button>
+        <button class="nav-button"><img src="/images/category.png" alt="피드"></button>
+        <button class="nav-button"><img src="/images/chat_white.png" alt="채팅"></button>
+        <button class="nav-button"><img src="/images/calendar_white.png" alt="스케줄"></button>
+        <button class="nav-button"><img src="/images/notification_white.png" alt="알림"></button>
+    </nav>
+</body>
+
+</html>
