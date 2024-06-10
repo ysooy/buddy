@@ -11,16 +11,16 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box; 
-        } 
- 
-        body { 
+            box-sizing: border-box;
+        }
+
+        body {
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-        } 
- 
+        }
+
         .header {
             background-color: #f8f8f8;
             padding: 20px 0;
@@ -154,6 +154,7 @@
             flex: 1;
             height: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
@@ -161,6 +162,12 @@
         .nav-button img {
             height: 24px;
             /* 아이콘 크기 조정 */
+        }
+
+        .nav-button span {
+            margin-top: 4px;
+            /* 아이콘과 텍스트 사이 간격 조정 */
+            font-size:18px;
         }
 
         .nav-button:hover {
@@ -186,16 +193,27 @@
             }
 
             .nav-button {
-                width: 100%;
-                text-align: left;
+                flex-direction: row;	/* 아이콘과 글자 나란히 배치 */
                 padding: 10px 20px;
-                display: flex;
+                height: 70px;
                 justify-content: flex-start;
                 align-items: center;
-                height: 70px;
+                width: 100%;
+                text-align: left;
                 border-bottom: 1px solid #ddd;
                 flex: none;
                 /* 부모인 .navbar 높이와 관계없이 유지됨 */
+            }
+
+            .nav-button img {
+                margin-right: 30px;
+                margin-top: 0;
+                /* 아이콘과 텍스트 사이 간격 초기화 */
+            }
+
+            .nav-button span {
+                margin-top: 0;
+                /* 아이콘과 텍스트 사이 간격 초기화 */
             }
 
             .nav-button:hover {
@@ -258,11 +276,26 @@
         </div>
     </div>
     <nav class="navbar">
-        <button class="nav-button"><img src="/images/home.png" alt="홈"></button>
-        <button class="nav-button"><img src="/images/category.png" alt="피드"></button>
-        <button class="nav-button"><img src="/images/chat_white.png" alt="채팅"></button>
-        <button class="nav-button"><img src="/images/calendar_white.png" alt="스케줄"></button>
-        <button class="nav-button"><img src="/images/notification_white.png" alt="알림"></button>
+        <button class="nav-button">
+            <img src="/images/home.png" alt="홈">
+            <span>홈</span>
+        </button>
+        <button class="nav-button">
+            <img src="/images/category.png" alt="피드">
+            <span>피드</span>
+        </button>
+        <button class="nav-button">
+            <img src="/images/chat_white.png" alt="채팅">
+            <span>채팅</span>
+        </button>
+        <button class="nav-button">
+            <img src="/images/calendar_white.png" alt="스케줄">
+            <span>스케줄</span>
+        </button>
+        <button class="nav-button">
+            <img src="/images/notification_white.png" alt="알림">
+            <span>알림</span>
+        </button>
     </nav>
 </body>
 
