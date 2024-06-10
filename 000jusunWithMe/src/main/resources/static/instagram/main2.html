@@ -38,7 +38,7 @@
             /* 헤더 높이 설정 */
         }
 
-        .header .left-button,
+        .header .leftButton,
         .header .center,
         .header .myPage {
             flex: 1;
@@ -47,7 +47,7 @@
             height: 100%;
         }
 
-        .header .left-button {
+        .header .leftButton {
             justify-content: flex-start;
             padding-left: 50px;
         }
@@ -66,12 +66,25 @@
             /* 이미지 크기 조정 */
         }
 
+        .mainContainer {
+            display: flex;
+            flex: 1;
+            margin-top: 80px;
+        }
+
         .content {
             flex: 1;
             overflow-y: auto;
-            margin: 0 auto;
             padding: 120px 50px 100px;
-            /* 패딩 설정 */
+            display: flex;
+            justify-content: center;
+            /* 중앙 정렬 */
+        }
+
+        .postContainer {
+            width: 100%;
+            max-width: 700px;
+            /* 최대 너비 설정 */
         }
 
         .post {
@@ -82,21 +95,21 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            max-width: 600px;
         }
 
         .post img {
             width: 100%;
-            max-width: 1000px;
-            max-height: 1000px;
+            max-width: 600px;
+            max-height: 600px;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
             object-fit: cover;
         }
 
-        .post-content {
+        .postContent {
             padding: 16px;
             width: 100%;
-            max-width: 1000px;
         }
 
         .comments {
@@ -147,7 +160,7 @@
             /* 네비게이션 바 높이 설정 */
         }
 
-        .nav-button {
+        .navButton {
             background: none;
             border: none;
             cursor: pointer;
@@ -159,18 +172,18 @@
             align-items: center;
         }
 
-        .nav-button img {
+        .navButton img {
             height: 24px;
             /* 아이콘 크기 조정 */
         }
 
-        .nav-button span {
+        .navButton span {
             margin-top: 4px;
             /* 아이콘과 텍스트 사이 간격 조정 */
-            font-size:18px;
+            font-size: 18px;
         }
 
-        .nav-button:hover {
+        .navButton:hover {
             background-color: orange;
         }
 
@@ -182,18 +195,20 @@
                 align-items: stretch;
                 /* 좌우 정렬 맞춤용 */
                 height: auto;
-                width: 200px;
+                width: 250px;
                 position: fixed;
                 left: 0;
-                top: 100px;
+                top: 80px;
+                /* 헤더 높이를 고려하여 설정 */
                 border-top: none;
                 border-right: 1px solid #ddd;
                 padding-top: 20px;
                 background-color: #fff;
             }
 
-            .nav-button {
-                flex-direction: row;	/* 아이콘과 글자 나란히 배치 */
+            .navButton {
+                flex-direction: row;
+                /* 아이콘과 글자 나란히 배치 */
                 padding: 10px 20px;
                 height: 70px;
                 justify-content: flex-start;
@@ -205,24 +220,36 @@
                 /* 부모인 .navbar 높이와 관계없이 유지됨 */
             }
 
-            .nav-button img {
+            .navButton img {
                 margin-right: 30px;
                 margin-top: 0;
                 /* 아이콘과 텍스트 사이 간격 초기화 */
             }
 
-            .nav-button span {
+            .navButton span {
                 margin-top: 0;
                 /* 아이콘과 텍스트 사이 간격 초기화 */
             }
 
-            .nav-button:hover {
+            .navButton:hover {
                 background-color: orange;
             }
 
-            .content {
+            .mainContainer {
                 margin-left: 200px;
+                /* navbar 너비를 고려하여 설정 */
+                width: calc(100% - 200px);
+            }
+
+            .content {
                 padding-top: 120px;
+                max-width: 100%;
+            }
+
+            .postContainer {
+                max-width: 700px;
+                width: 100%;
+                /* 최대 너비 설정 */
             }
         }
     </style>
@@ -239,7 +266,7 @@
 
 <body>
     <header class="header">
-        <div class="left-button">
+        <div class="leftButton">
             <a href="#"><img src="/images/back.png" alt="뒤로가기"></a>
         </div>
         <div class="center">
@@ -249,54 +276,56 @@
             <a href="#"><img src="/images/myPage.png" alt="마이페이지"></a>
         </div>
     </header>
-    <div class="content">
-        <div class="post">
-            <!-- 임시로 이미지 크기 확인용 -->
-            <img src="https://via.placeholder.com/1000x1000" alt="포스팅 이미지">
-            <div class="post-content">
-                <p>글쓰기~~~~</p>
-                <div class="comments">
-                    <!--키보드로 누르고 떼는 순간마다 resize 함수 실행 -->
-                    <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)"
-                        onkeyup="resize(this)"></textarea>
-                    <button class="confirmBtn">확인</button>
+    <div class="mainContainer">
+        <nav class="navbar">
+            <button class="navButton">
+                <img src="/images/home.png" alt="홈">
+                <span>홈</span>
+            </button>
+            <button class="navButton">
+                <img src="/images/category.png" alt="피드">
+                <span>피드</span>
+            </button>
+            <button class="navButton">
+                <img src="/images/chat_white.png" alt="채팅">
+                <span>채팅</span>
+            </button>
+            <button class="navButton">
+                <img src="/images/calendar_white.png" alt="스케줄">
+                <span>스케줄</span>
+            </button>
+            <button class="navButton">
+                <img src="/images/notification_white.png" alt="알림">
+                <span>알림</span>
+            </button>
+        </nav>
+        <div class="content">
+            <div class="postContainer">
+                <div class="post">
+                    <!-- 임시로 이미지 크기 확인용 -->
+                    <img src="https://via.placeholder.com/1000x1000" alt="포스팅 이미지">
+                    <div class="postContent">
+                        <p>글쓰기~~~~</p>
+                        <div class="comments">
+                            <!--키보드로 누르고 뗄 때마다 resize 함수 실행 -->
+                            <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                            <button class="confirmBtn">확인</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="post">
-            <img src="https://via.placeholder.com/1000x1000" alt="포스팅 이미지">
-            <div class="post-content">
-                <p>포스트 내용 쓰기</p>
-                <div class="comments">
-                    <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)"
-                        onkeyup="resize(this)"></textarea>
-                    <button class="confirmBtn">확인</button>
+                <div class="post">
+                    <img src="https://via.placeholder.com/1000x1000" alt="포스팅 이미지">
+                    <div class="postContent">
+                        <p>포스트 내용 쓰기</p>
+                        <div class="comments">
+                            <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                            <button class="confirmBtn">확인</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <nav class="navbar">
-        <button class="nav-button">
-            <img src="/images/home.png" alt="홈">
-            <span>홈</span>
-        </button>
-        <button class="nav-button">
-            <img src="/images/category.png" alt="피드">
-            <span>피드</span>
-        </button>
-        <button class="nav-button">
-            <img src="/images/chat_white.png" alt="채팅">
-            <span>채팅</span>
-        </button>
-        <button class="nav-button">
-            <img src="/images/calendar_white.png" alt="스케줄">
-            <span>스케줄</span>
-        </button>
-        <button class="nav-button">
-            <img src="/images/notification_white.png" alt="알림">
-            <span>알림</span>
-        </button>
-    </nav>
 </body>
 
 </html>
