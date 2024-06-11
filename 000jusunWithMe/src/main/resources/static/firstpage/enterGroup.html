@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-container input[type="text"] {
+            width: calc(100% - 22px); 
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .copy-link-container {
+            display: flex;
+            align-items: flex-start; 
+            margin-bottom: 20px;
+        }
+
+        .copy-link-container input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        button, input[type="submit"] {
+            background-color: #FFA500; 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
+        }
+
+        @media (min-width: 1024px) {
+            .button-container {
+                grid-template-columns: repeat(4, 250px); /* PC 화면에서 4개씩 */
+                justify-content: center; /* 가운데 정렬 */
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .button-container {
+                grid-template-columns: repeat(2, 250px); /* 모바일 화면에서 2개씩 */
+                justify-content: center; /* 가운데 정렬 */
+            }
+        }
+        
+        h1 span {
+            font-weight: normal; /* bold체 제거 */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="center" style="margin-bottom: 50px;">
+        <h1>'내새끼들' &nbsp;<span>참여하기</span></h1>
+    </div>
+    <div class="form-container">
+        <form>
+            <label for="groupCode">그룹코드</label>
+            <input type="text" id="groupCode" name="groupCode">
+			
+            <input type="submit" value="참여하기 !">
+        </form>
+    </div>
+</body>
+</html>

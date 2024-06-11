@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            width: 80%;
+            max-width: 1200px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .square-button {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .square-button img {
+            max-width: 80%;
+            max-height: 80%;
+            border: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .button-name {
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: black;
+        }
+
+        @media (min-width: 768px) {
+            .button-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+		h1, h2{
+			text-align: center;
+			font-weight: normal;
+			margin:10px;
+		}
+		
+		h1{
+			margin-top:100px
+		}
+    </style>
+</head>
+
+<body>
+	
+	<div>
+	    <h1>칭구칭구</h1>
+	    <h2>그룹 선택</h2>
+    </div>
+    <div class="button-container">
+        <div class="square-button">
+            <img src="/images/orange.png">
+            <div class="button-name">그룹 1</div>
+        </div>
+        <div class="square-button">
+            <img src="/images/orange.png">
+            <div class="button-name">그룹 2</div>
+        </div>
+        <div class="square-button">
+            <img src="/images/orange.png">
+            <div class="button-name">그룹 3</div>
+        </div>
+        <div class="square-button">
+            <img src="/images/orange.png">
+            <div class="button-name">뫄뫄</div>
+        </div>
+        <div class="square-button">
+            <img src="/images/orange.png">
+            <div class="button-name">뫄뫄</div>
+        </div>
+        <div class="square-button">
+            <img src="/images/plus.png">
+            <div class="button-name">새 그룹 만들기</div>
+        </div>
+    </div>
+</body>
+
+</html>
