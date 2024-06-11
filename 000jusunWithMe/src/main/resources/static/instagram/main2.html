@@ -7,7 +7,6 @@
     <title>칭구칭구</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* 기본 스타일 초기화 */
         * {
             margin: 0;
             padding: 0;
@@ -15,58 +14,37 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
         .header {
-            background-color: #f8f8f8;
-            padding: 20px 0;
-            /* 위아래 패딩 추가 */
-            text-align: center;
-            border-bottom: 1px solid #ddd;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
             position: fixed;
-            top: 0;
             width: 100%;
+            height: 70px;
+            top: 0;
             z-index: 1000;
-            height: 80px;
-            /* 헤더 높이 설정 */
         }
 
-        .header .leftButton,
-        .header .center,
-        .header .myPage {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            height: 100%;
+        .header .leftButton img,
+        .header .myPage img {
+            width: 33px;
+            height: 33px;
         }
 
-        .header .leftButton {
-            justify-content: flex-start;
-            padding-left: 50px;
+        .header .center h1 {
+            font-size: 28px;
+            margin: 0;
         }
 
-        .header .center {
-            justify-content: center;
-        }
-
-        .header .myPage {
-            justify-content: flex-end;
-            padding-right: 50px;
-        }
-
-        .header img {
-            height: 40px;
-            /* 이미지 크기 조정 */
-        }
-
-        .mainContainer {
+        .main-container {
             display: flex;
             flex: 1;
             margin-top: 80px;
@@ -75,13 +53,13 @@
         .content {
             flex: 1;
             overflow-y: auto;
-            padding: 120px 50px 100px;
+            padding: 70px 50px 100px;
             display: flex;
             justify-content: center;
             /* 중앙 정렬 */
         }
 
-        .postContainer {
+        .post-container {
             width: 100%;
             max-width: 700px;
             /* 최대 너비 설정 */
@@ -195,10 +173,10 @@
                 align-items: stretch;
                 /* 좌우 정렬 맞춤용 */
                 height: auto;
-                width: 250px;
+                width: 200px;
                 position: fixed;
                 left: 0;
-                top: 80px;
+                top: 60px;
                 /* 헤더 높이를 고려하여 설정 */
                 border-top: none;
                 border-right: 1px solid #ddd;
@@ -231,11 +209,7 @@
                 /* 아이콘과 텍스트 사이 간격 초기화 */
             }
 
-            .navButton:hover {
-                background-color: orange;
-            }
-
-            .mainContainer {
+            .main-container {
                 margin-left: 200px;
                 /* navbar 너비를 고려하여 설정 */
                 width: calc(100% - 200px);
@@ -246,7 +220,7 @@
                 max-width: 100%;
             }
 
-            .postContainer {
+            .post-container {
                 max-width: 700px;
                 width: 100%;
                 /* 최대 너비 설정 */
@@ -276,7 +250,7 @@
             <a href="#"><img src="/images/myPage.png" alt="마이페이지"></a>
         </div>
     </header>
-    <div class="mainContainer">
+    <div class="main-container">
         <nav class="navbar">
             <button class="navButton">
                 <img src="/images/home.png" alt="홈">
@@ -300,7 +274,7 @@
             </button>
         </nav>
         <div class="content">
-            <div class="postContainer">
+            <div class="post-container">
                 <div class="post">
                     <!-- 임시로 이미지 크기 확인용 -->
                     <img src="https://via.placeholder.com/1000x1000" alt="포스팅 이미지">
@@ -326,6 +300,8 @@
             </div>
         </div>
     </div>
+</
+
 </body>
 
 </html>
