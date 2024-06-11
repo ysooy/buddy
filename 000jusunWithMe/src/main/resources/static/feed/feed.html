@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* 기본 스타일 초기화 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #f8f8f8;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            height: 80px;
+        }
+
+        .header div {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .leftButton {
+            justify-content: flex-start;
+            padding-left: 50px;
+        }
+
+        .center {
+            justify-content: center;
+        }
+
+        .myPage {
+            justify-content: flex-end;
+            padding-right: 50px;
+        }
+
+        .header img {
+            height: 40px;
+        }
+
+        .mainContainer {
+            display: flex;
+            flex: 1;
+            margin-top: 80px;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+       .content .post {
+		    position: relative;
+		    width: 100%;
+		}
+		.content .post img {
+		    width: 100%;
+		    height: 250px;
+		    filter: brightness(70%); /* 이미지를 기본50% 어둡게 설정: 글씨가 보여야 하므로 */
+		    object-fit: cover; 
+		    object-position: center; 
+		}
+		.content .post img:hover {
+		    filter: brightness(100%); /* 호버 상태일 때 밝기를 원래 상태로 돌려놓기 */
+		}
+		
+		.content .text-overlay {
+		    position: absolute;
+		    top: 50%;
+		    left: 50%;
+		    transform: translate(-50%, -50%);
+		    color: white;
+		    font-size: 18px;
+		    text-align: center;
+		    width: 100%;
+		    padding: 0 10px;
+		}
+        .content .post p {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0;
+            border-top: 1px solid #ddd;
+            background-color: #f8f8f8;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+        }
+
+        .navButton {
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navButton img {
+            height: 24px;
+        }
+
+        .navButton span {
+            margin-top: 4px;
+            font-size: 18px;
+        }
+
+        .navButton:hover {
+            background-color: orange;
+        }
+
+         /* 가로 길이가 768px 이상일 때 네비게이션 바가 왼쪽으로 이동함 */
+        @media (min-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                /* 좌우 정렬 맞춤용 */
+                height: auto;
+                width: 250px;
+                position: fixed;
+                left: 0;
+                top: 80px;
+                /* 헤더 높이를 고려하여 설정 */
+                border-top: none;
+                border-right: 1px solid #ddd;
+                padding-top: 20px;
+                background-color: #fff;
+            }
+
+            .navButton {
+                flex-direction: row;
+                padding: 10px 20px;
+                height: 70px;
+                justify-content: flex-start;
+                align-items: center;
+                width: 100%;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+                flex: none;
+            }
+
+            .navButton img {
+                margin-right: 30px;
+                margin-top: 0;
+            }
+
+            .navButton span {
+                margin-top: 0;
+            }
+
+            .mainContainer {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="leftButton">
+           
+        </div>
+        <div class="center">
+            <h2>내새끼들</h2>
+        </div>
+        <div class="myPage">
+            <a href="#"><img src="/images/myPage.png" alt="마이페이지"></a>
+        </div>
+    </header>
+    <div class="mainContainer">
+        <nav class="navbar">
+            <button class="navButton">
+                <img src="/images/home.png" alt="홈">
+                <span>홈</span>
+            </button>
+            <button class="navButton">
+                <img src="/images/category.png" alt="피드">
+                <span>피드</span>
+            </button>
+            <button class="navButton">
+                <img src="/images/chat_white.png" alt="채팅">
+                <span>채팅</span>
+            </button>
+            <button class="navButton">
+                <img src="/images/calendar_white.png" alt="스케줄">
+                <span>스케줄</span>
+            </button>
+            <button class="navButton">
+                <img src="/images/notification_white.png" alt="알림">
+                <span>알림</span>
+            </button>
+        </nav>
+       <div class="content">
+		    <div class="post">
+		        <img src="/images/sample1.jpg">
+		        <div class="text-overlay">2024년 5월 6일<br>서대문구 대현동</div>
+		    </div>
+		    <div class="post">
+		        <img src="/images/sample2.jpg">
+		        <div class="text-overlay">2024년 5월 3일<br>강남구 신사동</div>
+		    </div>
+		    <div class="post">
+		        <img src="/images/sample3.jpg">
+		        <div class="text-overlay">2024년 4월 20일<br>마포구 서교동</div>
+		    </div>
+		    
+		</div>
+
+    </div>
+</body>
+
+</html>
