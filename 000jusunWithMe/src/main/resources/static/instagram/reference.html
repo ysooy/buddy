@@ -20,29 +20,51 @@
         }
 
         .header {
+            background-color: #f8f8f8;
+            padding: 20px 0;
+            /* 위아래 패딩 추가 */
+            text-align: center;
+            border-bottom: 1px solid #ddd;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            background-color: #f8f8f8;
-            border-bottom: 1px solid #ddd;
             position: fixed;
-            width: 100%;
-            height: 70px;
             top: 0;
-            z-index: 1000;
+            width: 100%;
+            z-index: 1200;
+            height: 80px;
+            /* 헤더 높이 설정 */
+        }
+        
+        
+        .header .leftButton,
+        .header .center,
+        .header .myPage {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            height: 100%;
         }
 
-        .header .leftButton img,
-        .header .myPage img {
-            width: 33px;
-            height: 33px;
+        .header .leftButton {
+            justify-content: flex-start;
+            padding-left: 50px;
         }
 
-        .header .center h1 {
-            font-size: 28px;
-            margin: 0;
+        .header .center {
+            justify-content: center;
         }
+
+        .header .myPage {
+            justify-content: flex-end;
+            padding-right: 50px;
+        }
+
+        .header img {
+            height: 40px;
+            /* 이미지 크기 조정 */
+        }
+        
 
         .main-container {
             display: flex;
@@ -130,6 +152,7 @@
                 margin-left: 200px;
                 /* navbar 너비를 고려하여 설정 */
                 width: calc(100% - 200px);
+                margin-top: -40px;                
             }
 
             .content {
@@ -169,7 +192,7 @@
             <a href="#"><img src="/images/back.png" alt="뒤로가기"></a>
         </div>
         <div class="center">
-            <h1>칭구칭구</h1>
+            <h2>칭구칭구</h2>
         </div>
         <div class="myPage">
             <a href="#"><img src="/images/myPage.png" alt="마이페이지"></a>
