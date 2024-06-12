@@ -5,91 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>칭구칭구</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/css/common.css">        
+    <link rel="stylesheet" href="/css/header.css">    
     <link rel="stylesheet" href="/css/navbar.css">
-    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(function() {
             // 네비게이션 바 로드
             $("#navbar").load("/navbar/navbar.html");
+            // 헤더 로드
+            $("#header").load("/header/header.html");
         });
     </script>
     <style>
-        /* 기본 스타일 초기화 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .header {
-            background-color: #f8f8f8;
-            padding: 20px 0;
-            /* 위아래 패딩 추가 */
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1200;
-            height: 80px;
-            /* 헤더 높이 설정 */
-        }
-
-        .header .leftButton,
-        .header .center,
-        .header .myPage {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            height: 100%;
-        }
-
-        .header .leftButton {
-            justify-content: flex-start;
-            padding-left: 50px;
-        }
-
-        .header .center {
-            justify-content: center;
-        }
-
-        .header .myPage {
-            justify-content: flex-end;
-            padding-right: 50px;
-        }
-
-        .header img {
-            height: 40px;
-            /* 이미지 크기 조정 */
-        }
-
-        .main-container {
-            display: flex;
-            flex: 1;
-            margin-top: 80px; /* 헤더 높이 만큼 추가 */
-            overflow-y: auto;
-        }
-
-        .content {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            justify-content: center;
-            margin-bottom: 60px; /* 네비게이션 바 높이 만큼 추가 */
-        }
-
         .post-container {
             width: 100%;
             max-width: 700px;
@@ -162,25 +90,6 @@
             background-color: orange;
         }
 
-        @media (min-width: 768px) {
-            .main-container {
-                margin-left: 200px;
-                /* navbar 너비를 고려하여 설정 */
-                width: calc(100% - 200px);
-                margin-top: -40px;
-            }
-
-            .post-container {
-                max-width: 700px;
-                width: 100%;
-                /* 최대 너비 설정 */
-            }
-		    .content {
-		        padding-top: 120px;
-		        max-width: 100%;
-		    }
-                
-        }
     </style>
     <script>
         /* 댓글 입력 시 스크롤없이 textarea 칸 조절 */
@@ -194,17 +103,7 @@
 </head>
 
 <body style="overflow-y: auto;">
-    <header class="header">
-        <div class="leftButton">
-            <a href="#"><img src="/images/back.png" alt="뒤로가기"></a>
-        </div>
-        <div class="center">
-            <h2>내새끼들</h2>
-        </div>
-        <div class="myPage">
-            <a href="#"><img src="/images/myPage.png" alt="마이페이지"></a>
-        </div>
-    </header>
+    <div id="header"></div>
     <nav id="navbar"></nav>
     <div class="main-container">
         <div class="content">

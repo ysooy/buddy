@@ -1,0 +1,42 @@
+/* 기본 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+    margin-top: 80px;
+    overflow-y: auto;
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 60px;
+}
+
+@media (min-width: 768px) {
+    .main-container {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+        margin-top: -40px;
+    }
+
+    .content {
+        padding-top: 120px;
+        max-width: 100%;
+    }
+}
+

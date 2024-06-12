@@ -1,0 +1,39 @@
+.header {
+    background-color: #f8f8f8;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1200;
+    height: 80px;
+}
+
+.header div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.leftButton {
+    justify-content: flex-start;
+    padding-left: 50px;
+}
+
+.center {
+    justify-content: center;
+}
+
+.myPage {
+    justify-content: flex-end;
+    padding-right: 50px;
+}
+
+.header img {
+    height: 40px;
+}
