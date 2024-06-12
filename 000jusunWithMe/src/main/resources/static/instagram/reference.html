@@ -6,17 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>칭구칭구</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="/css/navbar.css">
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(function() {
-            // 네비게이션 바 로드
-            $("#navbar").load("/navbar/navbar.html");
-        });
-    </script>
     <style>
-        /* 기본 스타일 초기화 */
         * {
             margin: 0;
             padding: 0;
@@ -24,7 +14,6 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -46,7 +35,8 @@
             height: 80px;
             /* 헤더 높이 설정 */
         }
-
+        
+        
         .header .leftButton,
         .header .center,
         .header .myPage {
@@ -74,20 +64,21 @@
             height: 40px;
             /* 이미지 크기 조정 */
         }
+        
 
         .main-container {
             display: flex;
             flex: 1;
-            margin-top: 80px; /* 헤더 높이 만큼 추가 */
-            overflow-y: auto;
+            margin-top: 80px;
         }
 
         .content {
             flex: 1;
             overflow-y: auto;
+            padding: 70px 50px 100px;
             display: flex;
             justify-content: center;
-            margin-bottom: 60px; /* 네비게이션 바 높이 만큼 추가 */
+            /* 중앙 정렬 */
         }
 
         .post-container {
@@ -97,40 +88,28 @@
         }
 
         .post {
-            padding: 10px;
-            margin: 10px;
-            border: 1px solid lightgray;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
         }
 
         .post img {
             width: 100%;
-            max-width: 100%;
+            max-width: 600px;
             max-height: 600px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
             object-fit: cover;
         }
 
-        .writer {
-            display: flex;
-            align-items: center;
-            margin: 8px;
-        }
-
-        .writer img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        .writer span {
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .writer time {
-            margin-left: auto;
-            font-size: 14px;
-            color: #777;
+        .postContent {
+            padding: 16px;
+            width: 100%;
         }
 
         .comments {
@@ -144,30 +123,41 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            /* 스크롤 숨김처리 */
             overflow: hidden;
+            /* 사용자가 크기 조절 못하게 설정 */
             resize: none;
         }
 
         .comments .confirmBtn {
             padding: 8px 16px;
+            /* 버튼 패딩 조정 */
             border: 1px solid #ddd;
             border-radius: 4px;
             background-color: gray;
             color: white;
             cursor: pointer;
             white-space: nowrap;
+            /* 글자가 줄바꿈되지 않도록 설정 */
         }
 
         .comments .confirmBtn:hover {
             background-color: orange;
+            /* 색깔 변경 */
         }
 
+        /* 가로 길이가 768px 이상일 때 네비게이션 바가 왼쪽으로 이동함 */
         @media (min-width: 768px) {
             .main-container {
                 margin-left: 200px;
                 /* navbar 너비를 고려하여 설정 */
                 width: calc(100% - 200px);
-                margin-top: -40px;
+                margin-top: -40px;                
+            }
+
+            .content {
+                padding-top: 120px;
+                max-width: 100%;
             }
 
             .post-container {
@@ -175,66 +165,48 @@
                 width: 100%;
                 /* 최대 너비 설정 */
             }
-		    .content {
-		        padding-top: 120px;
-		        max-width: 100%;
-		    }
-                
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         /* 댓글 입력 시 스크롤없이 textarea 칸 조절 */
         function resize(obj) {
             obj.style.height = '1px';
             /* textarea 높이를 1px로 초기화 */
             obj.style.height = (13 + obj.scrollHeight) + 'px';
-            /* 실제 높이 + textarea의 패딩, 보더 등에 의한 여유공간으로 13px 추가함 */
+            /* 실제 높이 + texarea의 패딩, 보더 등에 의한 여유공간으로 13px 추가함 */
         }
+
+        $(function() {
+            $("#navbar").load("/navbar/navbar.html", function() {
+                // 네비게이션 바 로드 시 css적용이 안되어 코드 추가함
+                $('head').append('<link rel="stylesheet" type="text/css" href="/css/navbar.css">');
+            });
+        });
     </script>
 </head>
 
-<body style="overflow-y: auto;">
+<body>
     <header class="header">
         <div class="leftButton">
             <a href="#"><img src="/images/back.png" alt="뒤로가기"></a>
         </div>
         <div class="center">
-            <h2>내새끼들</h2>
+            <h2>칭구칭구</h2>
         </div>
         <div class="myPage">
             <a href="#"><img src="/images/myPage.png" alt="마이페이지"></a>
         </div>
     </header>
-    <nav id="navbar"></nav>
     <div class="main-container">
+        <div id="navbar"></div>
         <div class="content">
             <div class="post-container">
-                <!--포스트 하나임-->
                 <div class="post">
-                    <div class="writer">
-                        <img src="/images/orange.png">
-                        <div>
-                            <span>작성자</span><br>
-                            <time>3분 전</time>
-                        </div>
-                    </div>
-                    <!-- 포스팅 이미지 -->
-                    <img src="/images/sample2.jpg" alt="포스팅 이미지">
+                    <!-- 임시로 이미지 크기 확인용 -->
+                    <img src="https://via.placeholder.com/1000x1000" alt="포스팅 이미지">
                     <div class="postContent">
-                        <div class="writer">
-                            <img src="/images/myPage.png">
-                            <div>
-                                <span>쮸</span>&nbsp;<time>3분 전</time>
-                                <p>와 진짜짱이다~</p>
-                            </div>
-                        </div>
-                        <div class="writer">
-                            <img src="/images/myPage.png">
-                            <div>
-                                <span>수</span>&nbsp;<time>3분 전</time>
-                                <p>와 진짜짱이다~</p>
-                            </div>
-                        </div>
+                        <p>글쓰기~~~~</p>
                         <div class="comments">
                             <!--키보드로 누르고 뗄 때마다 resize 함수 실행 -->
                             <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
@@ -242,41 +214,16 @@
                         </div>
                     </div>
                 </div>
-                <!--포스트 하나 끝-->
-                <!--포스트 하나임-->
                 <div class="post">
-                    <div class="writer">
-                        <img src="/images/orange.png">
-                        <div>
-                            <span>작성자</span><br>
-                            <time>3분 전</time>
-                        </div>
-                    </div>
-                    <!-- 포스팅 이미지 -->
-                    <img src="/images/sample3.jpg" alt="포스팅 이미지">
+                    <img src="https://via.placeholder.com/1000x1000" alt="포스팅 이미지">
                     <div class="postContent">
-                        <div class="writer">
-                            <img src="/images/myPage.png">
-                            <div>
-                                <span>쮸</span>&nbsp;<time>3분 전</time>
-                                <p>와 진짜짱이다~</p>
-                            </div>
-                        </div>
-                        <div class="writer">
-                            <img src="/images/myPage.png">
-                            <div>
-                                <span>수</span>&nbsp;<time>3분 전</time>
-                                <p>와 진짜짱이다~</p>
-                            </div>
-                        </div>
+                        <p>포스트 내용 쓰기</p>
                         <div class="comments">
-                            <!--키보드로 누르고 뗄 때마다 resize 함수 실행 -->
                             <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
                             <button class="confirmBtn">확인</button>
                         </div>
                     </div>
                 </div>
-                <!--포스트 하나 끝-->
             </div>
         </div>
     </div>
