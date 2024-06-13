@@ -1,0 +1,33 @@
+        .notifications-container {
+            display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            align-items: center;
+            width: 100%;
+            margin-top: 30px;
+        }
+        .notifications {
+            display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            align-items: flex-start;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 10px;
+            width: 80%;
+            max-width: 1000px;
+        }
+        .profileIcon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .notifiText {
+            flex: 1;
+            margin-bottom: 10px;
+        }
+        .uploadTime {
+            font-size: 0.8em;
+            color: #777;
+            display: block;
+        }

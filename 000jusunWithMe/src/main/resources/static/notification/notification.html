@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/notification.css">    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function() {
+            // 네비게이션 바 로드
+            $("#navbar").load("/navbar/navbar.html");
+            // 헤더 로드 (뒤로 가기 버튼 숨김처리)
+            $("#header").load("/header/header.html", function() {
+                $(".leftButton").css("visibility", "hidden");
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="header"></div>
+    <nav id="navbar"></nav>
+    <div class="main-container">
+        <div class="content">
+            <div class="notifications-container">                
+                <div class="notifications">                
+                    <div class="profileIcon" style="background-color: blue;"></div>
+                    <div class="notifiText">
+                        <strong>주님</strong>이 5월 30일에 1개의 사진을 추가했습니다.
+                        <img src="https://via.placeholder.com/50" alt="첨부된 이미지" style="display: block; margin-top: 10px;">
+                    </div>
+                    <span class="uploadTime">20분 전</span>
+                </div>
+
+                <div class="notifications">
+                    <div class="profileIcon" style="background-color: orange;"></div>
+                    <div class="notifiText">
+                        <strong>주님</strong>이 5월 29일에 글을 추가했습니다.
+                    </div>
+                    <span class="uploadTime">1일 전</span>
+                </div>
+
+                <div class="notifications">
+                    <div class="profileIcon" style="background-color: red;"></div>
+                    <div class="notifiText">
+                        <strong>수님</strong>이 5월 27일 글에 댓글을 남겼습니다.
+                    </div>
+                    <span class="uploadTime">3일 전</span>
+                </div>
+
+                <div class="notifications">
+                    <div class="profileIcon" style="background-color: green;"></div>
+                    <div class="notifiText">
+                        <strong>케님</strong>이 5월 25일에 새로운 일정을 등록했습니다.
+                    </div>
+                    <span class="uploadTime">3일 전</span>
+                </div>
+
+                <div class="notifications">
+                    <div class="profileIcon" style="background-color: red;"></div>
+                    <div class="notifiText">
+                        <strong>수님</strong>이 5월 23일 글을 수정하였습니다.
+                    </div>
+                    <span class="uploadTime">7일 전</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
