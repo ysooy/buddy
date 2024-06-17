@@ -13,10 +13,9 @@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/ko.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
     <script>
-        $(function () {
+        document.addEventListener('DOMContentLoaded', function () {
             // 네비게이션 바 로드
             $("#navbar").load("/navbar/navbar.html");
             // 헤더 로드 (뒤로 가기 버튼 숨김처리)
@@ -61,12 +60,13 @@
             });
 
             // 달력 설정
-            // https://fullcalendar.io/ 참고
             var calendarEl = document.getElementById('calendar');
-
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                
+                // 한국 기준으로 현지화(요일, 날짜 등)
                 locale: 'ko',
+                
                 headerToolbar: {
                     left: 'prev',
                     center: 'title',
@@ -95,8 +95,8 @@
                     $(".modalSubmit").text('등록').removeClass('updateEvent').addClass('addEvent');
                     $("#myModal").css("display", "flex");
                 },
-                
-                //캘린더에 등록된 일정 클하여 모달창 열기
+
+                // 캘린더에 등록된 일정 클릭하여 모달창 열기
                 eventClick: function (info) {
                     currentEvent = info.event;
                     $("#startDate").val(currentEvent.start.toISOString().slice(0, 10));
@@ -182,7 +182,6 @@
             });
         });
     </script>
-
 </head>
 
 <body>

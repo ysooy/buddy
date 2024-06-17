@@ -164,13 +164,16 @@
                 margin-top: 40px;
             }
         }
-
+		
+		
+		/* 월,연도  */
         .fc-toolbar-title {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
         }
+        
 
         .fc-prev-button,
         .fc-next-button {
@@ -178,6 +181,20 @@
             justify-content: center;
             align-items: center;
         }
+		        
+		/* 월 이동 버튼 배경색 변경 */
+		.fc .fc-toolbar .fc-button.fc-next-button,
+		.fc .fc-toolbar .fc-button.fc-prev-button {
+		    background-color: orange;
+		    border: none;
+		}
+		
+		/* 월 이동 버튼 hover 배경색 변경 */
+		.fc .fc-toolbar .fc-button.fc-next-button:hover,
+		.fc .fc-toolbar .fc-button.fc-prev-button:hover {
+		    background-color: darkorange;
+		}
+		        
 
         .fc-prev-button {
             margin-right: auto;
@@ -186,3 +203,5 @@
         .fc-next-button {
             margin-left: auto;
         }
+        
+        
