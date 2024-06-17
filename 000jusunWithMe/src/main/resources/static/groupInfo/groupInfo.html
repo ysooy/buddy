@@ -5,8 +5,15 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>칭구칭구</title>
-	<link rel="stylesheet" href="styles.css">
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="/css/header.css">    
+    <link rel="stylesheet" href="/css/navbar.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function() {
+            // 네비게이션 바 로드
+            $("#navbar").load("/navbar/navbar.html");
+        });
+    </script>
 	<script>
 		$(document).ready(function () {
 			var modal = $("#myModal");
@@ -28,14 +35,6 @@
 		});
 	</script>
 	<style>
-		body {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			height: 100vh;
-			margin: 0;
-		}
-
 		.center {
 			text-align: center;
 		}
@@ -92,8 +91,8 @@
 
 		.leftButton {
 			position: absolute;
-			left: 10px;
-			top: 10px;
+			left: -40px;
+			top: 5px;
 		}
 
 		.leftButton a {
@@ -101,6 +100,12 @@
 			font-size: 50px;
 			color: grey;
 		}
+		/* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
+        @media (min-width: 768px) {
+            .main-container{
+				margin-left: 200px;
+			}
+        }
 
 		/* 모달 배경 처리*/
 		.modal {
@@ -149,10 +154,17 @@
 			border-radius: 50%;
 			margin-bottom: 20px;
 		}
+		/* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
+        @media (min-width: 768px) {
+            .container{
+				margin-left: 200px;
+			}
+        }
 	</style>
 </head>
 
 <body>
+	<nav id="navbar"></nav>
 	<div class="container">
 
 		<div class="myGroup center">
