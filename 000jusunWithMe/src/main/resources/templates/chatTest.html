@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Collection List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<!--예시파일임!!!!!!!-->
+<body>
+    <div class="container">
+        <h1 class="mt-5">Chat Collection List</h1>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Message No</th>
+                    <th>Sent Time</th>
+                    <th>Content</th>
+                    <th>Message Filename</th>
+                    <th>Message Type</th>
+                    <th>User No</th>
+                    <th>Chatroom No</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="chat : ${dataList}">
+                    <td th:text="${chat._id}"></td>
+                    <td th:text="${chat.messageNo}"></td>
+                    <td th:text="${#dates.format(chat.sentTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${chat.content}"></td>
+                    <td th:text="${chat.msgFname}"></td>
+                    <td th:text="${chat.msgType}"></td>
+                    <td th:text="${chat.userNo}"></td>
+                    <td th:text="${chat.chatroomNo}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
