@@ -10,8 +10,8 @@ import lombok.Data;
 
 //채팅: mongoDB연결
 @Data
-@Document(collection = "buddy")
-public class ChatCollection {
+@Document(collection = "message")
+public class MessageCollection {
 
     @Id
     private ObjectId _id;
@@ -39,9 +39,8 @@ public class ChatCollection {
     
 
     @Builder
-    public ChatCollection(int messageNo, Date sentTime) {
+    public MessageCollection(int messageNo) {
         this.messageNo = messageNo;
-        this.sentTime = sentTime;
     }
 
 }
