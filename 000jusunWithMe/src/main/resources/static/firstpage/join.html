@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function() {
+            // 네비게이션 바 로드
+            $("#navbar").load("/navbar/navbar.html");
+            // 헤더 로드
+            $("#header").load("/header/header.html");
+        });
+    </script>
+    <style>
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .center {
+            text-align: center;
+        }
+        
+        .myInfo img {
+            width: 40%;
+            height: auto;
+            border-radius: 50%;
+            margin-top: 20px;
+        }
+        
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form {
+            width: 80%;
+            max-width: 400px; 
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-container input[type="text"] {
+            width: calc(100% - 22px); 
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        form {
+            width: 80%;
+        }
+
+        .copy-link-container {
+            display: flex;
+            align-items: flex-start; 
+            margin-bottom: 20px;
+        }
+
+        .copy-link-container input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        form button, input[type="submit"] {
+            background-color: #FFA500; 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
+        }
+
+        .leftButton a{
+            text-decoration: none;
+            font-size: 50px;
+            color: grey;
+        }
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .head span {
+            flex: 1;
+            text-align: center;
+        }
+
+
+        h1 {
+            font-weight: normal;
+        }
+        
+    </style>
+</head>
+<body>
+	<div class="main-container">
+	    <div class="form-container">
+	        <div class="head">
+	            <span style="font-size: 30px;">회원 가입</span>
+	        </div>
+	        <div class="myInfo center">
+	            <img src="/images/orange.png">
+	        </div>
+	        <form>
+	            <label for="nickname">닉네임</label>
+	            <input type="text" id="nickname" name="nickname">
+	
+	            <label for="birthday">생년월일</label>
+	            <input type="text" id="birthday" name="birthday" class="grey">
+	            
+	            <label for="email">계정</label>
+	            <input type="text" id="email" name="email" class="grey">
+	            <br>
+	            <input type="submit" value="회원 가입 !">
+	        </form>
+	    </div>
+    </div>
+</body>
+</html>
