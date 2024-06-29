@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function() {
+            // 네비게이션 바 로드
+            $("#navbar").load("/navbar/navbar.html");
+            // 헤더 로드
+            $("#header").load("/header/header.html");
+        });
+    </script>
+    <style>
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .center {
+            text-align: center;
+        }
+        
+        .myInfo img {
+            width: 40%;
+            height: auto;
+            border-radius: 50%;
+            margin-top: 20px;
+        }
+        
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form {
+            width: 80%;
+            max-width: 400px; 
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-container input[type="text"], 
+        .form-container input[type="date"] {
+            width: 100%; /* 입력란 너비 조정 */
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* 내부 패딩 포함한 크기 설정 */
+        }
+
+        .form-container input[type="date"] {
+            appearance: none; /* 기본 스타일 제거 */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 30px; /* 오른쪽에 아이콘 공간 확보 */
+            background: url('https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-calendar-outline-512.png') no-repeat center right 10px; /* 달력 아이콘 추가 */
+            background-size: 20px; /* 아이콘 크기 조절 */
+        }
+
+        .copy-link-container {
+            display: flex;
+            align-items: flex-start; 
+            margin-bottom: 20px;
+        }
+
+        .copy-link-container input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        form button, input[type="submit"] {
+            background-color: #FFA500; 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
+        }
+
+        .leftButton a{
+            text-decoration: none;
+            font-size: 50px;
+            color: grey;
+        }
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .head span {
+            flex: 1;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: normal;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="form-container">
+            <div class="head">
+                <span style="font-size: 30px;">회원 가입</span>
+            </div>
+            <!-- 프로필사진 변경 가능하도록+미리보기 기능 추가 필요 -->
+           <div class="myInfo center">
+                 <img th:src="${kakaoProfilePhoto != null ? kakaoProfilePhoto : '/images/orange.png'}">
+
+            </div>
+            <form action="/firstpage/join" method="post">
+				<input type="hidden" id="profilePhoto" name="profilePhoto" th:value="${kakaoProfilePhoto != null ? kakaoProfilePhoto : ''}">
+                <input type="hidden" id="userNo" name="userNo" th:value="${kakaoProfile.id}">
+                <label for="username">닉네임</label>
+				<input type="text" id="username" name="username" th:value="${kakaoNickname != null ? kakaoNickname : ''}">
+
+    
+                <label for="birthday">생년월일</label>
+                <input type="date" id="birthday" name="birthday">
+                
+                <label for="email">계정</label>
+                <input type="text" id="email" name="email" class="grey">
+                <br>
+                <input type="submit" value="회원 가입 !">
+            </form>
+        </div>
+    </div>
+</body>
+</html>
