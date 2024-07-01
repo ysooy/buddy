@@ -10,6 +10,8 @@ import com.example.demo.dao.UsersRepository;
 import com.example.demo.service.UsersService;
 import com.example.demo.vo.Users;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class UsersController {
 	
@@ -26,11 +28,11 @@ public class UsersController {
 	
 	//회원 가입
     @PostMapping("/firstpage/join")
-    public String join(Users user, Model model) {
+    public String join(Users user, HttpSession session) {
         Users newUser = us.joinMember(user);
         
         //새로 회원가입한 회원(Users 객체)을 세션에 유지 
-        model.addAttribute("loginUser",newUser);
-        return "/firstpage/firstpage";
+        session.setAttribute("loginUser", newUser);
+        return "redirect:/firstpage/firstpage";
     }
 }

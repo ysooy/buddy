@@ -34,7 +34,7 @@ public class LoginController {
     
     //카카오콜백
     @GetMapping("/auth/kakao/callback")
-    public String kakaoCallback(String code, Model model) {
+    public String kakaoCallback(String code, Model model, HttpSession session) {
     	
         KakaoProfile kakaoProfile = ks.kakoRequest(code);
     	
@@ -64,7 +64,7 @@ public class LoginController {
     	}
     	
     	//기존 회원 로그인 시 세션에 회원정보 유지(Users 객체)
-    	model.addAttribute("loginUser", existingUser);
+    	session.setAttribute("loginUser", existingUser);
     	return page;
     }
     
