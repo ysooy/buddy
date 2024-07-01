@@ -7,10 +7,61 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(function() {
-            // 네비게이션 바 로드
-            $("#navbar").load("/navbar/navbar.html");
-            // 헤더 로드
-            $("#header").load("/header/header.html");
+            // 회원 가입 폼 유효성 검사
+            $("form").submit(function(event) {
+                // 기본 동작 방지(form 제출 막기)
+                event.preventDefault();
+
+                // 이메일 유효성 검사의 기준이 될 주소 패턴 설정!
+                var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+                // 입력된 값 가져오기
+                var email = $('#email').val().trim();
+                var birthday = $('#birthday').val()
+                var username = $('#username').val().trim();
+
+                // 유효성 검사를 위한 변수. valid==true이면 폼이 넘어가도록 함
+                var valid = true;
+
+                // 이메일 유효성 검사
+                if(email===''){ //이메일 필수입력 검사
+					$("#emailError").text("이메일 주소를 입력하세요.");
+					valid = false;
+				}else if(!emailPattern.test(email)) {
+                    $("#emailError").text("올바른 이메일 주소를 입력하세요.");
+                    valid = false;
+                } else {
+                    $("#emailError").text("");
+                }
+
+                // 닉네임 필수 입력 검사
+                if (username === '') {
+                    $("#usernameError").text("닉네임을 입력하세요.");
+                    valid = false;
+                } else {
+                    $("#usernameError").text("");
+                }
+
+                // 생년월일 필수 입력 검사
+                if (birthday === '') {
+                    $("#birthdayError").text("생년월일을 입력하세요.");
+                    valid = false;
+                } else {
+                    $("#birthdayError").text("");
+                }
+
+                // 모든 유효성 검사를 통과하면 확인 다이얼로그 띄우기
+                if (valid) {
+                    var confirmMessage = "다음 정보로 회원 가입을 진행하시겠습니까?\n\n";
+                    confirmMessage += "닉네임: " + username + "\n";
+                    confirmMessage += "생년월일: " + birthday + "\n";
+                    confirmMessage += "이메일: " + email + "\n";
+
+                    if (confirm(confirmMessage)) {
+                        $("form").unbind('submit').submit(); // 확인 선택 시 submit
+                    }
+                }
+            });
         });
     </script>
     <style>
@@ -48,37 +99,19 @@
         .form-container label {
             display: block;
             margin-bottom: 8px;
+            margin-top: 15px;
         }
 
         .form-container input[type="text"], 
         .form-container input[type="date"] {
             width: 100%; /* 입력란 너비 조정 */
             padding: 10px;
-            margin-bottom: 20px;
+            margin-top: 1px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box; /* 내부 패딩 포함한 크기 설정 */
         }
 
-        .form-container input[type="date"] {
-            appearance: none; /* 기본 스타일 제거 */
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            padding-right: 30px; /* 오른쪽에 아이콘 공간 확보 */
-            background: url('https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-calendar-outline-512.png') no-repeat center right 10px; /* 달력 아이콘 추가 */
-            background-size: 20px; /* 아이콘 크기 조절 */
-        }
-
-        .copy-link-container {
-            display: flex;
-            align-items: flex-start; 
-            margin-bottom: 20px;
-        }
-
-        .copy-link-container input[type="text"] {
-            flex: 1;
-            margin-right: 10px;
-        }
 
         form button, input[type="submit"] {
             background-color: #FFA500; 
@@ -87,17 +120,13 @@
             border: none;
             font-size: 16px;
             cursor: pointer;
+            margin-top: 15px;
         }
 
         button:hover, input[type="submit"]:hover {
             background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
         }
 
-        .leftButton a{
-            text-decoration: none;
-            font-size: 50px;
-            color: grey;
-        }
 
         .head {
             display: flex;
@@ -113,8 +142,10 @@
             text-align: center;
         }
 
-        h1 {
-            font-weight: normal;
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 1px;
         }
         
     </style>
@@ -125,23 +156,23 @@
             <div class="head">
                 <span style="font-size: 30px;">회원 가입</span>
             </div>
-            <!-- 프로필사진 변경 가능하도록+미리보기 기능 추가 필요 -->
-           <div class="myInfo center">
-                 <img th:src="${kakaoProfilePhoto != null ? kakaoProfilePhoto : '/images/orange.png'}">
-
+            <div class="myInfo center">
+                <img th:src="${kakaoProfilePhoto != null ? kakaoProfilePhoto : '/images/orange.png'}">
             </div>
             <form action="/firstpage/join" method="post">
-				<input type="hidden" id="profilePhoto" name="profilePhoto" th:value="${kakaoProfilePhoto != null ? kakaoProfilePhoto : ''}">
+                <input type="hidden" id="profilePhoto" name="profilePhoto" th:value="${kakaoProfilePhoto != null ? kakaoProfilePhoto : ''}">
                 <input type="hidden" id="userNo" name="userNo" th:value="${kakaoProfile.id}">
                 <label for="username">닉네임</label>
-				<input type="text" id="username" name="username" th:value="${kakaoNickname != null ? kakaoNickname : ''}">
-
+                <input type="text" id="username" name="username" th:value="${kakaoNickname != null ? kakaoNickname : ''}">
+                <span id="usernameError" class="error-message"></span>
     
                 <label for="birthday">생년월일</label>
                 <input type="date" id="birthday" name="birthday">
+                <span id="birthdayError" class="error-message"></span>
                 
-                <label for="email">계정</label>
+                <label for="email">이메일</label>
                 <input type="text" id="email" name="email" class="grey">
+                <span id="emailError" class="error-message"></span>
                 <br>
                 <input type="submit" value="회원 가입 !">
             </form>
