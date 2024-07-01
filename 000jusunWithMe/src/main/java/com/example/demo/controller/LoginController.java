@@ -11,8 +11,10 @@ import com.example.demo.service.UsersService;
 import com.example.demo.vo.KakaoProfile;
 import com.example.demo.vo.Users;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
-public class KakaoLoginController {
+public class LoginController {
 
 	
 	@Autowired
@@ -25,8 +27,8 @@ public class KakaoLoginController {
     private String kakaoClientId;
     
     //로그인화면으로 연결
-    @GetMapping("/kakaoLogin")
-    public String kakaoLogin() {
+    @GetMapping("login")
+    public String loginPage() {
         return "/firstpage/login";
     }
     
@@ -65,4 +67,12 @@ public class KakaoLoginController {
     	model.addAttribute("loginUser", existingUser);
     	return page;
     }
+    
+    //로그아웃
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+    	session.invalidate();
+    	return "redirect:/login";
+    }
+    
 }
