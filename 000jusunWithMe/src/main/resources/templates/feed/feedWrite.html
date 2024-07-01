@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <link rel="stylesheet" href="/css/common.css">        
+    <link rel="stylesheet" href="/css/header.css">    
+    <link rel="stylesheet" href="/css/navbar.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            //헤더 그룹명으로
+            $(".center h2").text("그룹명");
+        });
+    </script>
+    <style>
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin-top:100px;
+			padding-left: 5%;
+			padding-right: 5%;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+  
+        .form-container button, input[type="submit"] {
+            background-color: #FFA500; 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
+        }
+
+	 	form{
+			 width: 100%;
+		 }
+		 
+		form .txtarea {
+            width: 100%;
+            height: 250px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            border: 1px solid lightgrey;
+        }
+        #date{
+			color:#FF8C00
+		}
+		
+		 /* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
+        @media (min-width: 768px) {
+            .form-container{
+				margin-left: 200px;
+			}
+        }
+    </style>
+</head>
+<body>
+	<div id="header" th:replace="/header/header :: header"></div>
+    <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
+    <div class="form-container">
+        <form>
+			<label id="date">2024년 6월 14일</label>
+            <textarea class="txtarea" placeholder="글 내용 입력..." style="margin-bottom: 20px;"></textarea>
+            <label for="groupImg">사진 추가하기</label>
+            <input type="file" id="photoUpload" name="photoUpload"><br>
+            <br>
+            <input type="submit" value="피드 추가 !">
+        </form>
+    </div>
+</body>
+</html>

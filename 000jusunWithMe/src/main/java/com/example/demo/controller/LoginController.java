@@ -39,7 +39,7 @@ public class LoginController {
         KakaoProfile kakaoProfile = ks.kakoRequest(code);
     	
     	//기본 랜딩 페이지: 첫화면(그룹 선택 화면)
-    	String page = "/firstpage/firstpage";
+    	String page = "redirect:/firstpage/firstpage";
     	
     	
     	//id를 db에서 찾기. 없으면 회원가입 화면으로 이동

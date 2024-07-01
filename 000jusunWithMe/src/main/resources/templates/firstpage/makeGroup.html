@@ -8,10 +8,6 @@
     <link rel="stylesheet" href="/css/header.css">    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(function() {
-            // 헤더 로드
-            $("#header").load("/header/header.html");
-        });
     </script>
     <style>
         .main-container {
@@ -86,7 +82,7 @@
     </style>
 </head>
 <body>
-	<div id="header"></div>
+	<div id="header" th:replace="/header/header :: header"></div>
 	<div class="main-container">
 	    <div class="center" style="margin-bottom: 50px;">
 	        <h1>새 그룹 만들기</h1>
