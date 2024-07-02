@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>칭구칭구</title>
-	<link rel="stylesheet" href="/css/header.css">    
+	<link rel="stylesheet" href="/css/common.css">      
     <link rel="stylesheet" href="/css/navbar.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
@@ -40,7 +40,9 @@
 		.myGroup img {
 			width: 40%;
 			height: 40%;
+			max-width: 250px;
 			border-radius: 50%;
+			margin-bottom: 10px;
 		}
 
 		p {
@@ -85,21 +87,15 @@
 
 		.leftButton {
 			position: absolute;
-			left: -40px;
-			top: 5px;
+			top: 15px;
+			left: 15px;
 		}
 
 		.leftButton a {
 			text-decoration: none;
-			font-size: 50px;
+			font-size: 30px;
 			color: grey;
 		}
-		/* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
-        @media (min-width: 768px) {
-            .main-container{
-				margin-left: 200px;
-			}
-        }
 
 		/* 모달 배경 처리*/
 		.modal {
@@ -110,7 +106,7 @@
 			top: 0;
 			width: 100%;
 			height: 100%;
-			background-color: rgba(0, 0, 0, 0.5);
+			background-color: rgba(0, 0, 0, 0.2);
 			align-items: center;
 		}
 
@@ -120,7 +116,6 @@
 			background-color: #fefefe;
 			margin: 150px auto;
 			padding: 20px;
-			border: 1px solid #888;
 			width: 80%;
 			max-width: 400px;
 			border-radius: 10px;
@@ -152,6 +147,7 @@
         @media (min-width: 768px) {
             .container{
 				margin-left: 200px;
+			    width: calc(100% - 200px);
 			}
         }
 	</style>
@@ -159,12 +155,11 @@
 
 <body>
 	<div id="navbar" th:replace="/navbar/navbar :: nav"></div>
+	<div class="leftButton">
+			<a href="#">&lt;</a>
+		</div>
 	<div class="container">
-
 		<div class="myGroup center">
-			<div class="leftButton">
-				<a href="#">&lt;</a>
-			</div>
 			<img src="/images/orange.png">
 			<div class="groupName center">
 				<p style="font-size: 20px;">내새끼들</p>

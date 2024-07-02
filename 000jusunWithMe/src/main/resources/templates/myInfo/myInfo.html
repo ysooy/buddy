@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>칭구칭구</title>
+    <link rel="stylesheet" href="/css/common.css">   
     <link rel="stylesheet" href="/css/header.css">    
     <link rel="stylesheet" href="/css/navbar.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         .main-container {
-            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -45,7 +45,7 @@
         }
 
         .form-container input[type="text"] {
-            width: calc(100% - 22px); 
+            width: 100%; 
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
@@ -82,7 +82,7 @@
 
         .leftButton a{
             text-decoration: none;
-            font-size: 50px;
+            font-size: 30px;
             color: grey;
         }
 
@@ -191,6 +191,13 @@
         .grey {
             background-color: lightgrey;
         }
+           /* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
+        @media (min-width: 768px) {
+            .main-container{
+				margin-left: 100px;
+			    width: calc(100% - 200px);
+			}
+        }
     </style>
 </head>
 <body>
@@ -199,7 +206,7 @@
 	    <div class="form-container">
 	        <div class="head">
 	            <span class="leftButton">
-	                <a href="#">&lt;</a>
+	                <a href="#">&lt;&nbsp;</a>
 	            </span>
 	            <span style="font-size: 20px;">내 정보</span>
 	            <input type="submit" value="수정">
@@ -225,7 +232,7 @@
 	                </label>
 	            </div>
 	
-	            <p>로그아웃</p>
+	            <p>로그아웃</p><br>
 	            <p>회원 탈퇴</p>
 	        </form>
 	    </div>
