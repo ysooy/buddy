@@ -6,8 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class InfoController {
 
-	@GetMapping("/groupHome/firstpage")
-    public void firstpageView() {
+	@GetMapping("/myInfo/myInfo")
+    public void myInfoView() {
 		
 	};
+	
+	@GetMapping("/groupInfo/groupInfo")
+    public void groupInfoView() {
+		
+	};
+	
 }

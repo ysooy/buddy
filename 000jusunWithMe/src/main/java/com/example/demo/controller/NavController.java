@@ -6,13 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class NavController {
 
-	@GetMapping("/myInfo/myInfo")
-    public void myInfoView() {
-		
-	};
-	
-	@GetMapping("/groupInfo/groupInfo")
-    public void groupInfoView() {
+	//nav 1 홈 클릭시
+	@GetMapping("/groupHome/firstpage")
+    public void firstpageView() {
 		
 	};
 }
