@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>채팅창</title>
-    <!-- CSS 파일을 th:href를 사용하여 경로를 설정 -->
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/chat.css}">
@@ -16,6 +15,12 @@
 </head> 
 <body>
     <th:block th:replace="~{/header/header :: header}"></th:block>
+    <!-- 채팅 검색 -->
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="채팅 검색하기">
+        <button class="search-button">검색</button>
+    </div>
+    
     <div class="chat-container" id="chatContainer">
         <!-- 채팅 메시지 불러오기 -->
         <div th:each="message : ${messages}">
