@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <style>
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .head span {
+            flex: 1;
+            text-align: center;
+        }
+
+        
+    </style>
+</head>
+<body>
+	<div class="main-container">
+	    <div class="form-container">
+			<div>
+				(칭구칭구로고)
+			</div>
+	        <div class="head">
+	            <span style="font-size: 30px;">카카오로 시작하기</span>
+	        </div>
+	       	<div>
+				<a href="https://kauth.kakao.com/oauth/authorize?client_id=77a92e70ca0df394ae534f4f480f5b21&redirect_uri=http://localhost:8080/auth/kakao/callback&response_type=code"><img src="/images/kakaoLoginBtn.png"></a>	 
+			</div>
+	    </div>
+    </div>
+</body>
+</html>

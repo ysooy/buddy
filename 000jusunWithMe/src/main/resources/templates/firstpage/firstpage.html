@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>칭구칭구</title>
     <link rel="stylesheet" href="/css/common.css">        
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/navbar.css">   
+    <link rel="stylesheet" href="/css/header.css">   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(function () {
-            // 네비게이션 바 로드
-            $("#navbar").load("/navbar/navbar.html");
             // 헤더 로드
             $("#header").load("/header/header.html", function() {
-                // 뒤로가기 버튼 숨김처리 
+                // 뒤로가기 버튼 숨김처리
                 $(".leftButton").css("visibility", "hidden");
                 //헤더 서비스명으로
                 $(".center h2").text("칭구칭구");
@@ -27,7 +24,6 @@
             flex-direction: column;
             width: 90%; 
             margin: 20px auto; /* 가운데 정렬을 위해 margin을 auto로 설정 */
-            margin-bottom: 80px;
             font-family: Arial, sans-serif;
         }
 
@@ -56,7 +52,6 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            filter: brightness(0.8);
         }
 
         .button-name {
@@ -84,27 +79,14 @@
         h1 {
             margin-top: 100px;
         }
-        
-        #selectedTesting{
-			border: solid 5px black; /*실제로는 오렌지색으로 바꾸면 좋겠다*/
-			filter: brightness(1); /*현재 선택되어있는 그룹의 경우 원래 밝기로 보이게 하기 위함*/
-		}
-        
-         /* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
-        @media (min-width: 768px) {
-            .container{
-				margin-left: 200px;
-			    width: calc(100% - 200px);
-			}
-        }
     </style>
 </head>
 <body>
     <div id="header"></div>
-    <nav id="navbar"></nav>
     <div class="container">
         <div>
             <h1>그룹 선택</h1>
+            <h2 th:text="${loginUser.username}"></h2>
         </div>
         <div class="button-container">
             <div class="square-button">
@@ -116,8 +98,16 @@
                 <div class="button-name">그룹 2</div>
             </div>
             <div class="square-button">
-                <img src="/images/orange.png" id="selectedTesting">
+                <img src="/images/orange.png">
                 <div class="button-name">그룹 3</div>
+            </div>
+            <div class="square-button">
+                <img src="/images/orange.png">
+                <div class="button-name">뫄뫄</div>
+            </div>
+            <div class="square-button">
+                <img src="/images/orange.png">
+                <div class="button-name">뫄뫄</div>
             </div>
             <div class="square-button">
                 <img src="/images/orange.png">
