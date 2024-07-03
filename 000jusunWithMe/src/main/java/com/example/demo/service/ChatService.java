@@ -24,7 +24,7 @@ public class ChatService {
     public List<Chat> getMessagesByGroupNo(int groupNo) {
         return chatRepository.findByGroupNo(groupNo);
     }
-
+ 
     // 메세지 저장 (몽고db messageNo가 max의 +1 값이 되도록)   
     public Chat saveMessage(Chat chat) {
     	// 쿼리객체 생성

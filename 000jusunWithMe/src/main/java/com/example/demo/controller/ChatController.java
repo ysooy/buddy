@@ -17,7 +17,7 @@ import java.util.List;
 public class ChatController {
 
     @Autowired
-    private ChatService chatService;
+    private ChatService chatService; 
     
     // 웹소켓 메세지 처리
     @MessageMapping("/chat")

@@ -29,7 +29,7 @@ public class Chat {
     @Field("msgFname")
     private String msgFname;
 
-    @Field("msgType")
+    @Field("msgType") 
     private int msgType;
 
     @Field("userNo")

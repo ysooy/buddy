@@ -12,7 +12,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	// STOMP메세지 브로커 활성화하고 STOMP 엔드포인트 등록
 	
 
-    @Override
+    @Override 
     public void configureMessageBroker(MessageBrokerRegistry config) {
     	// /topic 경로를 메세지 브로커의 간단한 메모리 기반 메세지 브로커로 설정
     	// 클라이언트가 이 경로를 통해 메세지 구독    	

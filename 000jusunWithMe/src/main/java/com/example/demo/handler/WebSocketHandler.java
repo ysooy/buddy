@@ -18,7 +18,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	
 	//  웹소켓 메세지를 처리하는 역할
 
-    private final ChatService chatService;
+    private final ChatService chatService; 
     private final ObjectMapper objectMapper;	// JSON파싱을 위한 객체(웹소켓 메세지를 JSON으로)
     private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
     // 여러 사용자가 동시에 접속하여 메세지 주고 받기 때문에, 

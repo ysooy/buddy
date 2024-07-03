@@ -14,7 +14,7 @@ public class WebSocketHandlerConfig implements WebSocketConfigurer {
 	
 	// 웹소켓 핸들러 등록하고 특정 경로에서 웹소켓 연결 허용
 
-    @Autowired
+    @Autowired 
     private WebSocketHandler webSocketHandler;
 
     @Override
