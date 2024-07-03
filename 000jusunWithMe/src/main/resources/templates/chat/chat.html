@@ -126,7 +126,7 @@
     </script>
 </head>
 <body>
-    <th:block th:replace="header :: header"></th:block>
+<th:block th:replace="~{/header/header :: header}"></th:block>
     <div class="chat-container" id="chatContainer">
         <!-- 채팅 메시지 불러오기 -->
         <div th:each="message : ${messages}">

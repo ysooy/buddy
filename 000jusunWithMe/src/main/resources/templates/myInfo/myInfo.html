@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <link rel="stylesheet" href="/css/common.css">   
+    <link rel="stylesheet" href="/css/header.css">    
+    <link rel="stylesheet" href="/css/navbar.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .main-container {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .center {
+            text-align: center;
+        }
+        
+        .myInfo img {
+            width: 40%;
+            height: auto;
+            border-radius: 50%;
+            margin-top: 20px;
+        }
+        
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form {
+            width: 80%;
+            max-width: 400px; 
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-container input[type="text"] {
+            width: 100%; 
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        form {
+            width: 80%;
+        }
+
+        .copy-link-container {
+            display: flex;
+            align-items: flex-start; 
+            margin-bottom: 20px;
+        }
+
+        .copy-link-container input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        form button, input[type="submit"] {
+            background-color: #FFA500; 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
+        }
+
+        .leftButton a{
+            text-decoration: none;
+            font-size: 30px;
+            color: grey;
+        }
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            position: absolute;
+            top:0px
+        }
+
+        .head span {
+            flex: 1;
+            text-align: center;
+        }
+
+        .head .leftButton {
+            flex: 0;
+            text-align: left;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .head input[type="submit"] {
+            flex: 0;
+            text-align: right;
+            background: none;
+            border: none;
+            color: #FFA500;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .head input[type="submit"]:hover {
+            color: #FF8C00;
+        }
+
+        h1 {
+            font-weight: normal;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #FFA500;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .toggle-slider.round {
+            border-radius: 34px;
+        }
+
+        .toggle-slider.round:before {
+            border-radius: 50%;
+        }
+
+        .toggle-switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .grey {
+            background-color: lightgrey;
+        }
+           /* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
+        @media (min-width: 768px) {
+            .main-container{
+				margin-left: 100px;
+			    width: calc(100% - 200px);
+			}
+        }
+    </style>
+</head>
+<body>
+	<div id="navbar" th:replace="/navbar/navbar :: nav"></div>
+	<div class="main-container">
+	    <div class="form-container">
+	        <div class="head">
+	            <span class="leftButton">
+	                <a href="#">&lt;&nbsp;</a>
+	            </span>
+	            <span style="font-size: 20px;">내 정보</span>
+	            <input type="submit" value="수정">
+	        </div>
+	        <div class="myInfo center">
+	            <img src="/images/orange.png">
+	        </div>
+	        <form>
+	            <label for="nickname">닉네임</label>
+	            <input type="text" id="nickname" name="nickname">
+	
+	            <label for="birthday">생년월일</label>
+	            <input type="text" id="birthday" name="birthday" class="grey">
+	            
+	            <label for="email">계정</label>
+	            <input type="text" id="email" name="email" class="grey">
+	            
+	            <div class="toggle-switch-container">
+	                <label for="push">푸시알림</label>
+	                <label class="toggle-switch">
+	                    <input type="checkbox">
+	                    <span class="toggle-slider"></span>
+	                </label>
+	            </div>
+	
+	            <p>로그아웃</p><br>
+	            <p>회원 탈퇴</p>
+	        </form>
+	    </div>
+    </div>
+</body>
+</html>

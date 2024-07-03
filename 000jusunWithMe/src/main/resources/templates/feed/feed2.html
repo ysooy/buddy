@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+    <link rel="stylesheet" href="/css/common.css">        
+    <link rel="stylesheet" href="/css/header.css">    
+    <link rel="stylesheet" href="/css/navbar.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+       	$(function () {
+            //헤더 그룹명으로
+            $(".center h2").text("그룹명");
+        });
+    </script>
+    <style>
+        .post-container {
+            width: 100%;
+            max-width: 700px;
+            /* 최대 너비 설정 */
+        }
+
+        .post {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid lightgray;
+        }
+
+        .post img {
+            width: 100%;
+            max-width: 100%;
+            max-height: 600px;
+            object-fit: cover;
+        }
+
+        .writer {
+            display: flex;
+            align-items: center;
+            margin: 8px;
+        }
+
+        .writer img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .writer span {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .writer time {
+            margin-left: auto;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .comments {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .comments .txtComment {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            resize: none;
+        }
+
+        .comments .confirmBtn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: gray;
+            color: white;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .comments .confirmBtn:hover {
+            background-color: orange;
+        }
+
+    </style>
+    <script>
+        /* 댓글 입력 시 스크롤없이 textarea 칸 조절 */
+        function resize(obj) {
+            obj.style.height = '1px';
+            /* textarea 높이를 1px로 초기화 */
+            obj.style.height = (13 + obj.scrollHeight) + 'px';
+            /* 실제 높이 + textarea의 패딩, 보더 등에 의한 여유공간으로 13px 추가함 */
+        }
+    </script>
+</head>
+
+<body style="overflow-y: auto;">
+    <div id="header" th:replace="/header/header :: header"></div>
+    <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
+    <div class="main-container">
+        <div class="content">
+            <div class="post-container">
+                <!--포스트 하나임-->
+                <div class="post">
+                    <div class="writer">
+                        <img src="/images/orange.png">
+                        <div>
+                            <span>작성자</span><br>
+                            <time>3분 전</time>
+                        </div>
+                    </div>
+                    <!-- 포스팅 이미지 -->
+                    <img src="/images/sample2.jpg" alt="포스팅 이미지">
+                    <div class="postContent">
+                        <div class="writer">
+                            <img src="/images/myPage.png">
+                            <div>
+                                <span>쮸</span>&nbsp;<time>3분 전</time>
+                                <p>와 진짜짱이다~</p>
+                            </div>
+                        </div>
+                        <div class="writer">
+                            <img src="/images/myPage.png">
+                            <div>
+                                <span>수</span>&nbsp;<time>3분 전</time>
+                                <p>와 진짜짱이다~</p>
+                            </div>
+                        </div>
+                        <div class="comments">
+                            <!--키보드로 누르고 뗄 때마다 resize 함수 실행 -->
+                            <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                            <button class="confirmBtn">확인</button>
+                        </div>
+                    </div>
+                </div>
+                <!--포스트 하나 끝-->
+                <!--포스트 하나임-->
+                <div class="post">
+                    <div class="writer">
+                        <img src="/images/orange.png">
+                        <div>
+                            <span>작성자</span><br>
+                            <time>3분 전</time>
+                        </div>
+                    </div>
+                    <!-- 포스팅 이미지 -->
+                    <img src="/images/sample3.jpg" alt="포스팅 이미지">
+                    <div class="postContent">
+                        <div class="writer">
+                            <img src="/images/myPage.png">
+                            <div>
+                                <span>쮸</span>&nbsp;<time>3분 전</time>
+                                <p>와 진짜짱이다~</p>
+                            </div>
+                        </div>
+                        <div class="writer">
+                            <img src="/images/myPage.png">
+                            <div>
+                                <span>수</span>&nbsp;<time>3분 전</time>
+                                <p>와 진짜짱이다~</p>
+                            </div>
+                        </div>
+                        <div class="comments">
+                            <!--키보드로 누르고 뗄 때마다 resize 함수 실행 -->
+                            <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                            <button class="confirmBtn">확인</button>
+                        </div>
+                    </div>
+                </div>
+                <!--포스트 하나 끝-->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

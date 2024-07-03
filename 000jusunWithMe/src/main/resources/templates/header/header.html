@@ -8,15 +8,17 @@
 </head>
 <body>
     <header class="header">
+        <!-- 뒤로 가기 -->
         <div class="leftButton">
-            <!-- 뒤로 가기 -->
-            <a href="javascript:history.back()"><img src="/images/back.png" alt="뒤로 가기"></a>
-        </div>        
+             <a href="javascript:history.back()"><img src="/images/back.png" alt="뒤로 가기"></a>
+        </div>       
+       	<!--서비스명 (그룹 선택 후에는 그룹명으로 동적 변경)--> 
         <div class="center">
-            <h2>내새끼들</h2>
+            <h2>버디즈</h2>
         </div>
+        <!--마이페이지--> 
         <div class="myPage">
-            <a href="#"><img src="/images/myPage.png" alt="마이페이지"></a>
+            <a href="#"><img th:src="${session.loginUser.profilePhoto}" alt="마이페이지"></a>
         </div> 
     </header>
 </body>
