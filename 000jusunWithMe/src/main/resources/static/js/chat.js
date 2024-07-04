@@ -1,3 +1,10 @@
+// 텍스트 입력 시 높이 자동 조절 (최대 100px)
+// js파일을 따로 분리하면서 로컬이 아닌 전역 스코프로 수정
+function resizeInput(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
+}
+
 $(function () {
     var socket = new SockJS('/websocket');
     var stompClient = Stomp.over(socket);
@@ -79,12 +86,6 @@ $(function () {
     function closeFullscreen() {
         $('#fullscreenOverlay').css('display', 'none');
         $('#fullscreenImage').attr('src', '');
-    }
-
-    // 텍스트 입력 시 높이 자동 조절 (최대 100px)
-    function resizeInput(textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
     }
 
     // 사진(첨부)버튼 클릭 시 파일 선택창 오픈
