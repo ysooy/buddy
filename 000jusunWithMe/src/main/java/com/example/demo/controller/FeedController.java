@@ -11,13 +11,13 @@ public class FeedController {
 		
 	};
 	
-	@GetMapping("/feed/feed2")
-    public void feed2View() {
+	@GetMapping("/feed/post")
+    public void postView() {
 		
 	};
 	
-	@GetMapping("/feed/feedWrite")
-    public void feedWriteView() {
+	@GetMapping("/feed/postWrite")
+    public void postWriteView() {
 		
 	};
 }
