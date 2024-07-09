@@ -11,8 +11,8 @@
     <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
     <script th:src="@{https://cdn.jsdelivr.net/npm/sockjs-client@1.4.0/dist/sockjs.min.js}"></script>
     <script th:src="@{https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js}"></script>
-    <script th:src="@{/js/chat.js}"></script> <!-- js파일 추가 -->
-</head> 
+    <script th:src="@{/js/chat.js}"></script>
+</head>
 <body>
     <th:block th:replace="~{/header/header :: header}"></th:block>
     <!-- 채팅 검색 -->
@@ -35,7 +35,7 @@
             </div>
         </div>
     </div>
-    <div class="chat-input-container">
+    <div class="chat-input-container" id="chatInputContainer">
         <button class="photo-button">사진</button>
         <input type="file" id="fileInput" class="hidden-file-input" accept="image/*" onchange="previewImage(event)">
         <textarea class="chat-input" placeholder="메세지를 입력하세요." rows="1" oninput="resizeInput(this)"></textarea>

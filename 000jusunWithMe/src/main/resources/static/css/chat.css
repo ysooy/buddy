@@ -2,6 +2,7 @@
     flex: 1;
     overflow-y: auto;
     padding: 10px 20px 70px; /* 헤더와 겹치지 않도록 추가 */
+    margin-top: 150px;
 }
 
 .chat-message {
@@ -158,19 +159,25 @@
     display: none;
 }
 
-/* 검색 */
+/*** 검색하기 ***/
+/* 검색 스타일 */
 .search-container {
+    position: fixed;
+    background-color: #fff;
     width: 100%;
-    height: 50px;    
+    height: 60px;    
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 95px; 
+    margin-top: 60px; 
     gap: 10px;
     border-bottom: 1px solid #ddd; /* 연한 회색 선 추가 */
-    padding-bottom: 20px; /* 선 아래로 간격 추가 */    
+    padding-top: 15px; /* 상단 여백 추가 */
+    padding-bottom: 15px; /* 선 아래로 간격 추가 */    
+    z-index: 900; /* 헤더보다는 아래, 채팅창보다는 위 */
 }
-        
+
+/* 검색 입력 필드 */        
 .search-input {
     width: 80%;
     height: 100%;
@@ -180,4 +187,37 @@
 .search-button {
     height: 100%;
     padding: 5px 10px;
+}
+
+/* 검색 취소 버튼 */
+.chat-input-container .cancel-button {
+    padding: 10px;
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* 검색 위,아래 버튼 포함 컨테이너 */
+.chat-input-container .search-nav-buttons {
+    display: flex;
+    gap: 5px;
+   	margin-left: auto;
+}
+
+/* 검색 위,아 버튼 스타일 */
+.chat-input-container .prev-button,
+.chat-input-container .next-button {
+    padding: 10px;
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.chat-bubble.highlight {
+    background-color: green;
+    color: white;
 }
