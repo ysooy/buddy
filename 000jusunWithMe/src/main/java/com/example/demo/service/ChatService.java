@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import com.example.demo.dao.ChatRepository;
-import com.example.demo.vo.Chat;
+import com.example.demo.entity.Chat;
 
 @Service
 public class ChatService {

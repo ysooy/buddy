@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
+
+import com.example.demo.entity.Chat;
 import com.example.demo.service.ChatService;
-import com.example.demo.vo.Chat;
 
 import java.util.Date;
 import java.util.List;

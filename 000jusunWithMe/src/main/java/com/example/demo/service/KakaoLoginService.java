@@ -10,8 +10,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.demo.vo.KakaoProfile;
-import com.example.demo.vo.OAuthToken;
+import com.example.demo.entity.KakaoProfile;
+import com.example.demo.entity.OAuthToken;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

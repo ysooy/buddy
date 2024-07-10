@@ -6,10 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.example.demo.entity.KakaoProfile;
+import com.example.demo.entity.Users;
 import com.example.demo.service.KakaoLoginService;
 import com.example.demo.service.UsersService;
-import com.example.demo.vo.KakaoProfile;
-import com.example.demo.vo.Users;
 
 import jakarta.servlet.http.HttpSession;
 

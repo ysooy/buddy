@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.dao.UsersRepository;
+import com.example.demo.entity.Users;
 import com.example.demo.service.UsersService;
-import com.example.demo.vo.Users;
 
 import jakarta.servlet.http.HttpSession;
 

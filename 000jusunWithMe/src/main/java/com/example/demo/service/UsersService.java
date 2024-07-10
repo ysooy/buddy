@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.UsersRepository;
-import com.example.demo.vo.Users;
+import com.example.demo.entity.Users;
 
 @Service
 public class UsersService {
