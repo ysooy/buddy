@@ -25,8 +25,7 @@ public class FeedController {
 	
 	@GetMapping("/feed/post")
     public void postView(Model model) {
-		System.out.println("1피드의 포스트: "+ps.listPost(1));
-		model.addAttribute("posts",ps.listPost(1)); 
+		model.addAttribute("posts",ps.listPost(1));  //테스트용1
 	};
 	
 	@GetMapping("/feed/postWrite")

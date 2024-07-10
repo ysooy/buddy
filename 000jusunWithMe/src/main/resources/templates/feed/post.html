@@ -2,191 +2,235 @@
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>칭구칭구</title>
-    <link rel="stylesheet" href="/css/common.css">        
-    <link rel="stylesheet" href="/css/header.css">    
-    <link rel="stylesheet" href="/css/navbar.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-     <script>
-       	$(function () {
-            //헤더 그룹명으로
-            $(".center h2").text("그룹명");
-        });
-    </script>
-    <style>
-        .post-container {
-            width: 100%;
-            max-width: 700px;
-            /* 최대 너비 설정 */
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>칭구칭구</title>
+	<link rel="stylesheet" href="/css/common.css">
+	<link rel="stylesheet" href="/css/header.css">
+	<link rel="stylesheet" href="/css/navbar.css">
+	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+	<script>
+		$(function () {
+			// [헤더 그룹명으로 변경]
+			$(".center h2").text("그룹명");
+			
+			// [이미지 슬라이드]
+			var swiper = new Swiper('.swiper-container', {
+				spaceBetween: 10,
+				centeredSlides: true,
+				pagination: {
+					el: '.swiper-pagination',
+					clickable: true,
+				},
+			});
 
-        .post {
-            padding: 10px;
-            margin: 10px;
-            border: 1px solid lightgray;
-        }
+			// [post의 경우 시간 포맷이 달라서 text->attr로 변경하고 함수에 전달]
+			var postTimes = $('.postTime')
+			postTimes.each(function () {
+				var postTime = $(this).text().trim()
+				$(this).attr('time-data', postTime)
+			})
+			
+			// [time 요소들 다 가져옴]
+			var timeElements = $('time'); 
 
-        .swiper-container {
-            width: 100%;
-            height: 100%;
-        }
+			// [작성시간 표시 업데이트]
+			updateTimes(timeElements);
 
-        .swiper-slide {
-            text-align: center;
-            /* Center slide text vertically */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden; /* 이미지가 넘칠 경우 가리기 */
-        }
+			// [댓글 입력 시 textarea 자동 조절]
+			$('.txtComment').on('input', function () {
+				this.style.height = 'auto';
+				this.style.height = (this.scrollHeight) + 'px';
+			});
+		});
+	</script>
+	<script>
+		// 시간 업데이트 함수
+		function updateTimes(timeElements) {
 
-        .swiper-slide img {
-            width: 100%;
-            height: auto;
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-        }
+			timeElements.each(function () {
+				var timeText = $(this).attr('time-data').trim();
+				var date = new Date(timeText);
+				var now = new Date();
+				var secondsAgo = Math.floor((now - date) / 1000);
 
-        .writer {
-            display: flex;
-            align-items: center;
-            margin: 8px;
-        }
+				if (secondsAgo < 60) { //1분 이내 작성됐으면 'n초 전' 으로 표시 
+					$(this).text(secondsAgo + '초 전');
+				} else if (secondsAgo < 3600) { //1시간 이내 작성됐으면 'n분 전' 으로 표시  
+					var minutesAgo = Math.floor(secondsAgo / 60);
+					$(this).text(minutesAgo + '분 전');
+				} else if (secondsAgo < 86400) { //1일 이내 작성됐으면 'n시간 전' 으로 표시 
+					var hoursAgo = Math.floor(secondsAgo / 3600);
+					$(this).text(hoursAgo + '시간 전');
+				} else { //그 외의 경우 일반적인 시간으로 표시
+					$(this).text(formatDate(date));
+				}
+			});
+			// 1분마다 시간 업데이트
+			setTimeout(function () {updateTimes(timeElements)}, 60000);
+		}
 
-        .writer img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
+		// 날짜 포맷 함수 : (작성 시점으로부터 1일 이상 지난 경우) 기본 시간 표시! ex) 2024-07-09 18:00
+		function formatDate(date) {
+			var year = date.getFullYear();
+			var month = ('0' + (date.getMonth() + 1)).slice(-2);
+			var day = ('0' + date.getDate()).slice(-2);
+			var hours = ('0' + date.getHours()).slice(-2);
+			var minutes = ('0' + date.getMinutes()).slice(-2);
+			return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
+		}
+	</script>
+	<style>
+		.post-container {
+			width: 100%;
+			max-width: 700px;
+			/* 최대 너비 설정 */
+		}
 
-        .writer span {
-            font-weight: bold;
-            font-size: 16px;
-        }
+		.post {
+			padding: 10px;
+			margin: 10px;
+			border: 1px solid lightgray;
+			overflow: hidden;
+		}
 
-        .writer time {
-            margin-left: auto;
-            font-size: 14px;
-            color: #777;
-        }
+		.swiper-container {
+			width: 100%;
+			height: 100%;
+		}
 
-        .comments {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-        }
+		.swiper-slide {
+			text-align: center;
+			/* Center slide text vertically */
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			overflow: hidden;
+			/* 이미지가 넘칠 경우 가리기 */
+		}
 
-        .comments .txtComment {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            overflow: hidden;
-            resize: none;
-        }
+		.swiper-slide img {
+			width: 100%;
+			height: auto;
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: cover;
+		}
 
-        .comments .confirmBtn {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: gray;
-            color: white;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+		.writer {
+			display: flex;
+			align-items: center;
+			margin: 8px;
+		}
 
-        .comments .confirmBtn:hover {
-            background-color: orange;
-        }
-    </style>
-    <script>
-        /* 댓글 입력 시 스크롤없이 textarea 칸 조절 */
-        function resize(obj) {
-            obj.style.height = '1px';
-            /* textarea 높이를 1px로 초기화 */
-            obj.style.height = (13 + obj.scrollHeight) + 'px';
-            /* 실제 높이 + textarea의 패딩, 보더 등에 의한 여유공간으로 13px 추가함 */
-        }
+		.writer img {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			margin-right: 8px;
+		}
 
-        $(document).ready(function () {
-            var swiper = new Swiper('.swiper-container', {
-                spaceBetween: 10,
-                centeredSlides: true,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-            });
-        });
-    </script>
+		.writer span {
+			font-weight: bold;
+			font-size: 16px;
+		}
+
+		.writer time {
+			margin-left: auto;
+			font-size: 14px;
+			color: #777;
+		}
+
+		.comments {
+			display: flex;
+			gap: 8px;
+			margin-top: 8px;
+		}
+
+		.comments .txtComment {
+			width: 100%;
+			padding: 8px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			overflow: hidden;
+			resize: none;
+		}
+
+		.comments .confirmBtn {
+			padding: 8px 16px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			background-color: gray;
+			color: white;
+			cursor: pointer;
+			white-space: nowrap;
+		}
+
+		.comments .confirmBtn:hover {
+			background-color: orange;
+		}
+
+		.postContent {
+			margin-top: 10px;
+		}
+	</style>
 </head>
 
 <body style="overflow-y: auto;">
-    <div id="header" th:replace="/header/header :: header"></div>
-    <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
-    <div class="main-container">
-        <div class="content">
-            <div class="post-container">
-                <div th:each="post : ${posts}">
-                    <!--포스트 하나-->
-                    <div class="post">
-                        <div class="writer">
+	<div id="header" th:replace="/header/header :: header"></div>
+	<div id="navbar" th:replace="/navbar/navbar :: nav"></div>
+	<div class="main-container">
+		<div class="content">
+			<div class="post-container">
+				<div th:each="post : ${posts}">
+					<!--포스트 하나-->
+					<div class="post">
+						<div class="writer">
 							<!--일단 프사가 카톡에서가져온 거라 이렇게 하면 되는데 만약 Images에서 가져와야 할 경우 처리해야 함-->
-                            <img th:src="${post.profilePhoto}">
-                            <div>
-                                <span th:text="${post.userName}"></span><br> 
-                                <time th:text="${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm')}"></time>
-                            </div>
-                        </div>
-                        <!-- 포스팅 이미지 슬라이드 -->
-                        <div class="swiper-container" style="width: 100%;">
-                            <div class="swiper-wrapper" >
-                                <div class="swiper-slide" th:each="fname : ${post.postFname}">
-                                    <img th:src="@{/images/} + ${fname}" alt="포스팅 이미지">
-                                </div>
-                                <!-- 더 많은 이미지 추가 가능 -->
-                            </div>
-                            <!-- Add Navigation -->
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
-                        </div>
-                        <div class="postContent">
-                            <div class="writer">
-                                <img src="/images/myPage.png">
-                                <div>
-                                    <span>쮸</span>&nbsp;<time>3분 전</time>
-                                    <p>와 진짜짱이다~</p>
-                                </div>
-                            </div>
-                            <div class="writer">
-                                <img src="/images/myPage.png">
-                                <div>
-                                    <span>수</span>&nbsp;<time>3분 전</time>
-                                    <p>와 진짜짱이다~</p>
-                                </div>
-                            </div>
-                            <div class="comments">
-                                <!--키보드로 누르고 뗄 때마다 resize 함수 실행 -->
-                                <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
-                                <button class="confirmBtn">확인</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!--포스트 하나 끝-->
-                </div>
-            </div>
-        </div>
-    </div>
+							<img th:src="${post.profilePhoto}">
+							<div>
+								<span th:text="${post.userName}"></span><br>
+								<time class="postTime"
+									th:text="${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm:ss.S')}"></time>
+							</div>
+						</div>
+						<!-- 포스팅 이미지 슬라이드 -->
+						<div class="swiper-container" style="width: 100%;">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide" th:each="fname : ${post.postFname}">
+									<img th:src="@{/images/} + ${fname}" alt="포스팅 이미지">
+								</div>
+							</div>
+						</div>
+						<div class="postContent" th:text="${post.postContent}">포스트 내용</div>
+						<!--이하 댓글 영역-->
+						<div class="comment-container">
+							<!--작성된 댓글 리스트-->
+							<div class="commentEach" th:each="comment : ${post.comments}">
+								<div class="writer">
+									<img th:src="${comment.profilePhoto}">
+									<div>
+										<span th:text="${comment.userName}"></span>&nbsp;
+										<time th:attr="time-data=${comment.comTime}"></time>
+										<p th:text="${comment.comContent}"></p>
+									</div>
+								</div>
+							</div>
+							<!--댓글 작성 칸-->
+							<div class="comments">
+								<textarea class="txtComment" placeholder="댓글을 입력하세요." oninput="resize(this)"></textarea>
+								<button class="confirmBtn">확인</button>
+							</div>
+						</div>
+					</div>
+					<!--포스트 하나 끝-->
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>
