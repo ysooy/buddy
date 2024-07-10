@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="/css/common.css">        
     <link rel="stylesheet" href="/css/header.css">    
     <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+     <script>
        	$(function () {
             //헤더 그룹명으로
             $(".center h2").text("그룹명");
@@ -28,10 +30,25 @@
             border: 1px solid lightgray;
         }
 
-        .post img {
+        .swiper-container {
             width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            text-align: center;
+            /* Center slide text vertically */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* 이미지가 넘칠 경우 가리기 */
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: auto;
             max-width: 100%;
-            max-height: 600px;
+            max-height: 100%;
             object-fit: cover;
         }
 
@@ -87,7 +104,6 @@
         .comments .confirmBtn:hover {
             background-color: orange;
         }
-
     </style>
     <script>
         /* 댓글 입력 시 스크롤없이 textarea 칸 조절 */
@@ -97,6 +113,21 @@
             obj.style.height = (13 + obj.scrollHeight) + 'px';
             /* 실제 높이 + textarea의 패딩, 보더 등에 의한 여유공간으로 13px 추가함 */
         }
+
+        $(document).ready(function () {
+            var swiper = new Swiper('.swiper-container', {
+                spaceBetween: 10,
+                centeredSlides: true,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
+        });
     </script>
 </head>
 
@@ -106,74 +137,53 @@
     <div class="main-container">
         <div class="content">
             <div class="post-container">
-                <!--포스트 하나임-->
-                <div class="post">
-                    <div class="writer">
-                        <img src="/images/orange.png">
-                        <div>
-                            <span>작성자</span><br>
-                            <time>3분 전</time>
-                        </div>
-                    </div>
-                    <!-- 포스팅 이미지 -->
-                    <img src="/images/sample2.jpg" alt="포스팅 이미지">
-                    <div class="postContent">
+                <div th:each="post : ${posts}">
+                    <!--포스트 하나-->
+                    <div class="post">
                         <div class="writer">
-                            <img src="/images/myPage.png">
+							<!--일단 프사가 카톡에서가져온 거라 이렇게 하면 되는데 만약 Images에서 가져와야 할 경우 처리해야 함-->
+                            <img th:src="${post.profilePhoto}">
                             <div>
-                                <span>쮸</span>&nbsp;<time>3분 전</time>
-                                <p>와 진짜짱이다~</p>
+                                <span th:text="${post.userName}"></span><br> 
+                                <time th:text="${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm')}"></time>
                             </div>
                         </div>
-                        <div class="writer">
-                            <img src="/images/myPage.png">
-                            <div>
-                                <span>수</span>&nbsp;<time>3분 전</time>
-                                <p>와 진짜짱이다~</p>
+                        <!-- 포스팅 이미지 슬라이드 -->
+                        <div class="swiper-container" style="width: 100%;">
+                            <div class="swiper-wrapper" >
+                                <div class="swiper-slide" th:each="fname : ${post.postFname}">
+                                    <img th:src="@{/images/} + ${fname}" alt="포스팅 이미지">
+                                </div>
+                                <!-- 더 많은 이미지 추가 가능 -->
+                            </div>
+                            <!-- Add Navigation -->
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                        </div>
+                        <div class="postContent">
+                            <div class="writer">
+                                <img src="/images/myPage.png">
+                                <div>
+                                    <span>쮸</span>&nbsp;<time>3분 전</time>
+                                    <p>와 진짜짱이다~</p>
+                                </div>
+                            </div>
+                            <div class="writer">
+                                <img src="/images/myPage.png">
+                                <div>
+                                    <span>수</span>&nbsp;<time>3분 전</time>
+                                    <p>와 진짜짱이다~</p>
+                                </div>
+                            </div>
+                            <div class="comments">
+                                <!--키보드로 누르고 뗄 때마다 resize 함수 실행 -->
+                                <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                                <button class="confirmBtn">확인</button>
                             </div>
                         </div>
-                        <div class="comments">
-                            <!--키보드로 누르고 뗄 때마다 resize 함수 실행 -->
-                            <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
-                            <button class="confirmBtn">확인</button>
-                        </div>
                     </div>
+                    <!--포스트 하나 끝-->
                 </div>
-                <!--포스트 하나 끝-->
-                <!--포스트 하나임-->
-                <div class="post">
-                    <div class="writer">
-                        <img src="/images/orange.png">
-                        <div>
-                            <span>작성자</span><br>
-                            <time>3분 전</time>
-                        </div>
-                    </div>
-                    <!-- 포스팅 이미지 -->
-                    <img src="/images/sample3.jpg" alt="포스팅 이미지">
-                    <div class="postContent">
-                        <div class="writer">
-                            <img src="/images/myPage.png">
-                            <div>
-                                <span>쮸</span>&nbsp;<time>3분 전</time>
-                                <p>와 진짜짱이다~</p>
-                            </div>
-                        </div>
-                        <div class="writer">
-                            <img src="/images/myPage.png">
-                            <div>
-                                <span>수</span>&nbsp;<time>3분 전</time>
-                                <p>와 진짜짱이다~</p>
-                            </div>
-                        </div>
-                        <div class="comments">
-                            <!--키보드로 누르고 뗄 때마다 resize 함수 실행 -->
-                            <textarea class="txtComment" placeholder="댓글을 입력하세요." onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
-                            <button class="confirmBtn">확인</button>
-                        </div>
-                    </div>
-                </div>
-                <!--포스트 하나 끝-->
             </div>
         </div>
     </div>
