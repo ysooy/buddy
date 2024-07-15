@@ -8,10 +8,6 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/chat.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
-    <script th:src="@{https://cdn.jsdelivr.net/npm/sockjs-client@1.4.0/dist/sockjs.min.js}"></script>
-    <script th:src="@{https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js}"></script>
-    <script th:src="@{/js/chat.js}"></script>
 </head>
 <body>
     <th:block th:replace="~{/header/header :: header}"></th:block>
@@ -23,21 +19,25 @@
     
     <div class="chat-container" id="chatContainer">
         <!-- 채팅 메시지 불러오기 -->
-        <div th:each="message : ${messages}">
-            <div class="chat-message" th:classappend="${message.userNo == 1236} ? 'my-chat' : 'friend-chat'">
-                <div class="chat-bubble-container" th:classappend="${message.userNo == 1236} ? 'my-chat' : 'friend-chat'">
-                    <div class="chat-bubble" th:classappend="${message.userNo == 1236} ? 'my-chat' : 'friend-chat'" th:text="${message.content}"></div>
-                    <div class="timeAndRead" th:classappend="${message.userNo == 1236} ? 'my-chat' : 'friend-chat'">
-                        <div class="unread">2</div>
-                        <div class="time" th:text="${#dates.format(message.sentTime, 'a hh:mm')}"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+		<div th:each="message : ${messages}">
+		    <div class="chat-message" th:classappend="${message.userNo == 1236} ? 'my-chat' : 'friend-chat'">
+		        <div class="chat-bubble-container" th:classappend="${message.userNo == 1236} ? 'my-chat' : 'friend-chat'">
+		            <div th:if="${message.msgType == 2}">
+		                <img th:src="@{${message.msgFname}}" class="chat-image">
+		            </div>
+		            <div th:if="${message.msgType != 2}" class="chat-bubble" th:classappend="${message.userNo == 1236} ? 'my-chat' : 'friend-chat'" th:text="${message.content}"></div>
+		            <div class="timeAndRead" th:classappend="${message.userNo == 1236} ? 'my-chat' : 'friend-chat'">
+		                <div class="unread">2</div>
+		                <div class="time" th:text="${#dates.format(message.sentTime, 'a hh:mm')}"></div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+
     </div>
     <div class="chat-input-container" id="chatInputContainer">
         <button class="photo-button">사진</button>
-        <input type="file" id="fileInput" class="hidden-file-input" accept="image/*" onchange="previewImage(event)">
+        <input type="file" id="fileInput" class="hidden-file-input" accept="image/*">
         <textarea class="chat-input" placeholder="메세지를 입력하세요." rows="1" oninput="resizeInput(this)"></textarea>
         <button class="send-button">전송</button>
     </div>
@@ -45,5 +45,10 @@
         <button class="close-button" onclick="closeFullscreen()">×</button>
         <img id="fullscreenImage" src="" alt="전체 화면 이미지">
     </div>
+
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sockjs-client@1.4.0/dist/sockjs.min.js}"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js}"></script>
+    <script th:src="@{/js/chat.js}"></script>
 </body>
 </html>

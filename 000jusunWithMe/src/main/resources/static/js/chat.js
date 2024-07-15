@@ -1,5 +1,4 @@
 // 텍스트 입력 시 높이 자동 조절 (최대 100px)
-// js파일을 따로 분리하면서 로컬이 아닌 전역 스코프로 수정했음
 function resizeInput(textarea) {
     textarea.style.height = 'auto';
     textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
@@ -11,7 +10,7 @@ $(document).ready(function() {
     
     // 현재 선택된 검색 결과 인덱스 (유효한 인덱스는 0부터 시작, -1 : 검색결과 아직 선택 안된 상황)
     var currentSearchIndex = -1;
-    var searchResults = [];	
+    var searchResults = [];    
     // 원래 입력 컨테이너
     var originalInputContainerHtml = $('.chat-input-container').html();
 
@@ -19,7 +18,7 @@ $(document).ready(function() {
         stompClient.subscribe('/topic/messages', function (messageOutput) {
             showMessage(JSON.parse(messageOutput.body));
         });
-    });
+    }); 
 
     // 입력한 메세지 전송버튼 클릭 시 서버로 전송
     function sendMessage() {
@@ -32,7 +31,8 @@ $(document).ready(function() {
                 msgFname: '',
                 msgType: 1,
                 userNo: 1236,
-                groupNo: 111
+                groupNo: 111,
+                imgBase64: ''                
             };
             stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
             input.val('');
@@ -40,42 +40,78 @@ $(document).ready(function() {
         }
     }
     
-    // 수신한 메세지 채팅창에 표시
+    // 이미지 메시지 전송
+	function sendImageMessage(fileName) {
+	    var chatMessage = {
+	        sentTime: new Date(),
+	        content: '',
+	        msgFname: fileName,
+	        msgType: 2, // 이미지 타입
+	        userNo: 1236,
+	        groupNo: 111,
+	        imgBase64: '' // 더 이상 필요하지 않음
+	    };
+	    stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+	} 
+
+    // 수신한 메시지 채팅창에 표시
     function showMessage(message) {
         const chatContainer = $('#chatContainer');
         const chatMessage = $('<div>').addClass('chat-message').addClass(message.userNo === 1236 ? 'my-chat' : 'friend-chat');
-        chatMessage.html(`
-            <div class="chat-bubble-container ${message.userNo === 1236 ? 'my-chat' : 'friend-chat'}">
-                <div class="chat-bubble ${message.userNo === 1236 ? 'my-chat' : 'friend-chat'}">${message.content.replace(/\n/g, '<br>')}</div>
-                <div class="timeAndRead ${message.userNo === 1236 ? 'my-chat' : 'friend-chat'}">
-                    <div class="unread">2</div>
-                    <div class="time">오후 ${new Date(message.sentTime).getHours()}:${new Date(message.sentTime).getMinutes()}</div>
-                </div>
-            </div>
-        `);
+		if (message.msgType === 2) { // 이미지 타입
+		    chatMessage.html(
+		        '<div class="chat-bubble-container ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+		        + '<img src="' + message.msgFname + '" class="chat-image">'
+		        + '<div class="timeAndRead ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+		        + '<div class="unread">2</div>'
+		        + '<div class="time">오후 ' + new Date(message.sentTime).getHours() + ':' + new Date(message.sentTime).getMinutes() + '</div>'
+		        + '</div>'
+		        + '</div>'
+		    );
+        } else {
+	    chatMessage.html(
+	        '<div class="chat-bubble-container ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+	        + '<div class="chat-bubble ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+	        + message.content.replace(/\n/g, '<br>') + '</div>'
+	        + '<div class="timeAndRead ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+	        + '<div class="unread">2</div>'
+	        + '<div class="time">오후 ' + new Date(message.sentTime).getHours() + ':' + new Date(message.sentTime).getMinutes() + '</div>'
+	        + '</div>'
+	        + '</div>'
+	    );
+
+        }
         chatContainer.append(chatMessage);
     }
 
-    // 이미지 파일 선택 시 채팅창에 작게 표시
+    // 이미지 파일 선택 시 서버에 업로드
+    function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        $.ajax({
+            url: '/uploadImage',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                // 업로드 성공 후 이미지 메시지 전송
+                console.log("Image uploaded successfully:", response.fileName); // 디버깅을 위해 로그 추가
+                sendImageMessage(response.fileName);
+            },
+            error: function() {
+                console.error('Image upload failed');
+            }
+        });
+    }
+
+    // 파일 선택 시 이미지 업로드
     function previewImage(event) {
         const file = event.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const chatContainer = $('#chatContainer');
-                const chatMessage = $('<div>').addClass('chat-message my-chat');
-                chatMessage.html(`
-                    <div class="chat-bubble-container my-chat">
-                        <img src="${e.target.result}" class="chat-image">
-                        <div class="timeAndRead my-chat">
-                            <div class="unread">2</div>
-                            <div class="time">오후 ${new Date().getHours()}:${new Date().getMinutes()}</div>
-                        </div>
-                    </div>
-                `);
-                chatContainer.append(chatMessage);
-            }
-            reader.readAsDataURL(file);
+            console.log("Image selected for upload:", file); // 디버깅을 위해 로그 추가
+            uploadImage(file);
         }
     }
 
@@ -138,7 +174,7 @@ $(document).ready(function() {
                 searchResults.push($(this));    //검색결과 배열에 추가하기
             }
         });
-        // 검색어가 있으면 맨 처음 결 표시
+        // 검색어가 있으면 맨 처음 결과 표시
         if (searchResults.length > 0) {
             highlightSearchResult(0);
         }
@@ -159,13 +195,13 @@ $(document).ready(function() {
     // 문자 검색시 채팅 입력창을 검색모드로 바꾸기
     function switchToSearchNav() {
         // '<'버튼 : 검색모드 취소, 위 화살표 : 문자검색 위로(이전 메세지), 아래 화살표 : 문자검색 아래로(최근 메세지)
-        $('.chat-input-container').html(`
-            <button class="cancel-button">취소</button>
-            <div class="search-nav-buttons">
-                <button class="prev-button">↑</button>    
-                <button class="next-button">↓</button>
-            </div>
-        `);
+        $('.chat-input-container').html(
+            '<button class="cancel-button">취소</button>'
+            +'<div class="search-nav-buttons">'
+                +'<button class="prev-button">↑</button>'    
+                +'<button class="next-button">↓</button>'
+            +'</div>'
+        );
 
         // 취소버튼 (원래 메세지 입력창으로 되돌리기, 배경색 원상복구)
         $('.cancel-button').on('click', function () {

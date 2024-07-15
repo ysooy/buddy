@@ -27,7 +27,7 @@ public class ChatService {
  
     // 메세지 저장 (몽고db messageNo가 max의 +1 값이 되도록)   
     public Chat saveMessage(Chat chat) {
-    	// 쿼리객체 생성
+        // 쿼리객체 생성
         Query query = new Query();
         // 쿼리 조건 추가 (groupNo가 chat.getGroupNo와 일치하는 것 찾기
         query.addCriteria(Criteria.where("groupNo").is(chat.getGroupNo()));
@@ -40,14 +40,13 @@ public class ChatService {
         Chat lastChat = mongoTemplate.findOne(query, Chat.class);
         // 메세지 저장 시 messageNo 설정
         // (null이면 1, null이 아니면 최대 messageNo+1)
-        long newMessageNo = (lastChat != null) ? lastChat.getMessageNo()+1 : 1;
+        long newMessageNo = (lastChat != null) ? lastChat.getMessageNo() + 1 : 1;
         // 새로 등록한 메세지의 messageNo를 chat에 설정하기
         chat.setMessageNo(newMessageNo);
         // 현재 시간 sentTime 설정
         chat.setSentTime(new Date());
-        
+
         // chat객체를 db에 저장하고 객체 반환
         return chatRepository.save(chat);
     }
 }
-
