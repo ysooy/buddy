@@ -12,6 +12,32 @@
         $(function () {
             //헤더 그룹명으로
             $(".center h2").text("그룹명");
+            
+            //#date에 현재 날짜 넣기
+            var today = new Date();
+            var year = today.getFullYear();
+	        var month =  today.getMonth() + 1;
+	        var day = today.getDate();
+	        var todayDate = year + '년 ' + month + '월 ' + day + '일';
+	        $('#date').text(todayDate);
+	        
+	        //사진 미리보기
+	        $('#photoUpload').on('change', function() {
+        const files = this.files;
+        const previewContainer = $('#imagePreview');
+        previewContainer.empty();
+
+        Array.from(files).forEach(file => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = $('<img>').attr('src', e.target.result).css({ width: '150px', height: '150px', margin: '10px' });
+                    previewContainer.append(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
         });
     </script>
     <style>
@@ -54,9 +80,15 @@
             font-size: 16px;
             font-family: Arial, sans-serif;
             border: 1px solid lightgrey;
+            margin-bottom: 20px
         }
         #date{
 			color:#FF8C00
+		}
+		
+		#imagePreview{
+			display: flex;
+			flex-wrap: wrap;
 		}
 		
 		 /* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
@@ -71,11 +103,16 @@
 	<div id="header" th:replace="/header/header :: header"></div>
     <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
     <div class="form-container">
-        <form>
-			<label id="date">2024년 6월 14일</label>
-            <textarea class="txtarea" placeholder="글 내용 입력..." style="margin-bottom: 20px;"></textarea>
+        <form action="/feed/postWrite" method="post" enctype="multipart/form-data">
+			<!-- 로그인 활성화 시 userNo는 이걸로 변경 !!
+				<input type="hidden" name="userNo" th:value="${session.loginUser.userNo}">
+			-->
+			<input type="hidden" name="userNo" value="3598270263">
+			<label id="date"></label>
+            <textarea name="postContent" class="txtarea" placeholder="글 내용 입력..."></textarea>
             <label for="groupImg">사진 추가하기</label>
-            <input type="file" id="photoUpload" name="photoUpload"><br>
+            <input type="file" id="photoUpload" name="photoUpload" multiple><br>
+            <div id="imagePreview"></div>
             <br>
             <input type="submit" value="피드 추가 !">
         </form>

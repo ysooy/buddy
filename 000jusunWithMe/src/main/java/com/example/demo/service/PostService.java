@@ -1,12 +1,21 @@
 package com.example.demo.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import com.example.demo.dao.CommentRepository;
 import com.example.demo.dao.PostRepository;
 import com.example.demo.dao.UsersRepository;
@@ -16,6 +25,8 @@ import com.example.demo.entity.Comment;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.Users;
 
+import jakarta.servlet.http.HttpSession;
+
 @Service
 public class PostService {
     @Autowired
@@ -24,6 +35,10 @@ public class PostService {
     private UsersRepository userRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired // 파일 경로찾기용
+	private ResourceLoader resourceLoader;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     //게시글 리스팅 
     public List<PostDTO> listPost(long feedNo) {
@@ -63,5 +78,60 @@ public class PostService {
             postDTOs.add(postDTO);
         }
         return postDTOs;
+    }
+
+    //게시글 등록(save)
+    public Post savePost(Post post, MultipartFile[] photoUpload) {
+    	//글 등록 시각: 현재시각으로 설정 
+    	post.setPostTime(new Date());
+    	
+    	//게시글 번호: 1씩 늘어나도록
+    	post.setPostNo(getNextPostNo());
+    	
+    	//피드 번호:**피드 구상 후 수정 필요!!**
+    	post.setFeedNo(1);
+    	
+    	//사진
+    	List<String> postFname = uploadPhotos(photoUpload);
+    	post.setPostFname(postFname);
+    	
+    	return postRepository.save(post);
+    }
+    
+    
+    
+    
+    
+    
+    //---- 이하 메소드들 -----
+    //사진(여러 장) 등록 메소드
+    public List<String> uploadPhotos(MultipartFile[] photoupload) {
+    	List<String> postFname = new ArrayList<>();
+    	String path = "src/main/resources/static/images";
+    	for(MultipartFile photo: photoupload) {
+    		String fname = photo.getOriginalFilename();
+    		if(fname != null && !fname.equals("")) {
+    			try {
+					byte[] photoData = photo.getBytes();
+					FileOutputStream fos = new FileOutputStream(path+"/"+fname);
+					fos.write(photoData);
+					fos.close();
+					postFname.add(fname);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+    		}
+    	}
+    	return postFname;
+    }
+    
+    //게시글번호 1씩 증가하게 만드는 메소드
+    public long getNextPostNo() {
+    	Query query = new Query();
+    	query.with(Sort.by(Sort.Direction.DESC, "postNo"));
+    	query.limit(1);
+    	Post lastPost = mongoTemplate.findOne(query, Post.class);
+    	long newPostNo = (lastPost != null) ? lastPost.getPostNo()+1 : 1 ;
+    	return newPostNo; 
     }
 }
