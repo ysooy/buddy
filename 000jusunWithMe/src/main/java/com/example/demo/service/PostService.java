@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,13 +82,10 @@ public class PostService {
     //게시글 등록(save)
     public Post savePost(Post post, MultipartFile[] photoUpload) {
     	//글 등록 시각: 현재시각으로 설정 
-    	post.setPostTime(new Date());
+    	post.setPostTime(LocalDateTime.now());
     	
     	//게시글 번호: 1씩 늘어나도록
     	post.setPostNo(getNextPostNo());
-    	
-    	//피드 번호:**피드 구상 후 수정 필요!!**
-    	post.setFeedNo(1);
     	
     	//사진
     	List<String> postFname = uploadPhotos(photoUpload);

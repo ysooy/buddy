@@ -194,7 +194,8 @@
 							<div>
 								<span th:text="${post.userName}"></span><br>
 								<time class="postTime"
-									th:text="${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm:ss.S')}"></time>
+									th:text="${#temporals.format(post.postTime, 'yyyy-MM-dd HH:mm:ss')}"></time>
+								
 							</div>
 						</div>
 						<!-- 포스팅 이미지 슬라이드 -->

@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class Post {
     private String postContent;
 
     @Field("postTime") //게시물 작성 시간 
-    private Date postTime;
+    private LocalDateTime postTime;
 
     @Field("userNo") //작성자 회원번호 
     private long userNo;
@@ -42,7 +43,7 @@ public class Post {
      
 
     @Builder
-    public Post(Long postNo, String postContent, Date postTime, long userNo, List<String> postFname, long feedNo) {
+    public Post(Long postNo, String postContent, LocalDateTime postTime, long userNo, List<String> postFname, long feedNo) {
         this.postNo = postNo;
         this.postContent = postContent;
         this.postTime = postTime;

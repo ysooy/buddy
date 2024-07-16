@@ -18,8 +18,6 @@ public class CommentService {
 	public void saveComment(Comment comment) {
 		//댓글 등록 시각: 현재시각으로 설정
 		comment.setComTime(new Date());
-		
-		System.out.println(comment);
 		commentRepository.save(comment);
 	}
 }

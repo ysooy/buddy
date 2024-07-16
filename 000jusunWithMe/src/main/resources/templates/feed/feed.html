@@ -20,10 +20,11 @@
     <style>
         /* 기본 스타일 초기화 */
         .content {
-            padding: 0px;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 60px; /* 네비게이션 바 높이만큼 추가 */
+            padding: 0; /* 여백 없음 */
+		    margin-bottom: 60px; /* 네비게이션 바 높이만큼 추가 */
+		    display: flex; /* 플렉스 박스 사용 */
+		    flex-direction: column; /* 세로 방향으로 정렬 */
+		    align-items: flex-start; /* 왼쪽 정렬 */
         }
 
         .content .post {
@@ -94,26 +95,16 @@
     <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
     <div class="main-container">
         <div class="content">
-            <div class="post">
-                <img src="/images/sample1.jpg">
-                <div class="text-overlay">2024년 5월 6일<br>서대문구 대현동</div>
-            </div>
-            <div class="post">
-                <img src="/images/sample2.jpg">
-                <div class="text-overlay">2024년 5월 3일<br>강남구 신사동</div>
-            </div>
-            <div class="post">
-                <img src="/images/sample3.jpg">
-                <div class="text-overlay">2024년 4월 20일<br>마포구 서교동</div>
-            </div>
-            <div class="post">
-                <img src="/images/sample3.jpg">
-                <div class="text-overlay">2024년 4월 20일<br>마포구 서교동</div>
-            </div>
-            <div class="btnAddFeed">
-                <img src="/images/plus.png">
-            </div>
-        </div>
+		    <div class="post" th:each="feed : ${feeds}">
+		        <a th:href="@{'/feed/post/'+${feed.feedNo}}">
+		            <img th:src="@{'/images/' + ${feed.feedPhoto}}" alt="피드 이미지">
+		            <div class="text-overlay">
+					    <span th:text="${#temporals.format(feed.feedDate, 'yyyy년 M월 dd일')}"></span><br>
+					    <span th:text="${feed.feedLocation}"></span>
+					</div>
+		        </a>
+		    </div>
+		</div>
     </div>
 </body>
 
