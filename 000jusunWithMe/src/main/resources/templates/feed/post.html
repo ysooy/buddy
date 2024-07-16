@@ -176,6 +176,25 @@
 		.postContent {
 			margin-top: 10px;
 		}
+		.btnAddFeed {
+            position: fixed;
+            right: 20px;
+            bottom: 80px; 
+            z-index: 1000; /* 다른 요소 위로 배치 */
+            width: 70px;
+            height: 70px;
+            background-color: orange; 
+            border-radius: 50%; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .btnAddFeed img {
+            width: 40px; /* 이미지 크기 */
+            height: 40px;
+        }
 	</style>
 </head>
 
@@ -239,6 +258,10 @@
 						</div>
 					</div>
 					<!--포스트 하나 끝-->
+				</div>
+				<!--postWrite로 이동하는 버튼-->
+				<div class="btnAddFeed" onclick="location.href='/feed/postWrite'">
+				    <img src="/images/plus.png"/>
 				</div>
 			</div>
 		</div>
