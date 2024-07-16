@@ -16,7 +16,7 @@
 		$(function () {
 			// [헤더 그룹명으로 변경]
 			$(".center h2").text("그룹명");
-			
+
 			// [이미지 슬라이드]
 			var swiper = new Swiper('.swiper-container', {
 				spaceBetween: 10,
@@ -33,9 +33,9 @@
 				var postTime = $(this).text().trim()
 				$(this).attr('time-data', postTime)
 			})
-			
+
 			// [time 요소들 다 가져옴]
-			var timeElements = $('time'); 
+			var timeElements = $('time');
 
 			// [작성시간 표시 업데이트]
 			updateTimes(timeElements);
@@ -205,6 +205,7 @@
 								</div>
 							</div>
 						</div>
+						<!--포스트 이미지 슬라이드 끝-->
 						<div class="postContent" th:text="${post.postContent}">포스트 내용</div>
 						<!--이하 댓글 영역-->
 						<div class="comment-container">
@@ -219,11 +220,21 @@
 									</div>
 								</div>
 							</div>
-							<!--댓글 작성 칸-->
-							<div class="comments">
-								<textarea class="txtComment" placeholder="댓글을 입력하세요." oninput="resize(this)"></textarea>
-								<button class="confirmBtn">확인</button>
-							</div>
+							<!--작성된 댓글 리스트 끝-->
+							<!--댓글 작성 칸 시작-->
+							<form action="/feed/commentWrite" method="post">
+								<input type="hidden" name="postNo" th:value="${post.postNo}">
+								<!-- 로그인 활성화 시 userNo는 이걸로 변경 !!
+										<input type="hidden" name="userNo" th:value="${session.loginUser.userNo}">
+									-->
+								<input type="hidden" name="userNo" value="3598270263">
+								<div class="comments">
+									<textarea name="comContent" class="txtComment" placeholder="댓글을 입력하세요."
+										oninput="resize(this)"></textarea>
+									<button type="submit" class="confirmBtn">확인</button>
+								</div>
+							</form>
+							<!--댓글 작성 칸 끝-->
 						</div>
 					</div>
 					<!--포스트 하나 끝-->

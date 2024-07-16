@@ -35,8 +35,6 @@ public class PostService {
     private UsersRepository userRepository;
     @Autowired
     private CommentRepository commentRepository;
-    @Autowired // 파일 경로찾기용
-	private ResourceLoader resourceLoader;
     @Autowired
     private MongoTemplate mongoTemplate;
 
