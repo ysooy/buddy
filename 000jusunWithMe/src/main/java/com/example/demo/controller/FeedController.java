@@ -66,24 +66,32 @@ public class FeedController {
 			//배경사진으로 사용할 사진파일
 			String firstPhoto = null;
 			firstPhoto = photoUpload[0].getOriginalFilename();
+			System.out.println("피드컨트롤러의 firstPhoto"+firstPhoto);
+			MultipartFile mpfForLocation = null;
+			mpfForLocation = photoUpload[0];
 			if(firstPhoto!=null && !firstPhoto.equals("")) {
-				newFeed.setFeedPhoto(firstPhoto);				
+				newFeed.setFeedPhoto(firstPhoto);	
+				String location = "";
+				location = fs.getLocation(mpfForLocation);
+				newFeed.setFeedLocation(location);
 			}
 			
 			//그룹번호
 			newFeed.setGroupNo(groupNo); 
 			
-			//post에 새 feedNo 부여
-			post.setFeedNo(fs.getNextFeedNo());
-			
+			long newFeedNo =fs.getNextFeedNo();
 			//feed에도 새 feedNo부여
-			newFeed.setFeedNo(fs.getNextFeedNo());
+			newFeed.setFeedNo(newFeedNo);
 			
 			fs.saveFeed(newFeed);
+			
+			//post에 새 feedNo 부여
+			post.setFeedNo(newFeedNo);
 		}else {
 			//이미 feed가 있는 경우 기존 feedNo 부여 
 			post.setFeedNo(oldFeed.getFeedNo());
 		}
+		System.out.println("feedcontroller의 photoupload"+photoUpload[0].getOriginalFilename());
 		ps.savePost(post, photoUpload);
 		return "redirect:/feed/post/"+post.getFeedNo(); 
 	};

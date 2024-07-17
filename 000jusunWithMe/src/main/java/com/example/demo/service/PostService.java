@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,9 +87,10 @@ public class PostService {
     	
     	//게시글 번호: 1씩 늘어나도록
     	post.setPostNo(getNextPostNo());
-    	
+    	System.out.println("PostService의 photoupload: "+photoUpload[0].getOriginalFilename());
     	//사진
     	List<String> postFname = uploadPhotos(photoUpload);
+    	System.out.println("ps의 postFname: "+postFname); //얘가 자꾸 없어
     	post.setPostFname(postFname);
     	
     	return postRepository.save(post);
@@ -102,24 +104,38 @@ public class PostService {
     //---- 이하 메소드들 -----
     //사진(여러 장) 등록 메소드
     public List<String> uploadPhotos(MultipartFile[] photoupload) {
-    	List<String> postFname = new ArrayList<>();
-    	String path = "src/main/resources/static/images";
-    	for(MultipartFile photo: photoupload) {
-    		String fname = photo.getOriginalFilename();
-    		if(fname != null && !fname.equals("")) {
-    			try {
-					byte[] photoData = photo.getBytes();
-					FileOutputStream fos = new FileOutputStream(path+"/"+fname);
-					fos.write(photoData);
-					fos.close();
-					postFname.add(fname);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-    		}
-    	}
-    	return postFname;
+        List<String> postFname = new ArrayList<>();
+        String path = "src/main/resources/static/images";
+
+        for (MultipartFile photo : photoupload) {
+            String fname = photo.getOriginalFilename();
+            System.out.println("uploadPhotos메소드 fname: " + fname);
+
+            if (fname != null && !fname.isEmpty()) {
+                System.out.println("if문 안에 들어왔음!");
+                try {
+                    // 고유한 파일 이름 생성
+                    String uniqueFname = System.currentTimeMillis() + "_" + fname;
+                    FileOutputStream fos = new FileOutputStream(path + "/" + uniqueFname);
+                    fos.write(photo.getBytes());
+                    fos.close();
+                    postFname.add(uniqueFname);
+                    System.out.println("uploadPhoto메소드 postFname: " + postFname);
+                } catch (IOException e) {
+                    System.err.println("파일 처리 중 오류: " + e.getMessage());
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    System.err.println("기타 오류: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            } else {
+                System.err.println("파일 이름이 유효하지 않음: " + fname);
+            }
+        }
+        return postFname;
     }
+
+
     
     //게시글번호 1씩 증가하게 만드는 메소드
     public long getNextPostNo() {

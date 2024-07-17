@@ -97,10 +97,11 @@
         <div class="content">
 		    <div class="post" th:each="feed : ${feeds}">
 		        <a th:href="@{'/feed/post/'+${feed.feedNo}}">
-		            <img th:src="@{'/images/' + ${feed.feedPhoto}}" alt="피드 이미지">
+		            <img th:if="${feed.feedPhoto != null and !feed.feedPhoto.isEmpty()}" th:src="@{'/images/' + ${feed.feedPhoto}}" alt="피드 이미지">
+					<img th:unless="${feed.feedPhoto != null and !feed.feedPhoto.isEmpty()}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
 		            <div class="text-overlay">
-					    <span th:text="${#temporals.format(feed.feedDate, 'yyyy년 M월 dd일')}"></span><br>
-					    <span th:text="${feed.feedLocation}"></span>
+					    <div th:text="${#temporals.format(feed.feedDate, 'yyyy년 M월 d일')}"></div>
+					    <div th:if="${feed.feedLocation !=null and !feed.feedLocation.isEmpty()}" th:text="${feed.feedLocation}"></div>
 					</div>
 		        </a>
 		    </div>
