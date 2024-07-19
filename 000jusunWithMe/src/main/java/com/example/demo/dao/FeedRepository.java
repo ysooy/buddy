@@ -12,7 +12,7 @@ import com.example.demo.entity.Feed;
 public interface FeedRepository extends JpaRepository<Feed, Long> {
 	
 	//해당 그룹의 feed 리스팅
-	List<Feed> findByGroupNo(long groupNo);
+	List<Feed> findByGroupNoOrderByFeedNoDesc(long groupNo);
 	
 	//해당 그룹의 같은 날짜에 이미 feed가 있는지 확인하기 위함
 	Feed findByGroupNoAndFeedDate(long GroupNo, LocalDate feedDate);

@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,8 @@ public class PostService {
     //게시글 리스팅 
     public List<PostDTO> listPost(long feedNo) {
         List<Post> posts = postRepository.findByFeedNo(feedNo);
+        // 역순으로 정렬
+        posts.sort(Comparator.comparingLong(Post::getPostNo).reversed());
         List<PostDTO> postDTOs = new ArrayList<>();
         
         //특정 피드에 해당하는 게시글들을 postDTO에 넣고, postDTOs에 태움
@@ -87,10 +90,9 @@ public class PostService {
     	
     	//게시글 번호: 1씩 늘어나도록
     	post.setPostNo(getNextPostNo());
-    	System.out.println("PostService의 photoupload: "+photoUpload[0].getOriginalFilename());
-    	//사진
+    	
+    	//사진들
     	List<String> postFname = uploadPhotos(photoUpload);
-    	System.out.println("ps의 postFname: "+postFname); //얘가 자꾸 없어
     	post.setPostFname(postFname);
     	
     	return postRepository.save(post);
@@ -109,28 +111,17 @@ public class PostService {
 
         for (MultipartFile photo : photoupload) {
             String fname = photo.getOriginalFilename();
-            System.out.println("uploadPhotos메소드 fname: " + fname);
 
             if (fname != null && !fname.isEmpty()) {
-                System.out.println("if문 안에 들어왔음!");
                 try {
-                    // 고유한 파일 이름 생성
-                    String uniqueFname = System.currentTimeMillis() + "_" + fname;
-                    FileOutputStream fos = new FileOutputStream(path + "/" + uniqueFname);
+                    FileOutputStream fos = new FileOutputStream(path + "/" + fname);
                     fos.write(photo.getBytes());
                     fos.close();
-                    postFname.add(uniqueFname);
-                    System.out.println("uploadPhoto메소드 postFname: " + postFname);
-                } catch (IOException e) {
-                    System.err.println("파일 처리 중 오류: " + e.getMessage());
-                    e.printStackTrace();
+                    postFname.add(fname);
                 } catch (Exception e) {
-                    System.err.println("기타 오류: " + e.getMessage());
                     e.printStackTrace();
                 }
-            } else {
-                System.err.println("파일 이름이 유효하지 않음: " + fname);
-            }
+            } 
         }
         return postFname;
     }

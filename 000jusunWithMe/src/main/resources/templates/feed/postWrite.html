@@ -8,47 +8,19 @@
     <link rel="stylesheet" href="/css/header.css">    
     <link rel="stylesheet" href="/css/navbar.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(function () {
-            //헤더 그룹명으로
-            $(".center h2").text("그룹명");
-            
-            //#date에 현재 날짜 넣기
-            var today = new Date();
-            var year = today.getFullYear();
-	        var month =  today.getMonth() + 1;
-	        var day = today.getDate();
-	        var todayDate = year + '년 ' + month + '월 ' + day + '일';
-	        $('#date').text(todayDate);
-	        
-	        //사진 미리보기
-	        $('#photoUpload').on('change', function() {
-        const files = this.files;
-        const previewContainer = $('#imagePreview');
-        previewContainer.empty();
-
-        Array.from(files).forEach(file => {
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = $('<img>').attr('src', e.target.result).css({ width: '150px', height: '150px', margin: '10px' });
-                    previewContainer.append(img);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    });
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/piexifjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any"></script> <!-- HEIC 변환 라이브러리 추가 -->
+    <script src="/src/main/resources/static/js/postWrite.js"></script>
     <style>
         .form-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             height: 100vh;
-            margin-top:100px;
-			padding-left: 5%;
-			padding-right: 5%;
+            margin-top: 100px;
+            padding-left: 5%;
+            padding-right: 5%;
         }
 
         .form-container label {
@@ -56,7 +28,6 @@
             margin-bottom: 8px;
         }
 
-  
         .form-container button, input[type="submit"] {
             background-color: #FFA500; 
             color: white;
@@ -67,48 +38,48 @@
         }
 
         button:hover, input[type="submit"]:hover {
-            background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
+            background-color: #FF8C00;
         }
 
-	 	form{
-			 width: 100%;
-		 }
-		 
-		form .txtarea {
+        form {
+            width: 100%;
+        }
+
+        form .txtarea {
             width: 100%;
             height: 250px;
             font-size: 16px;
             font-family: Arial, sans-serif;
             border: 1px solid lightgrey;
-            margin-bottom: 20px
+            margin-bottom: 20px;
         }
-        #date{
-			color:#FF8C00
-		}
-		
-		#imagePreview{
-			display: flex;
-			flex-wrap: wrap;
-		}
-		
-		 /* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
+
+        #date {
+            color: #FF8C00;
+        }
+
+        #imagePreview {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
         @media (min-width: 768px) {
-            .form-container{
-				margin-left: 200px;
-			}
+            .form-container {
+                margin-left: 200px;
+            }
         }
     </style>
 </head>
 <body>
-	<div id="header" th:replace="/header/header :: header"></div>
+    <div id="header" th:replace="/header/header :: header"></div>
     <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
     <div class="form-container">
         <form action="/feed/postWrite" method="post" enctype="multipart/form-data">
-			<!-- 로그인 활성화 시 userNo는 이걸로 변경 !!
-				<input type="hidden" name="userNo" th:value="${session.loginUser.userNo}">
-			-->
-			<input type="hidden" name="userNo" value="3598270263">
-			<label id="date"></label>
+            <!-- 로그인 활성화 시 userNo는 이걸로 변경 !!
+                <input type="hidden" name="userNo" th:value="${session.loginUser.userNo}">
+            -->
+            <input type="hidden" name="userNo" value="3598270263">
+            <label id="date"></label>
             <textarea name="postContent" class="txtarea" placeholder="글 내용 입력..."></textarea>
             <label for="groupImg">사진 추가하기</label>
             <input type="file" id="photoUpload" name="photoUpload" multiple><br>
