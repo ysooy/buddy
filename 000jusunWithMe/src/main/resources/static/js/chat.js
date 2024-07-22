@@ -4,7 +4,20 @@ function resizeInput(textarea) {
     textarea.style.height = (textarea.scrollHeight > 100 ? 100 : textarea.scrollHeight) + 'px';
 }
 
+    
+// 채팅 날짜 표시
+function isNewDate(message, lastMessage) {
+    if (!lastMessage) return true;
+    const lastMessageDate = new Date(lastMessage.sentTime);
+    const currentMessageDate = new Date(message.sentTime);
+    return lastMessageDate.toDateString() !== currentMessageDate.toDateString();
+}
+
+
 $(document).ready(function() {
+	
+	var lastMessage = null; // 마지막 메세지 저장용(날짜 표시 위함)
+	
     var socket = new SockJS('/websocket');
     var stompClient = Stomp.over(socket);
     
@@ -57,32 +70,51 @@ $(document).ready(function() {
     // 수신한 메시지 채팅창에 표시
     function showMessage(message) {
         const chatContainer = $('#chatContainer');
-        const chatMessage = $('<div>').addClass('chat-message').addClass(message.userNo === 1236 ? 'my-chat' : 'friend-chat');
-		if (message.msgType === 2) { // 이미지 타입
-		    chatMessage.html(
-		        '<div class="chat-bubble-container ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
-		        + '<img src="' + message.msgFname + '" class="chat-image">'
-		        + '<div class="timeAndRead ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
-		        + '<div class="unread">2</div>'
-		        + '<div class="time">오후 ' + new Date(message.sentTime).getHours() + ':' + new Date(message.sentTime).getMinutes() + '</div>'
-		        + '</div>'
-		        + '</div>'
-		    );
-        } else {
-	    chatMessage.html(
-	        '<div class="chat-bubble-container ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
-	        + '<div class="chat-bubble ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
-	        + message.content.replace(/\n/g, '<br>') + '</div>'
-	        + '<div class="timeAndRead ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
-	        + '<div class="unread">2</div>'
-	        + '<div class="time">오후 ' + new Date(message.sentTime).getHours() + ':' + new Date(message.sentTime).getMinutes() + '</div>'
-	        + '</div>'
-	        + '</div>'
-	    );
-
-        }
-        chatContainer.append(chatMessage);
+        
+    // 메시지가 해당 날짜의 첫 메시지인 경우 날짜 표시하기
+    if (isNewDate(message, lastMessage)) {
+        const dateSeparator = $('<div>').addClass('date-separator-container').html(
+            '<div class="date-separator">' + new Date(message.sentTime).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) + '</div>'
+        );
+        chatContainer.append(dateSeparator);
     }
+
+    
+
+        
+    const chatMessage = $('<div>').addClass('chat-message').addClass(message.userNo === 1236 ? 'my-chat' : 'friend-chat');
+    if (message.msgType === 2) { // 이미지 타입
+        chatMessage.html(
+            '<div class="chat-bubble-container ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+            + '<img src="' + message.msgFname + '" class="chat-image">'
+            + '<div class="timeAndRead ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+            + '<div class="unread">2</div>'
+            + '<div class="time">' + new Date(message.sentTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true }) + '</div>'
+            + '</div>'
+            + '</div>'
+        );
+    } else {
+        chatMessage.html(
+            '<div class="chat-bubble-container ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+            + '<div class="chat-bubble ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+            + message.content.replace(/\n/g, '<br>') + '</div>'
+            + '<div class="timeAndRead ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+            + '<div class="unread">2</div>'
+            + '<div class="time">' + new Date(message.sentTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true }) + '</div>'
+            + '</div>'
+            + '</div>'
+        );
+    }
+    chatContainer.append(chatMessage);
+
+    // 마지막 메시지 업데이트
+    lastMessage = message;
+}
+    
 
     // 이미지 파일 선택 시 서버에 업로드
     function uploadImage(file) {

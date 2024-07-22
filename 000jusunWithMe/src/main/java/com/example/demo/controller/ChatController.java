@@ -35,14 +35,14 @@ import java.util.UUID;
 public class ChatController {
 
     @Autowired
-    private ChatService chatService; 
+    private ChatService cs; 
 
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public ChatMessageResponseDTO sendMessage(ChatMessageRequestDTO chatMessageRequestDTO) {
         // DTO를 엔티티로 변환
         Chat chatMessage = Chat.builder()
-                .messageNo(0) // 메시지 번호는 저장 시 설정됩니다.
+                .messageNo(0) // 메시지 번호는 저장 시 설정.
                 .sentTime(new Date())
                 .content(chatMessageRequestDTO.getContent())
                 .msgFname(chatMessageRequestDTO.getMsgFname())
@@ -52,7 +52,7 @@ public class ChatController {
                 .build();
 
         // 메시지 저장
-        chatMessage = chatService.saveMessage(chatMessage);
+        chatMessage = cs.saveMessage(chatMessage);
 
         // 엔티티를 DTO로 변환하여 반환
         return new ChatMessageResponseDTO(
@@ -68,26 +68,29 @@ public class ChatController {
     
     @PostMapping("/uploadImage")
     public ResponseEntity<Map<String, String>> handleFileUpload(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
+        if (file.isEmpty()) {	//업로드 파일이 비어있는지 확인
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("message", "Please select a file to upload"));
         }
 
         try {
             // 이미지 파일 저장 경로 설정
-            String uploadDir = new File("src/main/resources/static/images").getAbsolutePath();   
+            String uploadDir = new File("src/main/resources/static/images").getAbsolutePath();	// 절대경로 반환
             File dir = new File(uploadDir);
-            if (!dir.exists()) dir.mkdirs();
+            if (!dir.exists()) dir.mkdirs();	// 디렉토리가 없으면 생성하기(상위 디렉토리까지 생성됨)
 
-            // 고유 파일명 생성
+            // 고유 파일명 생성 (파일명이 동일한 경우 충돌 방지)
             String uniqueFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            // 저장할 파일 경로 설정하기
             File destinationFile = new File(uploadDir + File.separator + uniqueFileName);
-            file.transferTo(destinationFile);
+            file.transferTo(destinationFile);	// 업로드된 파일을 지정된 대상 파일로 저장(서버 파일 시스템에 저장시 사용)
 
-            // 클라이언트가 접근할 수 있는 경로로 파일명을 반환
+            // 클라이언트가 접근할 수 있는 경로로 파일명을 반환 
+            // (업로드 성공 시 클라이언트가 접근할 수 있는 경로 반환) ==> 업로드된 파일의 url을 JSON형식으로 응답본문에 포함
             return ResponseEntity.ok(Collections.singletonMap("fileName", "/images/" + uniqueFileName));
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "Image upload failed"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("message", "이미지 업로드에 실패했습니다."));
+            // 파일 저장 중 예외상황 발생
         }
     }
     
@@ -95,23 +98,20 @@ public class ChatController {
     @GetMapping("/images/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
-            Path file = Paths.get("src/main/resources/static/images").resolve(filename);
-            Resource resource = new UrlResource(file.toUri());
-
+            Path file = Paths.get("src/main/resources/static/images").resolve(filename);	// resolve : 기본경로에 추가 경로 결합
+            Resource resource = new UrlResource(file.toUri());	//설정된 경로를 UrlResource객체로 변환
+            
+            // 파일이 존재하고 읽을 수 있다면
             if (resource.exists() || resource.isReadable()) {
-                return ResponseEntity.ok().body(resource);
+                return ResponseEntity.ok().body(resource);	// 파일 리소스 반환
             } else {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.notFound().build();	// 404 오류 반환
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-
-
-
-    
 //		DTO와 엔티티 분리하며
 //    // 웹소켓 메세지 처리
 //    @MessageMapping("/chat")
@@ -127,7 +127,7 @@ public class ChatController {
     // 채팅 메세지 정보 반환 (특정 그룹)
     @GetMapping("/chat")
     public String getChatGroup(Model model, @RequestParam(defaultValue = "111") int groupNo) {
-        List<Chat> messages = chatService.getMessagesByGroupNo(groupNo);
+        List<Chat> messages = cs.getMessagesByGroupNo(groupNo);
         model.addAttribute("messages", messages);
         return "chat/chat";
     }
