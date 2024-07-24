@@ -16,7 +16,8 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
 	
 	//해당 그룹의 같은 날짜에 이미 feed가 있는지 확인하기 위함
 	Feed findByGroupNoAndFeedDate(long GroupNo, LocalDate feedDate);
-	
+
+	//다음 번호 생성
 	@Query("SELECT IFNULL(MAX(f.feedNo), 0) + 1 FROM Feed f")
 	Long getNextFeedNo();
 

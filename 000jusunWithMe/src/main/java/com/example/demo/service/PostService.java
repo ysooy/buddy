@@ -25,6 +25,7 @@ import com.example.demo.dao.UsersRepository;
 import com.example.demo.dto.CommentDTO;
 import com.example.demo.dto.PostDTO;
 import com.example.demo.entity.Comment;
+import com.example.demo.entity.Feed;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.Users;
 
@@ -99,10 +100,7 @@ public class PostService {
     	return postRepository.save(post);
     }
     
-    
-    
-    
-    
+
     
     //---- 이하 메소드들 -----
     //사진(여러 장) 등록 메소드

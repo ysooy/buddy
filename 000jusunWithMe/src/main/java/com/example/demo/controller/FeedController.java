@@ -97,7 +97,8 @@ public class FeedController {
 	//댓글 등록
 	@PostMapping("/feed/commentWrite")
 	public String commentWrite(Comment comment) {
+		long feedNo = cs.findByPostNo(comment.getPostNo()).getFeedNo();
 		cs.saveComment(comment);
-		return "redirect:/feed/post";
+		return "redirect:/feed/post/"+feedNo;
 	}
 }
