@@ -23,4 +23,9 @@ public class CalendarService {
     public List<Calendar> getAllDiary() {
         return calendarRepository.findAll();
     }
+    
+    // 
+    public Calendar getDiaryById(Integer calendarNo) {
+        return calendarRepository.findById(calendarNo).orElse(null);
+    }    
 } 
