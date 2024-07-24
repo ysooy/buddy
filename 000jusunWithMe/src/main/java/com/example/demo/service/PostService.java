@@ -70,6 +70,7 @@ public class PostService {
             PostDTO postDTO = new PostDTO(
                 post.getPostNo(),
                 post.getPostContent(),
+                post.getPostUserDefDate(),
                 post.getPostTime(),
                 post.getPostFname(),
                 post.getFeedNo(),

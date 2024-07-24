@@ -42,7 +42,7 @@ public class FeedService {
 	
 	//피드 리스팅 
 	public List<Feed> listFeed(long groupNo){
-		return feedRepository.findByGroupNoOrderByFeedNoDesc(groupNo);
+		return feedRepository.findByGroupNoOrderByFeedDateDesc(groupNo);
 	}
 	
 	//해당 그룹에서 해당 날짜에 피드 있는지 확인

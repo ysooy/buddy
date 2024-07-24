@@ -56,17 +56,16 @@ public class FeedController {
 		long groupNo = 1;
 		//해당그룹에서 해당날짜에 첫 게시물일 시(피드 검색) 피드에 저장
 		//첫 게시물인지 확인
-		Feed oldFeed = fs.checkFeedExists(groupNo, LocalDate.now());
+		Feed oldFeed = fs.checkFeedExists(groupNo, post.getPostUserDefDate());
 		if(oldFeed==null){ //기존 피드가 없다면
 			Feed newFeed = new Feed(); //새 피드 생성
 			
-			//현재 시간으로 날짜 등록
-			newFeed.setFeedDate(LocalDate.now());
+			//사용자 지정 날짜로 날짜 등록
+			newFeed.setFeedDate(post.getPostUserDefDate());
 			
 			//배경사진으로 사용할 사진파일
 			String firstPhoto = null;
 			firstPhoto = photoUpload[0].getOriginalFilename();
-			System.out.println("피드컨트롤러의 firstPhoto"+firstPhoto);
 			MultipartFile mpfForLocation = null;
 			mpfForLocation = photoUpload[0];
 			if(firstPhoto!=null && !firstPhoto.equals("")) {
@@ -91,7 +90,6 @@ public class FeedController {
 			//이미 feed가 있는 경우 기존 feedNo 부여 
 			post.setFeedNo(oldFeed.getFeedNo());
 		}
-		System.out.println("feedcontroller의 photoupload"+photoUpload[0].getOriginalFilename());
 		ps.savePost(post, photoUpload);
 		return "redirect:/feed/post/"+post.getFeedNo(); 
 	};
