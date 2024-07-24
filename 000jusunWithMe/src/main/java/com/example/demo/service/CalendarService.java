@@ -24,8 +24,8 @@ public class CalendarService {
         return calendarRepository.findAll();
     }
     
-    // 
+    // 일정 조회
     public Calendar getDiaryById(Integer calendarNo) {
         return calendarRepository.findById(calendarNo).orElse(null);
     }    
-} 
+}

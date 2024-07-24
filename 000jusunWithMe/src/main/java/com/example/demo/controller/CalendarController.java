@@ -39,7 +39,8 @@ public class CalendarController {
             eventData.put("start", event.getCStartDate().toString());
             eventData.put("end", event.getCEndDate().toString());
             eventData.put("color", event.getCColor());
-            eventData.put("calendarNo", event.getCalendarNo()); // 추가된 부분
+            // 캘린더 일정 등록시에도 바로 수정이 가능하도록 하기 위해 calendarNo 클라이언트로 반환, 처리 
+            eventData.put("calendarNo", event.getCalendarNo());
             events.add(eventData);
         }
         return events;
@@ -48,11 +49,13 @@ public class CalendarController {
     // 캘린더 일정 등록
     @PostMapping("/calendar/add")
     @ResponseBody
-    public String addEvent(@RequestParam String eventContent,
-                           @RequestParam String startDate,
-                           @RequestParam String endDate,
-                           @RequestParam String selectedColor) {
-
+    public Map<String, Object> addEvent(@RequestParam String eventContent,
+                                        @RequestParam String startDate,
+                                        @RequestParam String endDate,
+                                        @RequestParam String selectedColor) {
+        // 새 일정 추가 후 바로 해당 일정을 수정하려고 할 때
+        // calendarNo를 반환하지 않아서 오류 발생하여 클라이언트가 calendarNo 받을 수 있도록 함
+    	
         Calendar event = new Calendar();
         event.setGroupNo(111); // 임시로 설정
         event.setCContent(eventContent);
@@ -60,11 +63,17 @@ public class CalendarController {
         event.setCEndDate(LocalDate.parse(endDate));
         event.setCColor(selectedColor);
 
-        cs.saveDiary(event);
+        Calendar savedEvent = cs.saveDiary(event);
 
-        return "일정이 등록되었습니다";
+        // 응답 데이터를 담을 Map 객체(메세지와 calendarNo를 한번에 반환할 수 있도록)
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "일정이 등록되었습니다");
+        response.put("calendarNo", savedEvent.getCalendarNo());	// 새로 생성된 일정의 calendarNo 추가
+
+        return response;
     }
 
+    
     // 캘린더 일정 수정
     @PostMapping("/calendar/update")
     @ResponseBody
