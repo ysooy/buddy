@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 모달창 닫기
     $(document).on('click', '.closeModal', function() {
         $("#myModal").css("display", "none");
-		// 컬러 선택 상태 초기화
-	    $('.colorCircle').removeClass('selected');
-	    selectedColor = null;        
+        // 컬러 선택 상태 초기화
+        $('.colorCircle').removeClass('selected');
+        selectedColor = null;
     });
 
     // 색상 선택
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedColor = $(this).css('background-color');
         // 색상 선택 시(일정이 이틀 이상) rgb로 변하는 것 다시 변환
         selectedColor = rgbTohex(selectedColor);
-        
+
     });
 
     // 날짜 선택창(달력에서 날짜 선택하면 날짜가 입력됨)
@@ -87,8 +87,8 @@ document.addEventListener('DOMContentLoaded', function() {
             $(".modalSubmit").text('등록').removeClass('updateEvent').addClass('addEvent'); // 일정 등록이므로 '수정'이 아닌 '등록'버튼 
             $("#myModal").css("display", "flex"); // 모달창 띄우기 
             // 컬러팔레트 선택 상태 초기화 
-            $('.colorCircle').removeClass('selected'); 
-            selectedColor = null; 
+            $('.colorCircle').removeClass('selected');
+            selectedColor = null;
         },
 
         // 일정 이벤트 클릭 시 호출되는 함수 (일정 수정) 
@@ -97,37 +97,69 @@ document.addEventListener('DOMContentLoaded', function() {
             var startDate = registeredEvent.start;
             var endDate = registeredEvent.end ? new Date(registeredEvent.end.getTime() - (1000 * 60 * 60 * 24)) : registeredEvent.start; // 종료 날짜가 없으면 시작 날짜로 설정
             selectedColor = registeredEvent.backgroundColor; // 기존 색상 저장
-            
+
             // 날짜 형식을 "yyyy-mm-dd"로 변환 (수정 시 기존의 시작날짜가 달라지는 현상 해결)
-            // Date 객체 : 브라우저 로컬 시간대 기준, 서버: UTC시간 사용
-            // ==> 서버에서 가져온 날짜가 로컬 시간대로 변환될 때 하루가 빨라질 수 있음.(Date는 자정이 포함됨)
-            // 시간정보 제거하고 날짜 형식만 유지
             function formatDate(date) {
-			    var dateChange = new Date(date),
-			        year = dateChange.getFullYear(),
-			        month = (dateChange.getMonth() + 1).toString().padStart(2, '0'),	// 월이 한 자리 수면 앞에 0 추가
-			        day = dateChange.getDate().toString().padStart(2, '0');	// 일이 한 자리 수면 앞에 0 추가
-			
-			    return `${year}-${month}-${day}`;
-			}
+                var dateChange = new Date(date),
+                    year = dateChange.getFullYear(),
+                    month = (dateChange.getMonth() + 1).toString().padStart(2, '0'), // 월이 한 자리 수면 앞에 0 추가
+                    day = dateChange.getDate().toString().padStart(2, '0'); // 일이 한 자리 수면 앞에 0 추가
+
+                return `${year}-${month}-${day}`;
+            }
 
             $("#startDate").val(formatDate(startDate)); // 등록된 이벤트의 시작 날짜 설정
             $("#endDate").val(formatDate(endDate)); // 등록된 이벤트 종료 날짜 설정
             $("#schedule").val(registeredEvent.title); // 등록된 일정 내용으로 설정
-		    
-		    // 기존 색상을 선택된 상태로 표시
-		    $('.colorCircle').removeClass('selected'); // 초기화
-		    $('.colorCircle').each(function() {
-		        if (rgbTohex($(this).css('background-color')) === selectedColor) {
-		            $(this).addClass('selected');
-		        }
-		    });
+
+            // 기존 색상을 선택된 상태로 표시
+            $('.colorCircle').removeClass('selected'); // 초기화
+            $('.colorCircle').each(function() {
+                if (rgbTohex($(this).css('background-color')) === selectedColor) {
+                    $(this).addClass('selected');
+                }
+            });
 
             $(".modalSubmit").text('수정').removeClass('addEvent').addClass('updateEvent'); // 일정 수정이므로 '등록'이 아닌 '수정'버튼
             $("#myModal").css("display", "flex"); // 모달창 띄우기
+        },
+
+        // 이벤트 드래그 앤 드롭 후 호출되는 함수
+        eventDrop: function(updateInfo) {
+            var updatedEvent = updateInfo.event;
+            var newStartDate = new Date(updatedEvent.start.getTime()); // updatedEvent.start객체 직접 수정하지 않고 복사해서 수정(원본객체를 사용하는 다른 코드에 영향을 미치지 않기 위함)
+            var newEndDate = updatedEvent.end ? new Date(updatedEvent.end.getTime()) : new Date(updatedEvent.start.getTime() + (1000 * 60 * 60 * 24));
+
+            // startDate에 1일 추가(db에 하루 전날로 설정될 수 있어서 이를 방지)
+            newStartDate.setDate(newStartDate.getDate() + 1);
+            // endDate에 1일 추가
+            newEndDate.setDate(newEndDate.getDate() + 1);
+
+            // 서버로 수정된 일정 정보 전송
+            $.ajax({
+                url: '/calendar/update',
+                type: 'POST',
+                data: {
+                    calendarNo: updatedEvent.extendedProps.calendarNo, // 수정할 이벤트 calendarNo
+                    eventContent: updatedEvent.title,
+                    startDate: newStartDate.toISOString().slice(0, 10), // 시작 날짜에 1일 추가
+                    endDate: newEndDate.toISOString().slice(0, 10), // 종료 날짜에 1일 추가
+                    selectedColor: updatedEvent.backgroundColor // 선택된 색상 또는 기존 색상
+                },
+                success: function(response) { // 요청 성공시 실행
+                    alert(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error("xhr: ", xhr); // 응답객체(요청에 대한 정보)
+                    console.error("Status: ", status); // 요청 실패 이유
+                    console.error("Error: ", error); // 발생한 오류 설명
+                    alert("오류가 발생했습니다." + error);
+                }
+            });
         }
+
     });
- 
+
     // DB에서 이벤트 데이터를 불러와서 캘린더에 추가
     $.ajax({
         url: '/calendar/events',
@@ -158,60 +190,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
     calendar.render();
 
-// 모달창 일정 등록 버튼 클릭 시
-$(document).on('click', '.addEvent', function() {
-    var eventContent = $("#schedule").val(); // 일정 내용
-    var startDate = $("#startDate").val(); // 시작 날짜
-    var endDate = $("#endDate").val(); // 종료 날짜
-    var selectedColor = $('.colorCircle.selected').css('background-color'); // 색상 선택
+    // 모달창 일정 등록 버튼 클릭 시
+    $(document).on('click', '.addEvent', function() {
+        var eventContent = $("#schedule").val(); // 일정 내용
+        var startDate = $("#startDate").val(); // 시작 날짜
+        var endDate = $("#endDate").val(); // 종료 날짜
+        var selectedColor = $('.colorCircle.selected').css('background-color'); // 색상 선택
 
-    // RGB 색상 값을 hex 값으로 변환하는 함수 호출
-    selectedColor = rgbTohex(selectedColor);
+        // RGB 색상 값을 hex 값으로 변환하는 함수 호출
+        selectedColor = rgbTohex(selectedColor);
 
-    // 모든 필드가 채워져 있는지 확인
-    if (eventContent && startDate && endDate && selectedColor) {
-        $.ajax({
-            url: '/calendar/add', // 서버의 /calendar/add 엔드포인트로 요청
-            type: 'POST',
-            data: {
-                eventContent: eventContent,
-                startDate: startDate,
-                // 사용자가 입력한 종료 날짜는 이벤트가 실제로 종료되는 날짜의 다음날 포함하지 않아서 +1 필요.
-                // 캘린더에 표시될 때도 조정된 종료 날짜를 그대로 표시되도록 함.
-                endDate: new Date(new Date(endDate).getTime() + (1000 * 60 * 60 * 24)).toISOString().slice(0, 10), // 종료 날짜 +1로 저장
-                selectedColor: selectedColor
-            },
-            success: function(response) { // 요청 성공시 실행
-                alert(response.message); // 응답 메시지
-                var newEvent = {
-                    title: eventContent,
-                    start: startDate,
-                    end: new Date(new Date(endDate).getTime() + (1000 * 60 * 60 * 24)).toISOString().slice(0, 10), // 종료 날짜 +1로 설정
-                    allDay: true,
-                    color: selectedColor,
-                    extendedProps: {
-                        calendarNo: response.calendarNo // 서버에서 반환된 calendarNo 사용
-                    }
-                };
-                calendar.addEvent(newEvent);
-                // 모달창 닫고 입력 필드 초기화.
-                $("#myModal").css("display", "none");
-                $("#schedule").val("");
-                $("#startDate").val("");
-                $("#endDate").val("");
-                selectedColor = '';
-            },
-            error: function(xhr, status, error) {
-                console.error("xhr: ", xhr); // 응답객체(요청에 대한 정보)
-                console.error("Status: ", status); // 요청 실패 이유
-                console.error("Error: ", error); // 발생한 오류 설명
-                alert("오류가 발생했습니다." + error);
-            }
-        });
-    } else {
-        alert("일정, 날짜 및 색상을 모두 입력해주세요.");
-    }
-});
+        // 모든 필드가 채워져 있는지 확인
+        if (eventContent && startDate && endDate && selectedColor) {
+            $.ajax({
+                url: '/calendar/add', // 서버의 /calendar/add 엔드포인트로 요청
+                type: 'POST',
+                data: {
+                    eventContent: eventContent,
+                    startDate: startDate,
+                    // 사용자가 입력한 종료 날짜는 이벤트가 실제로 종료되는 날짜의 다음날 포함하지 않아서 +1 필요.
+                    // 캘린더에 표시될 때도 조정된 종료 날짜를 그대로 표시되도록 함.
+                    endDate: new Date(new Date(endDate).getTime() + (1000 * 60 * 60 * 24)).toISOString().slice(0, 10), // 종료 날짜 +1로 저장
+                    selectedColor: selectedColor
+                },
+                success: function(response) { // 요청 성공시 실행
+                    alert(response.message); // 응답 메시지
+                    var newEvent = {
+                        title: eventContent,
+                        start: startDate,
+                        end: new Date(new Date(endDate).getTime() + (1000 * 60 * 60 * 24)).toISOString().slice(0, 10), // 종료 날짜 +1로 설정
+                        allDay: true,
+                        color: selectedColor,
+                        extendedProps: {
+                            calendarNo: response.calendarNo // 서버에서 반환된 calendarNo 사용
+                        }
+                    };
+                    calendar.addEvent(newEvent);
+                    // 모달창 닫고 입력 필드 초기화.
+                    $("#myModal").css("display", "none");
+                    $("#schedule").val("");
+                    $("#startDate").val("");
+                    $("#endDate").val("");
+                    selectedColor = '';
+                },
+                error: function(xhr, status, error) {
+                    console.error("xhr: ", xhr); // 응답객체(요청에 대한 정보)
+                    console.error("Status: ", status); // 요청 실패 이유
+                    console.error("Error: ", error); // 발생한 오류 설명
+                    alert("오류가 발생했습니다." + error);
+                }
+            });
+        } else {
+            alert("일정, 날짜 및 색상을 모두 입력해주세요.");
+        }
+    });
 
 
 
@@ -236,11 +268,10 @@ $(document).on('click', '.addEvent', function() {
             // 선택된 색상이 없으면 기존 색상 사용 (수정 시 색상 선택을 안해도 수정 가능)
             if (!newSelectedColor) {
                 newSelectedColor = selectedColor;
+            } else {
+                // 선택된 색상이 있을 경우, hex로 변환
+                newSelectedColor = rgbTohex(newSelectedColor);
             }
-            else {
-	            // 선택된 색상이 있을 경우, hex로 변환
-	            newSelectedColor = rgbTohex(newSelectedColor);
-        	}
 
             // 종료 날짜를 그대로 사용 (DB에는 실제 종료 날짜 저장)
             var start = new Date(startDate);
