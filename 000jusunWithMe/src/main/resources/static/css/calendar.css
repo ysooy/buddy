@@ -1,207 +1,208 @@
-        /* 모달 스타일 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 80px;
-            width: 100%;
-            height: calc(100% - 80px);
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.3);
-            justify-content: center; 
-            align-items: flex-start;
-        } 
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 80px;
+    width: 100%;
+    height: calc(100% - 80px);
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.3);
+    justify-content: center; 
+    align-items: flex-start;
+} 
 
-        .modalContent {
-            background-color: #fefefe;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-            margin-top: 60px;
-        }
+.modalContent {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    margin-top: 60px;
+}
 
-        .closeModal {
-            color: #aaa;
-            position: absolute;
-            top: 10px;
-            right: 25px;
-            font-size: 28px;
-            font-weight: bold;
-        }
+.closeModal {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 28px;
+    font-weight: bold;
+}
 
-        .closeModal:hover,
-        .closeModal:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+.closeModal:hover,
+.closeModal:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-        .modalForm {
-            margin-bottom: 20px;
-        }
+.modalForm {
+    margin-bottom: 20px;
+}
 
-        .modalForm label {
-            display: block;
-            margin-bottom: 5px;
-        }
+.modalForm label {
+    display: block;
+    margin-bottom: 5px;
+}
 
-        .modalForm input {
-            width: calc(100% - 10px);
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+.modalForm input {
+    width: calc(100% - 10px);
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 
-        .modalSubmit {
-            display: block;
-            width: 100px;
-            padding: 10px;
-            margin: 20px auto 0;
-            text-align: center;
-            background-color: orange;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+.modalButtons {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* 버튼 간의 간격 */
+    margin-top: 20px;
+}
 
-        .modalSubmit:hover {
-            background-color: darkorange;
-        }
+.modalSubmit, .modalDelete {
+    display: block;
+    width: 100px;
+    padding: 10px;
+    text-align: center;
+    background-color: orange;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
-        .groupName {
-            padding: 20px 0 30px 0;
-        }
+.modalSubmit:hover, .modalDelete:hover {
+    background-color: darkorange;
+}
 
-        .colorPalette {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+.groupName {
+    padding: 20px 0 30px 0;
+}
 
-        .colorCircle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin: 5px 10px;
-            cursor: pointer;
-        }
+.colorPalette {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
 
-        .colorCircle.selected {
-            border: 2px solid black;
-        }
+.colorCircle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 5px 10px;
+    cursor: pointer;
+}
 
-        .colorCircle:nth-child(1) {
-            background-color: #ABDEE6;
-        }
+.colorCircle.selected {
+    border: 2px solid black;
+}
 
-        .colorCircle:nth-child(2) {
-            background-color: #CBAACB;
-        }
+.colorCircle:nth-child(1) {
+    background-color: #ABDEE6;
+}
 
-        .colorCircle:nth-child(3) {
-            background-color: #FFFFB5;
-        }
+.colorCircle:nth-child(2) {
+    background-color: #CBAACB;
+}
 
-        .colorCircle:nth-child(4) {
-            background-color: #FFCCB6;
-        }
+.colorCircle:nth-child(3) {
+    background-color: #FFFFB5;
+}
 
-        .colorCircle:nth-child(5) {
-            background-color: #F3B0C3;
-        }
+.colorCircle:nth-child(4) {
+    background-color: #FFCCB6;
+}
 
-        .colorCircle:nth-child(6) {
-            background-color: #55CBCD;
-        }
+.colorCircle:nth-child(5) {
+    background-color: #F3B0C3;
+}
 
-        .colorCircle:nth-child(7) {
-            background-color: #FED7C3;
-        }
+.colorCircle:nth-child(6) {
+    background-color: #55CBCD;
+}
 
-        .colorCircle:nth-child(8) {
-            background-color: #8FCACA;
-        }
+.colorCircle:nth-child(7) {
+    background-color: #FED7C3;
+}
 
-        .colorCircle:nth-child(9) {
-            background-color: #97C1A9;
-        }
+.colorCircle:nth-child(8) {
+    background-color: #8FCACA;
+}
 
-        .colorCircle:nth-child(10) {
-            background-color: #55CBCD;
-        }
+.colorCircle:nth-child(9) {
+    background-color: #97C1A9;
+}
 
-        .colorCircle:nth-child(11) {
-            background-color: #C6DBDA;
-        }
+.colorCircle:nth-child(10) {
+    background-color: #55CBCD;
+}
 
-        .colorCircle:nth-child(12) {
-            background-color: #B6CFB6;
-        }
+.colorCircle:nth-child(11) {
+    background-color: #C6DBDA;
+}
 
-        #calendar {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 10px;
-            width: calc(100% * 7 / 8);
-        }
+.colorCircle:nth-child(12) {
+    background-color: #B6CFB6;
+}
 
-        @media (min-width: 768px) {
-            .modalContent {
-                width: calc(80% - 200px);
-                max-width: 800px;
-                margin-top: 60px;
-                margin-left: 200px;
-            }
+#calendar {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 10px;
+    width: calc(100% * 7 / 8);
+}
 
-            #calendar {
-                width: calc(100% * 5 / 6);
-                max-width: 1000px;
-                margin-top: 40px;
-            }
-        }
-		
-		
-		/* 월,연도  */
-        .fc-toolbar-title {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
+@media (min-width: 768px) {
+    .modalContent {
+        width: calc(80% - 200px);
+        max-width: 800px;
+        margin-top: 60px;
+        margin-left: 200px;
+    }
+
+    #calendar {
+        width: calc(100% * 5 / 6);
+        max-width: 1000px;
+        margin-top: 40px;
+    }
+}
+
+/* 월,연도  */
+.fc-toolbar-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.fc-prev-button,
+.fc-next-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
         
+/* 월 이동 버튼 배경색 변경 */
+.fc .fc-toolbar .fc-button.fc-next-button,
+.fc .fc-toolbar .fc-button.fc-prev-button {
+    background-color: orange;
+    border: none;
+}
 
-        .fc-prev-button,
-        .fc-next-button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-		        
-		/* 월 이동 버튼 배경색 변경 */
-		.fc .fc-toolbar .fc-button.fc-next-button,
-		.fc .fc-toolbar .fc-button.fc-prev-button {
-		    background-color: orange;
-		    border: none;
-		}
-		
-		/* 월 이동 버튼 hover 배경색 변경 */
-		.fc .fc-toolbar .fc-button.fc-next-button:hover,
-		.fc .fc-toolbar .fc-button.fc-prev-button:hover {
-		    background-color: darkorange;
-		}
-		        
+/* 월 이동 버튼 hover 배경색 변경 */
+.fc .fc-toolbar .fc-button.fc-next-button:hover,
+.fc .fc-toolbar .fc-button.fc-prev-button:hover {
+    background-color: darkorange;
+}
 
-        .fc-prev-button {
-            margin-right: auto;
-        }
+.fc-prev-button {
+    margin-right: auto;
+}
 
-        .fc-next-button {
-            margin-left: auto;
-        }
-        
-        
+.fc-next-button {
+    margin-left: auto;
+}

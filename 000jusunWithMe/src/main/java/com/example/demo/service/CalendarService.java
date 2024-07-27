@@ -28,4 +28,9 @@ public class CalendarService {
     public Calendar getDiaryById(Integer calendarNo) {
         return calendarRepository.findById(calendarNo).orElse(null);
     }    
+    
+    // 일정 삭제
+    public void deleteDiary(Integer calendarNo) {
+    	calendarRepository.deleteById(calendarNo);
+    }
 }
