@@ -97,6 +97,17 @@
     cursor: pointer;
 }
 
+@media (max-width: 950px) {
+    .colorPalette {
+        display: grid;
+        grid-template-columns: repeat(5, auto);	/* repeat(반복횟수, 반복값) */
+        gap: 5px 10px;
+        justify-content: center;
+        margin: 0 auto;
+    }
+}
+
+
 .colorCircle.selected {
     border: 2px solid black;
 }
