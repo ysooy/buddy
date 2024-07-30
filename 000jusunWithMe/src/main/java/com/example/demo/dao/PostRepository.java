@@ -15,6 +15,8 @@ public interface PostRepository extends MongoRepository<Post, ObjectId> {
 	// 피드 번호로 게시물 찾기
     List<Post> findByFeedNo(long feedNo); 
     
-	//postNo로 Feed찾기 (Comment에서 사용함)
-	Feed findByPostNo(long postNo);
+	//postNo로 Post찾기
+	Post findByPostNo(long postNo);
+	
+	
 }

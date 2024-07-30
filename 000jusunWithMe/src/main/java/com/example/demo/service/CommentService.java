@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import com.example.demo.dao.CommentRepository;
 import com.example.demo.dao.PostRepository;
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.Feed;
+import com.example.demo.entity.Post;
 
 @Service
 public class CommentService {
@@ -25,9 +27,16 @@ public class CommentService {
 		commentRepository.save(comment);
 	}
 	
-	//postNo로 피드 찾기
-	public Feed findByPostNo(long postNo) {
-		return postRepository.findByPostNo(postNo);
+	
+	//댓글 삭제
+	public void deleteComment(long comNo) {
+		Comment comment = commentRepository.findByComNo(comNo);
+		commentRepository.delete(comment);
+	}
+	
+	//postNo로 댓글 리스팅
+	public List<Comment> findCommentByPostNo(long postNo){
+		return commentRepository.findByPostNo(postNo);
 	}
 	
 }

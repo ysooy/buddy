@@ -55,6 +55,11 @@ public class FeedService {
 		return feedRepository.save(feed);
 	}
 	
+	//피드 삭제
+	public void deleteFeed(long feedNo) {
+		feedRepository.deleteById(feedNo);
+	}
+	
 	//피드의 최고 번호+1 가져오기
 	public long getNextFeedNo() {
 		return feedRepository.getNextFeedNo();

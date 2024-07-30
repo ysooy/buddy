@@ -28,11 +28,11 @@
 			});
 
 			// [post의 경우 시간 포맷이 달라서 text->attr로 변경하고 함수에 전달]
-			var postTimes = $('.postTime')
+			var postTimes = $('.postTime');
 			postTimes.each(function () {
-				var postTime = $(this).text().trim()
-				$(this).attr('time-data', postTime)
-			})
+				var postTime = $(this).text().trim();
+				$(this).attr('time-data', postTime);
+			});
 
 			// [time 요소들 다 가져옴]
 			var timeElements = $('time');
@@ -45,12 +45,48 @@
 				this.style.height = 'auto';
 				this.style.height = (this.scrollHeight) + 'px';
 			});
+			
+			$(".updateBtn").click(function(){
+				postNo = $(this).data('postNo');
+				location.href="/feed/updatePost/"+postNo;
+				})
+				
+			$(".deleteBtn").click(function(){
+				postNo = $(this).data('postNo');
+                var isConfirmed = confirm("정말로 이 포스트를 삭제하시겠습니까?");
+                if (isConfirmed) {
+                    location.href = "/feed/deletePost/" + postNo;
+                }
+			})
+		});
+
+
+		
+		$(document).on('click', '.deleteCommentBtn', function () {
+			var comNo = $(this).data('comNo'); // 댓글 ID를 데이터 속성에서 가져옴
+			var commentElement = $(this).closest('.commentEach'); // 삭제할 댓글 요소
+
+			if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+				$.ajax({
+					url: '/feed/deleteComment', // 댓글 삭제를 처리할 서버 URL
+					method: 'POST',
+					data: {
+						comNo: comNo // 댓글 ID를 서버로 전송
+					},
+					success: function () {
+						commentElement.remove(); // 댓글 요소를 페이지에서 제거
+						alert('댓글이 삭제되었습니다.');
+					},
+					error: function (xhr, status, error) {
+						alert('댓글 삭제에 실패했습니다. 다시 시도해 주세요.');
+					}
+				});
+			}
 		});
 	</script>
 	<script>
 		// 시간 업데이트 함수
 		function updateTimes(timeElements) {
-
 			timeElements.each(function () {
 				var timeText = $(this).attr('time-data').trim();
 				var date = new Date(timeText);
@@ -83,6 +119,7 @@
 			return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
 		}
 	</script>
+
 	<style>
 		.post-container {
 			width: 100%;
@@ -124,7 +161,27 @@
 			display: flex;
 			align-items: center;
 			margin: 8px;
+			position: relative;
 		}
+
+		.buttons {
+			position: absolute;
+			right: 0;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+
+		.deleteBtn,
+		.updateBtn {
+			color: grey;
+			/* 버튼 글자 색상 */
+			border: none;
+			padding: 5px 10px;
+			margin:2px;
+			cursor: pointer;
+			font-size: 14px;
+		}
+
 
 		.writer img {
 			width: 40px;
@@ -176,25 +233,44 @@
 		.postContent {
 			margin-top: 10px;
 		}
-		.btnAddFeed {
-            position: fixed;
-            right: 20px;
-            bottom: 80px; 
-            z-index: 1000; /* 다른 요소 위로 배치 */
-            width: 70px;
-            height: 70px;
-            background-color: orange; 
-            border-radius: 50%; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
 
-        .btnAddFeed img {
-            width: 40px; /* 이미지 크기 */
-            height: 40px;
-        }
+		.btnAddFeed {
+			position: fixed;
+			right: 20px;
+			bottom: 80px;
+			z-index: 1000;
+			/* 다른 요소 위로 배치 */
+			width: 70px;
+			height: 70px;
+			background-color: orange;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
+		}
+
+		.btnAddFeed img {
+			width: 40px;
+			/* 이미지 크기 */
+			height: 40px;
+		}
+
+		.commentEach {
+			position: relative;
+		}
+
+		.deleteCommentBtn {
+			position: absolute;
+			right: 0;
+			top: 50%;
+			transform: translateY(-50%);
+			color: grey;
+			border: none;
+			padding: 5px 10px;
+			cursor: pointer;
+			font-size: 12px;
+		}
 	</style>
 </head>
 
@@ -214,7 +290,11 @@
 								<span th:text="${post.userName}"></span><br>
 								<time class="postTime"
 									th:text="${#temporals.format(post.postTime, 'yyyy-MM-dd HH:mm:ss')}"></time>
-								
+
+							</div>
+							<div class="buttons">
+								<button class="updateBtn" th:data-post-no="${post.postNo}">수정</a>
+								<button class="deleteBtn" th:data-post-no="${post.postNo}">삭제</a>
 							</div>
 						</div>
 						<!-- 포스팅 이미지 슬라이드 -->
@@ -226,7 +306,7 @@
 							</div>
 						</div>
 						<!--포스트 이미지 슬라이드 끝-->
-						<div class="postContent" th:text="${post.postContent}">포스트 내용</div>
+						<div class="postContent" th:text="${post.postContent}" style="white-space: pre;">포스트 내용</div>
 						<!--이하 댓글 영역-->
 						<div class="comment-container">
 							<!--작성된 댓글 리스트-->
@@ -238,6 +318,7 @@
 										<time th:attr="time-data=${comment.comTime}"></time>
 										<p th:text="${comment.comContent}"></p>
 									</div>
+									<button class="deleteCommentBtn" th:data-com-no="${comment.comNo}">삭제</button>
 								</div>
 							</div>
 							<!--작성된 댓글 리스트 끝-->
@@ -261,7 +342,7 @@
 				</div>
 				<!--postWrite로 이동하는 버튼-->
 				<div class="btnAddFeed" onclick="location.href='/feed/postWrite'">
-				    <img src="/images/plus.png"/>
+					<img src="/images/plus.png" />
 				</div>
 			</div>
 		</div>

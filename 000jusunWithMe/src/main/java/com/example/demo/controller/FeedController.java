@@ -3,7 +3,10 @@ package com.example.demo.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,9 @@ import com.example.demo.service.FeedService;
 import com.example.demo.service.PostService;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 
 @Controller
 public class FeedController {
@@ -33,9 +39,10 @@ public class FeedController {
 	@Autowired
 	private FeedService fs;
 	
-	@GetMapping("/feed/feed")
-    public void feedView(Model model) {
-		model.addAttribute("feeds",fs.listFeed(1));
+	@GetMapping("/feed/feed/{groupNo}")
+    public String feedView(Model model, @PathVariable long groupNo) {
+		model.addAttribute("feeds",fs.listFeed(groupNo));
+		return "/feed/feed";
 	};
 	
 	@GetMapping("/feed/post/{feedNo}")
@@ -49,6 +56,51 @@ public class FeedController {
 		
 	};
 	
+	//게시물 삭제
+	@GetMapping("/feed/deletePost/{postNo}")
+	public String deletePost(@PathVariable("postNo") long postNo) {
+		int groupNo = 1; //일단 1로 해놓겠음!!!!!******세션연결해서 가져와야함!!!!
+		Post p = ps.findByPostNo(postNo);
+		String landing = "redirect:/feed/post/"+p.getFeedNo();
+		//여기 달린 댓글 있으면 그것도 삭제
+		List<Comment> relatedComments = null; 
+		relatedComments= cs.findCommentByPostNo(postNo);
+		if (relatedComments !=null) {
+			for(Comment c: relatedComments) {
+				cs.deleteComment(c.getComNo());
+			}
+		}
+		ps.deletePost(p);
+		ps.deletePhotos(p);
+		
+		//해당 피드의 마지막 게시글을 삭제하는 경우 피드 삭제
+		long feedNo = p.getFeedNo();
+		int postCnt = ps.countPostByFeedNo(feedNo);
+		if(postCnt == 0) {
+			fs.deleteFeed(feedNo);
+			//해당 피드가 사라졌으니 랜딩페이지를 피드홈으로 변경 (/feed/feed/groupNo)
+			landing = "redirect:/feed/feed/"+groupNo; 
+		}
+		
+		return landing;
+	}
+	
+	//게시물 수정 뷰로 기존 post정보 모델 태워 보내기 
+	@GetMapping("/feed/updatePost/{postNo}")
+	public String updatePostView(@PathVariable("postNo") long postNo, Model model) {
+	    model.addAttribute("originalPost", ps.findByPostNo(postNo));
+	    return "/feed/postUpdate";
+	}
+	
+	//게시물 수정
+	@PostMapping("/feed/updatePost")
+	public String updatePost(Long postNo, String postContent) {
+		Post p = ps.findByPostNo(postNo);
+		p.setPostContent(postContent); //수정한 포스트내용 설정
+		ps.updatePost(p);
+		return "redirect:/feed/post/"+p.getFeedNo(); 
+	}
+
 	//게시물 등록
 	@PostMapping("/feed/postWrite")
     public String postWrite(Post post, MultipartFile[] photoUpload) {
@@ -94,11 +146,28 @@ public class FeedController {
 		return "redirect:/feed/post/"+post.getFeedNo(); 
 	};
 	
+	
+	
+	
+	//------이하 댓글 관련 ----
 	//댓글 등록
 	@PostMapping("/feed/commentWrite")
 	public String commentWrite(Comment comment) {
-		long feedNo = cs.findByPostNo(comment.getPostNo()).getFeedNo();
+		long feedNo = ps.findByPostNo(comment.getPostNo()).getFeedNo();
 		cs.saveComment(comment);
 		return "redirect:/feed/post/"+feedNo;
 	}
+	
+	//댓글 삭제 :ajax로 응답 보냄!
+	@PostMapping("/feed/deleteComment")
+	@ResponseBody
+	public ResponseEntity<Void> deleteComment(long comNo) {
+	    try {
+	        cs.deleteComment(comNo);
+	        return ResponseEntity.ok().build(); // 성공 응답
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 에러 응답
+	    }
+	}
+	
 }

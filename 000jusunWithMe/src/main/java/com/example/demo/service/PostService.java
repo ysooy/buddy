@@ -42,6 +42,11 @@ public class PostService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+ 
+	//postNo로 post 찾기
+	public Post findByPostNo(long postNo) {
+		return postRepository.findByPostNo(postNo);
+	}
     //게시글 리스팅 
     public List<PostDTO> listPost(long feedNo) {
         List<Post> posts = postRepository.findByFeedNo(feedNo);
@@ -100,9 +105,43 @@ public class PostService {
     	return postRepository.save(post);
     }
     
+    //게시글 수정(save)
+    public Post updatePost(Post post) {
+    	return postRepository.save(post);
+    }
+    
+    //게시 삭제
+    public void deletePost(Post post) {
+    	postRepository.delete(post);
+    }
+    
+    //해당 피드의 마지막post인지 확인하기: feedNo로 post찾아서 그 수 반환 
+    public int countPostByFeedNo(long feedNo) {
+    	List<Post> posts = postRepository.findByFeedNo(feedNo);
+    	return posts.size();
+    	
+    }
 
     
     //---- 이하 메소드들 -----
+    //사진 삭제 메소드
+    public void deletePhotos(Post p) {
+    	String path = "src/main/resources/static/images";
+    	List<String> postFname = new ArrayList<>();
+    	postFname = p.getPostFname();
+        for (String fname : postFname) {
+
+            if (fname != null && !fname.isEmpty()) {
+                try {
+                	File file = new File(path+"/"+fname);
+          			file.delete();	
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } 
+        }
+    }
+    
     //사진(여러 장) 등록 메소드
     public List<String> uploadPhotos(MultipartFile[] photoupload) {
         List<String> postFname = new ArrayList<>();
