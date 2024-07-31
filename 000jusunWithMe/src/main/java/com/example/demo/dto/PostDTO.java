@@ -18,20 +18,22 @@ public class PostDTO {
     private List<String> postFname;
     private long feedNo; //이건 필요없음 확인되면 없애자
 	
-    //사용자 이름, 프로필사진
+    //사용자 no, 이름, 프로필사진
+    private long userNo;
     private String userName;
     private String profilePhoto;
     
     //해당 게시글에 달린 댓글들 list
     private List<CommentDTO> comments;
 
-    public PostDTO(long postNo, String postContent, LocalDate postUserDefDate, LocalDateTime postTime, List<String> postFname, long feedNo, String userName, String profilePhoto, List<CommentDTO> comments) {
+    public PostDTO(long postNo, String postContent, LocalDate postUserDefDate, LocalDateTime postTime, List<String> postFname, long feedNo, long userNo, String userName, String profilePhoto, List<CommentDTO> comments) {
         this.postNo = postNo;
         this.postContent = postContent;
         this.postUserDefDate = postUserDefDate;
         this.postTime = postTime;
         this.postFname = postFname;
         this.feedNo = feedNo;
+        this.userNo = userNo;
         this.userName = userName;
         this.profilePhoto = profilePhoto;
         this.comments = comments;

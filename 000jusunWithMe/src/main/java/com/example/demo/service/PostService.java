@@ -65,6 +65,7 @@ public class PostService {
                 Users commentWriter = userRepository.findByUserNo(comment.getUserNo());
                 CommentDTO commentDTO = new CommentDTO(
                     comment.getComNo(),
+                    commentWriter.getUserNo(),
                     commentWriter.getUsername(),
                     commentWriter.getProfilePhoto(),
                     comment.getComTime(),
@@ -80,6 +81,7 @@ public class PostService {
                 post.getPostTime(),
                 post.getPostFname(),
                 post.getFeedNo(),
+                user.getUserNo(),
                 user.getUsername(),
                 user.getProfilePhoto(),
                 commentDTOs

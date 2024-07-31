@@ -292,7 +292,7 @@
 									th:text="${#temporals.format(post.postTime, 'yyyy-MM-dd HH:mm:ss')}"></time>
 
 							</div>
-							<div class="buttons">
+							<div th:if="${session.loginUser.userNo == post.userNo}" class="buttons">
 								<button class="updateBtn" th:data-post-no="${post.postNo}">수정</a>
 								<button class="deleteBtn" th:data-post-no="${post.postNo}">삭제</a>
 							</div>
@@ -318,7 +318,8 @@
 										<time th:attr="time-data=${comment.comTime}"></time>
 										<p th:text="${comment.comContent}"></p>
 									</div>
-									<button class="deleteCommentBtn" th:data-com-no="${comment.comNo}">삭제</button>
+									<button th:if="${session.loginUser.userNo == comment.userNo}" 
+										class="deleteCommentBtn" th:data-com-no="${comment.comNo}">삭제</button>
 								</div>
 							</div>
 							<!--작성된 댓글 리스트 끝-->
