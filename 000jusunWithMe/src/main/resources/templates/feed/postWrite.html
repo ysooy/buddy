@@ -252,10 +252,7 @@
 	<div id="navbar" th:replace="/navbar/navbar :: nav"></div>
 	<div class="form-container">
 		<form action="/feed/postWrite" method="post" enctype="multipart/form-data">
-			<!-- 로그인 활성화 시 userNo는 이걸로 변경 !!
-                <input type="hidden" name="userNo" th:value="${session.loginUser.userNo}">
-            -->
-			<input type="hidden" name="userNo" value="3598270263">
+			<input type="hidden" name="userNo" th:value="${session.loginUser.userNo}">
 			<input type="date" id="postUserDefDate" name="postUserDefDate">
 			<textarea name="postContent" class="txtarea" placeholder="글 내용 입력..."></textarea>
 			<label for="groupImg">사진 추가하기</label>

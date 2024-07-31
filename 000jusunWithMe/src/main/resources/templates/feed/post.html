@@ -325,10 +325,7 @@
 							<!--댓글 작성 칸 시작-->
 							<form action="/feed/commentWrite" method="post">
 								<input type="hidden" name="postNo" th:value="${post.postNo}">
-								<!-- 로그인 활성화 시 userNo는 이걸로 변경 !!
-										<input type="hidden" name="userNo" th:value="${session.loginUser.userNo}">
-									-->
-								<input type="hidden" name="userNo" value="3598270263">
+								<input type="hidden" name="userNo" th:value="${session.loginUser.userNo}">
 								<div class="comments">
 									<textarea name="comContent" class="txtComment" placeholder="댓글을 입력하세요."
 										oninput="resize(this)"></textarea>
