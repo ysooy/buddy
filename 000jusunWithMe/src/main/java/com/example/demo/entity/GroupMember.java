@@ -1,6 +1,5 @@
 package com.example.demo.entity;
 
-import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,23 +11,21 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "groupTable")
-public class GroupTable {
+@Table(name = "groupMember")
+public class GroupMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long memberNo;
+
+    @Column(nullable = false)
     private Long groupNo;
 
     @Column(nullable = false)
-    private String groupName;
+    private Long userNo;
 
     @Column(nullable = false)
-    private LocalDate groupDate;
+    private int leader;
 
-    @Column(nullable = false, unique = true)
-    private String inviteCode;
-
-    @Column(nullable = true)
-    private String groupProfilePhoto;
 
 }
