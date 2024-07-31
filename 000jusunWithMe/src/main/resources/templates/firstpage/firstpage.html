@@ -81,38 +81,22 @@
     <div class="container">
         <div>
             <h1>그룹 선택</h1>
-            <!--<h2 th:text="'세션 유지한 로그인 유저: ' + ${session.loginUser.username}"></h2> : 테스트용-->
         </div>
         <div class="button-container">
-            <div class="square-button">
-                <img src="/images/orange.png">
-                <div class="button-name">그룹 1</div>
-            </div>
-            <div class="square-button">
-                <img src="/images/orange.png">
-                <div class="button-name">그룹 2</div>
-            </div>
-            <div class="square-button">
-                <img src="/images/orange.png">
-                <div class="button-name">그룹 3</div>
-            </div>
-            <div class="square-button">
-                <img src="/images/orange.png">
-                <div class="button-name">뫄뫄</div>
-            </div>
-            <div class="square-button">
-                <img src="/images/orange.png">
-                <div class="button-name">뫄뫄</div>
-            </div>
-            <div class="square-button">
-                <img src="/images/orange.png">
-                <div class="button-name">뫄뫄</div>
-            </div>
-            <div class="square-button">
-                <img src="/images/plus.png">
-                <div class="button-name">새 그룹 만들기</div>
-            </div>
-        </div>
+		    <div class="square-button" th:each="group : ${groups}">
+		        <a th:href="@{'/feed/feed/' + ${group.groupNo}}">
+		            <img th:if="${group.groupProfilePhoto != null and !group.groupProfilePhoto.isEmpty()}" th:src="@{'/images/' + ${group.groupProfilePhoto}}" >
+		            <img th:unless="${group.groupProfilePhoto != null and !group.groupProfilePhoto.isEmpty()}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+		            <div class="button-name" th:text="${group.groupName}"></div>
+		        </a>
+		    </div>
+		    <div class="square-button">
+		        <a href="/firstpage/makeGroup">
+		            <img src="/images/plus.png" alt="새 그룹 만들기">
+		            <div class="button-name">새 그룹 만들기</div>
+		        </a>
+		    </div>
+		</div>
     </div>
 </body>
 </html>

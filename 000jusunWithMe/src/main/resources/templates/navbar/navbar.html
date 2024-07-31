@@ -8,11 +8,11 @@
 <body>
 <!-- 공통 네비게이션바 메뉴  -->
 <nav class="navbar">
-    <a class="navButton" href="/firstpage/firstpage.html">
+    <a class="navButton" href="/groupHome/firstpage">
         <img src="/images/home.png" alt="홈">
         <span>홈</span>
     </a> 
-    <a class="navButton" href="/feed/feed.html">
+    <a class="navButton" th:href="@{'/feed/feed/' + ${session.selectedGroup.groupNo}}">
         <img src="/images/category.png" alt="피드">
         <span>피드</span> 
     </a>

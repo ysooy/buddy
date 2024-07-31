@@ -7,6 +7,6 @@ import com.example.demo.entity.GroupTable;
 
 public interface GroupTableRepository extends JpaRepository<GroupTable, Long> {
 	
-
+	
 
 }

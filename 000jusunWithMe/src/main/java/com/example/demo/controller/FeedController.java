@@ -18,9 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.Feed;
+import com.example.demo.entity.GroupTable;
 import com.example.demo.entity.Post;
 import com.example.demo.service.CommentService;
 import com.example.demo.service.FeedService;
+import com.example.demo.service.GroupService;
 import com.example.demo.service.PostService;
 
 import jakarta.servlet.http.HttpSession;
@@ -38,9 +40,13 @@ public class FeedController {
 	private CommentService cs;
 	@Autowired
 	private FeedService fs;
+	@Autowired
+	private GroupService gs;
 	
 	@GetMapping("/feed/feed/{groupNo}")
-    public String feedView(Model model, @PathVariable long groupNo) {
+    public String feedView(HttpSession session, Model model, @PathVariable long groupNo) {
+		GroupTable group = gs.getGroupByGroupNo(groupNo);
+		session.setAttribute("selectedGroup", group); //사용자가 선택한 그룹 세션 유지
 		model.addAttribute("feeds",fs.listFeed(groupNo));
 		return "/feed/feed";
 	};
