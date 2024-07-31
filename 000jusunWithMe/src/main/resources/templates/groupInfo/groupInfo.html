@@ -160,25 +160,20 @@
 		</div>
 	<div class="container">
 		<div class="myGroup center">
-			<img src="/images/orange.png">
+			<img th:if="${session.selectedGroup.groupProfilePhoto != null}" th:src="@{'/images/' + ${session.selectedGroup..groupProfilePhoto}}" >
+		    <img th:unless="${session.selectedGroup.groupProfilePhoto != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
 			<div class="groupName center">
-				<p style="font-size: 20px;">내새끼들</p>
-				<p><i>since 2020.4.20</i></p>
+				<p style="font-size: 20px;" th:text="${session.selectedGroup.groupName}"></p>
+				<p th:text="'since '+${session.selectedGroup.groupDate}"><i></i></p>
 			</div>
 		</div>
 		<div class="listMember">
 			<label style="color:grey">멤버</label>
-			<div class="member">
-				<img src="/images/sample1.jpg"><span>쮸 (리더)</span>
-			</div>
-			<div class="member">
-				<img src="/images/sample2.jpg"><span>수수</span>
-			</div>
-			<div class="member">
-				<img src="/images/sample3.jpg"><span>쮸</span>
-			</div>
-			<div class="member">
-				<img src="/images/sample3.jpg"><span>쮸</span>
+			<div class="member" th:each="user : ${users}" >
+				<img th:if="${user.profilePhoto != null}" th:src="@{${user.profilePhoto}}" >
+		    	<img th:unless="${user.profilePhoto != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+				<span th:text="${user.username}"></span>
+				<span th:if="${leaderUserNo == user.userNo}">&nbsp;(리더)</span>
 			</div>
 		</div>
 		<div class="inOrOut">
@@ -191,12 +186,12 @@
 		<div class="modal-content">
 			<span class="close">&times;</span>
 			<div id="modal-content">
-				<img src="/images/orange.png">
+				<img id="modal-photo" src="/images/orange.png">
 				<div class="groupName center">
-					<p style="font-size: 20px;">쮸</p>
-					<p><i>1996.6.27</i></p>
+					<p id="modal-username" style="font-size: 20px;">쮸</p>
+					<p id="modal-birthday"><i>1996.6.27</i></p>
 				</div>
-				<div class="inOrOut">
+				<div th:if="${leaderUserNo == session.loginUser.userNo}" class="inOrOut">
 					<span style="color: grey;">그룹장 위임하기</span>
 					<span style="color: orangered;"> 그룹 내보내기</span>
 				</div>
