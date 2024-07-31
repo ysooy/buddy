@@ -22,8 +22,7 @@ public class Feed {
 	@Column(name="feedNo")
 	private long feedNo;
 	
-	//일단 null허용안되게해놓겠음. 나중에 수정
-	@Column(nullable=false, name = "feedPhoto")
+	@Column(nullable=true, name = "feedPhoto")
 	private String feedPhoto;
 
 	@Column(nullable=false, name="feedDate")
