@@ -14,5 +14,12 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
 	//userNo가 들어가 있는 groupNo의 리스트 반환
 	@Query("SELECT gm.groupNo FROM GroupMember gm WHERE gm.userNo = :userNo")
     List<Long> findGroupNoByUserNo(@Param("userNo") long userNo);
-
+	
+	//groupNo로 그 그룹에 들어가 있는 멤버찾기
+	@Query("SELECT gm.userNo FROM GroupMember gm WHERE gm.groupNo = :groupNo")
+	List<Long> findUserNoByGroupNo(@Param("groupNo") long groupNo);
+	
+	//그룹 리더 찾기 
+	@Query("SELECT gm.userNo FROM GroupMember gm WHERE gm.groupNo = :groupNo and gm.leader=1")
+	Long findLeader(@Param("groupNo") long groupNo);
 }

@@ -12,9 +12,14 @@
         <div class="leftButton">
              <a href="javascript:history.back()"><img src="/images/back.png" alt="뒤로 가기"></a>
         </div>       
-       	<!--서비스명 (그룹 선택 후에는 그룹명으로 동적 변경)--> 
+       	<!--그룹명--> 
         <div class="center">
-            <h2>버디즈</h2>
+            <a th:href="@{'/groupInfo/groupInfo/'+ ${session.selectedGroup.groupNo}}" th:if="${session.selectedGroup != null}">
+                <h2 th:text="${session.selectedGroup.groupName}"></h2>
+            </a>
+            <a href="#" th:unless="${session.selectedGroup != null}">
+                <h2>Buddies</h2>
+            </a>
         </div>
         <!--마이페이지--> 
         <div class="myPage">

@@ -35,4 +35,14 @@ public class GroupService {
 	public GroupTable getGroupByGroupNo(long groupNo) {
 		return gtr.findById(groupNo).get();
 	}
+	
+	//groupNo로 그 그룹에 들어가 있는 멤버찾기
+	public List<Long> fingUserNoByGroupNo(long groupNo){
+		return gmr.findUserNoByGroupNo(groupNo);
+	}
+	
+	//그룹 리더 찾기
+	public long findLeader(long groupNo) {
+		return gmr.findLeader(groupNo);
+	}
 }
