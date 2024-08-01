@@ -5,16 +5,87 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>칭구칭구</title>
-	<link rel="stylesheet" href="/css/common.css">      
-    <link rel="stylesheet" href="/css/navbar.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="/css/common.css">
+	<link rel="stylesheet" href="/css/navbar.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		$(document).ready(function () {
 			var modal = $("#myModal");
+			var modalPhoto = $("#modal-photo");
+			var modalUsername = $("#modal-username");
+			var modalBirthday = $("#modal-birthday");
+			var modalChangeLeader = $("#modal-changeLeader");
+			var modalKickout = $("#modal-kickout");
+
+			var currentUserName;  // 전역 변수로 사용자 이름 저장-> 리더위임, 멤버 내보내기에 사용
+
+			// 날짜 형식 '0000년 0월 0일'로 만들기
+			function formatDate(dateString) {
+				if (!dateString) return "생일 없음";
+
+				var date = new Date(dateString);
+
+				// 월, 일 추출
+				var month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+				var day = date.getDate();
+
+				// 형식에 맞게 문자열 생성
+				return `생일: ${month}월 ${day}일`;
+			}
 
 			$(".member").click(function () {
-				var memberInfo = $(this).html();
+				var profilePhoto = $(this).data("profile-photo");
+				var username = $(this).data("username");
+				var birthday = $(this).data("birthday");
+				var userNo = $(this).data("userno");
+
+				// 현재 클릭한 사용자 이름을 전역변수에 저장-> 리더위임, 내보내기 confirm창에 띄우기 위함 
+				currentUserName = username;
+
+				// 모달창에 프로필사진, 이름, 생일 표시
+				modalPhoto.attr("src", profilePhoto || "/images/orange.png");
+				modalUsername.text(username);
+				modalBirthday.html(formatDate(birthday));
+
+				// 리더 위임 링크 연결하기
+				var changeLeaderUrl = '/groupInfo/changeLeader/' + userNo;
+				modalChangeLeader.attr("href", changeLeaderUrl);
+
+				// 그룹 내보내기 링크 연결하기
+				var kickoutUrl = '/groupInfo/kickout/' + userNo;
+				modalKickout.attr("href", kickoutUrl);
+
 				modal.css("display", "block");
+			});
+
+			// 리더 위임하기 클릭 시 confirm
+			$("#modal-changeLeader").click(function (event) {
+				event.preventDefault();
+				var href = $(this).attr("href");
+				var confirmChange = confirm(currentUserName + "에게 리더를 위임하시겠습니까?");
+				if (confirmChange) {
+					window.location.href = href;
+				}
+			});
+
+			// 그룹 내보내기 클릭 시 confirm
+			$("#modal-kickout").click(function (event) {
+				event.preventDefault();
+				var href = $(this).attr("href");
+				var confirmKickout = confirm(currentUserName + " 멤버를 그룹에서 내보내시겠습니까?");
+				if (confirmKickout) {
+					window.location.href = href;
+				}
+			});
+			
+			//그룹 나가기 클릭 시 confirm
+			$("#leave-group").click(function (event) {
+				event.preventDefault();
+				var href = $(this).attr("href");
+				var confirmLeave = confirm("정말 그룹에서 나가시겠습니까?");
+				if (confirmLeave) {
+					window.location.href = href;
+				}
 			});
 
 			$(".close").click(function () {
@@ -27,6 +98,7 @@
 				}
 			});
 		});
+
 	</script>
 	<style>
 		.center {
@@ -47,6 +119,7 @@
 
 		p {
 			margin: 2px 2px;
+			color: black;
 		}
 
 		.listMember {
@@ -81,8 +154,9 @@
 			justify-content: center;
 		}
 
-		.inOrOut span {
+		.inOrOut a {
 			margin: 20px;
+			text-decoration: none;
 		}
 
 		.leftButton {
@@ -143,25 +217,36 @@
 			border-radius: 50%;
 			margin-bottom: 20px;
 		}
+
 		/* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
-        @media (min-width: 768px) {
-            .container{
+		@media (min-width: 768px) {
+			.container {
 				margin-left: 200px;
-			    width: calc(100% - 200px);
+				width: calc(100% - 200px);
 			}
-        }
+		}
+
+		#invite-member, #modal-changeLeader {
+			color: grey;
+		}
+
+		#leave-group, #modal-kickout {
+			color: orangered;
+		}
 	</style>
 </head>
 
 <body>
 	<div id="navbar" th:replace="/navbar/navbar :: nav"></div>
 	<div class="leftButton">
-			<a href="#">&lt;</a>
-		</div>
+		<a href="#">&lt;</a>
+	</div>
 	<div class="container">
 		<div class="myGroup center">
-			<img th:if="${session.selectedGroup.groupProfilePhoto != null}" th:src="@{'/images/' + ${session.selectedGroup..groupProfilePhoto}}" >
-		    <img th:unless="${session.selectedGroup.groupProfilePhoto != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+			<img th:if="${session.selectedGroup.groupProfilePhoto != null}"
+				th:src="@{'/images/' + ${session.selectedGroup.groupProfilePhoto}}">
+			<img th:unless="${session.selectedGroup.groupProfilePhoto != null}" th:src="@{'/images/orange.png'}"
+				alt="기본 이미지">
 			<div class="groupName center">
 				<p style="font-size: 20px;" th:text="${session.selectedGroup.groupName}"></p>
 				<p th:text="'since '+${session.selectedGroup.groupDate}"><i></i></p>
@@ -169,16 +254,18 @@
 		</div>
 		<div class="listMember">
 			<label style="color:grey">멤버</label>
-			<div class="member" th:each="user : ${users}" >
-				<img th:if="${user.profilePhoto != null}" th:src="@{${user.profilePhoto}}" >
-		    	<img th:unless="${user.profilePhoto != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+			<div class="member" th:each="user : ${users}" th:data-userno="${user.userNo}"
+				th:data-profile-photo="${user.profilePhoto}" th:data-username="${user.username}"
+				th:data-birthday="${user.birthday}">
+				<img th:if="${user.profilePhoto != null}" th:src="@{${user.profilePhoto}}">
+				<img th:unless="${user.profilePhoto != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
 				<span th:text="${user.username}"></span>
 				<span th:if="${leaderUserNo == user.userNo}">&nbsp;(리더)</span>
 			</div>
 		</div>
 		<div class="inOrOut">
-			<span style="color: grey;">멤버 초대하기</span>
-			<span style="color: orangered;"> 그룹 나가기</span>
+			<a id="invite-member">멤버 초대하기</a>
+			<a id="leave-group" th:href="@{'/groupInfo/leaveGroup/'+${session.loginUser.userNo}}">그룹 나가기</a>
 		</div>
 	</div>
 	<!-- 모달 창 -->
@@ -186,14 +273,15 @@
 		<div class="modal-content">
 			<span class="close">&times;</span>
 			<div id="modal-content">
-				<img id="modal-photo" src="/images/orange.png">
+				<img id="modal-photo">
 				<div class="groupName center">
-					<p id="modal-username" style="font-size: 20px;">쮸</p>
-					<p id="modal-birthday"><i>1996.6.27</i></p>
+					<p id="modal-username" style="font-size: 20px;"></p>
+					<p id="modal-birthday"></p>
 				</div>
+				<!--이하 그룹 리더만 보이는 영역-->
 				<div th:if="${leaderUserNo == session.loginUser.userNo}" class="inOrOut">
-					<span style="color: grey;">그룹장 위임하기</span>
-					<span style="color: orangered;"> 그룹 내보내기</span>
+					<a id="modal-changeLeader" href="#" >리더 위임하기</a>
+					<a id="modal-kickout" href="#"> 그룹 내보내기</a>
 				</div>
 			</div>
 		</div>

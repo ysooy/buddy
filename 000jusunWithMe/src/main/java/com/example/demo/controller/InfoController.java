@@ -45,4 +45,30 @@ public class InfoController {
 		return "/groupInfo/groupInfo";
 	};
 	
+	//리더를 다른멤버로 위임
+	@GetMapping("/groupInfo/changeLeader/{userNo}")
+	public String changeLeader(@PathVariable long userNo, HttpSession session) {
+		GroupTable selectedGroup = (GroupTable)session.getAttribute("selectedGroup");
+		long groupNo = selectedGroup.getGroupNo();
+		int re = gs.resetLeader(groupNo, userNo); //테스팅 위해 일단 만들어두긴 함
+		return "redirect:/groupInfo/groupInfo/"+groupNo;
+	}
+	
+	//멤버를 그룹에서 내보내기 
+	@GetMapping("/groupInfo/kickout/{userNo}")
+	public String kickout(@PathVariable long userNo,  HttpSession session) {
+		GroupTable selectedGroup = (GroupTable)session.getAttribute("selectedGroup");
+		long groupNo = selectedGroup.getGroupNo();
+		int re = gs.leaveGroup(userNo, groupNo); //제대로 왔나 확인하고 돌려보내면 좋을듯함. 추후 추가?
+		return "redirect:/groupInfo/groupInfo/"+groupNo;
+	}
+	//그룹 나가기(자발적) *kickout이랑은 랜딩페이지가 달라야 해서 메소드 그냥 따로 만들었음
+	@GetMapping("/groupInfo/leaveGroup/{userNo}")
+	public String leaveGroup(@PathVariable long userNo,  HttpSession session) {
+		GroupTable selectedGroup = (GroupTable)session.getAttribute("selectedGroup");
+		long groupNo = selectedGroup.getGroupNo();
+		int re = gs.leaveGroup(userNo, groupNo);
+		return "redirect:/groupHome/firstpage";
+	}
+	
 }
