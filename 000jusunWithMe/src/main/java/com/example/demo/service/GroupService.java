@@ -45,4 +45,21 @@ public class GroupService {
 	public long findLeader(long groupNo) {
 		return gmr.findLeader(groupNo);
 	}
+	
+	//그룹 리더 위임하기
+	public int resetLeader(long groupNo, long userNo) {
+		int re = 0;
+		int re1 = gmr.resetLeader(groupNo); //원래 리더의 리더 지위 박탈
+		int re2 = gmr.setNewLeader(userNo); //새로운 리더 설정
+		if(re1==1 && re2==1) {
+			re=1; //db 업데이트가 무사히 완료됐으면 1 반환
+		}
+		return re;
+	}
+	
+	//그룹에서 멤버 내보내기(쫓아내기 포함)
+	public int leaveGroup(long userNo, long groupNo) {
+		int re = gmr.leaveGroup(userNo, groupNo);
+		return re;
+	}
 }
