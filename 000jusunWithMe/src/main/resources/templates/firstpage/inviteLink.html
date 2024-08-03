@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칭구칭구</title>
+   <link rel="stylesheet" href="/css/common.css">         
+    <link rel="stylesheet" href="/css/header.css">    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+		$(document).ready(function() {
+            // [링크 클립보드에 복사]
+            $('#copyBtn').on('click', function() {
+                // input 요소 선택
+                var inviteLinkInput = $('#inviteLink');
+                
+                // input 요소의 값을 선택
+                inviteLinkInput.prop('disabled', false); // 선택을 위해 disabled 속성 제거
+                inviteLinkInput.select();
+                inviteLinkInput.prop('disabled', true); // 다시 disabled 속성 추가
+
+                // 클립보드에 복사
+                document.execCommand('copy');
+
+                // 사용자에게 알림
+                alert('초대 링크가 클립보드에 복사되었습니다!');
+            });
+        });
+    </script>
+    <style>
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            width: 100%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-container input[type="text"] {
+            width: calc(100% - 22px); 
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .copy-link-container {
+            display: flex;
+            align-items: flex-start; 
+            margin-bottom: 20px;
+        }
+
+        .copy-link-container input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        button, input[type="submit"] {
+            background-color: #FFA500; 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
+        }
+
+        @media (min-width: 1024px) {
+            .button-container {
+                grid-template-columns: repeat(4, 250px); /* PC 화면에서 4개씩 */
+                justify-content: center; /* 가운데 정렬 */
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .button-container {
+                grid-template-columns: repeat(2, 250px); /* 모바일 화면에서 2개씩 */
+                justify-content: center; /* 가운데 정렬 */
+            }
+        }
+        
+        h1{
+			font-weight: normal;
+		}
+		#toHome{
+			text-decoration: none;
+			color: #FF8C00;
+			font-style: italic;
+		}
+    </style>
+</head>
+<body>
+	<div id="header" th:replace="/header/header :: header"></div>
+	<div class="main-container">
+	    <div class="center" style="margin-bottom: 50px;">
+	        <h1 th:text="${group.groupName}"></h1>
+	        <h3>- 참여 링크 공유 -</h3>
+	    </div>
+	    <div class="form-container">
+	        <form >
+				<label for="groupLink">그룹 참여 링크를 복사해 멤버들과 공유하세요!</label>
+				<br>
+	            <div class="copy-link-container" style="margin: 0px;">
+	                <input type="text" id="inviteLink" th:value="'http://localhost:8080/firstpage/enterGroup/'+${group.groupNo}" readonly disabled>
+	                <button id="copyBtn">복사</button>
+	            </div>
+	            <br>
+	    </div>
+        <a id="toHome" class="center" href="/firstpage/firstpage">홈으로 가기</a>
+    </div>
+</body>
+</html>
