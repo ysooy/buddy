@@ -201,7 +201,9 @@
     </style>
 </head>
 <body>
-	<div id="navbar" th:replace="/navbar/navbar :: nav"></div>
+     <div th:if="${session.selectedGroup != null and session.selectedGroup.groupNo != null}">
+		 <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
+	 </div>
 	<div class="main-container">
 	    <div class="form-container">
 	        <div class="head">
@@ -212,7 +214,7 @@
 	            <input type="submit" value="수정">
 	        </div>
 	        <div class="myInfo center">
-	            <img src="/images/orange.png">
+	            <img th:src="${session.loginUser.profilePhoto}">
 	        </div>
 	        <form>
 	            <label for="nickname">닉네임</label>

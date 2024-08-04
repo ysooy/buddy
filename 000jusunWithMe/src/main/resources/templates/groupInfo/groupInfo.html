@@ -10,6 +10,67 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		$(document).ready(function () {
+		    var uploadPhoto = $("#uploadPhoto");
+            var groupProfilePhoto = $("#group-profile-photo");
+            var uploadForm = $("#upload-form");
+
+            // 그룹 프로필 사진 클릭 시 파일 선택 창 열기
+            groupProfilePhoto.click(function () {
+                uploadPhoto.click();
+            });
+
+            // 파일 선택 시 미리보기 이미지 변경
+            uploadPhoto.change(function (event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        groupProfilePhoto.attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // 폼 제출 처리
+            uploadForm.submit(function (event) {
+                event.preventDefault(); // 기본 제출 동작 방지
+
+                var formData = new FormData(this);
+
+                // 파일이 있는 경우, 유일한 파일명 생성 및 적용
+                var fileInput = $('#uploadPhoto')[0];
+                if (fileInput.files.length > 0) {
+                    var file = fileInput.files[0];
+                    var uniqueFileName = generateUniqueFileName(file.name);
+                    var blob = dataURLtoBlob(groupProfilePhoto.attr('src'));
+
+                    // Blob을 File 객체로 변환
+                    var uniqueFile = new File([blob], uniqueFileName, { type: 'image/jpeg' });
+                    
+                    // FormData에 새로운 파일 추가
+                    formData.delete('photo');
+                    formData.append('photo', uniqueFile);
+                }
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        alert("그룹 프로필 사진이 성공적으로 업데이트되었습니다.");
+                        // 이미지 URL에 타임스탬프 추가로 캐싱 문제 해결
+                        var newSrc = '/images/' + uniqueFileName + '?' + new Date().getTime();
+                        groupProfilePhoto.attr('src', newSrc);
+                    },
+                    error: function (xhr, status, error) {
+                        alert("사진 업데이트에 실패했습니다.");
+                    }
+                });
+            });
+			
+			//이하 모달창 관련
 			var modal = $("#myModal");
 			var modalPhoto = $("#modal-photo");
 			var modalUsername = $("#modal-username");
@@ -98,7 +159,25 @@
 				}
 			});
 		});
+ 		// 유일 파일명 만들기
+        function generateUniqueFileName(originalName) {
+            const timestamp = Date.now();
+            const originalNameWithoutExtension = originalName.split('.').slice(0, -1).join('.');
+            const extension = originalName.split('.').pop();
+            return `${timestamp}_${originalNameWithoutExtension}.${extension}`;
+        }
 
+        // DataURL을 Blob으로 변환
+        function dataURLtoBlob(dataurl) {
+            const arr = dataurl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            const u8arr = new Uint8Array(bstr.length);
+            for (let i = 0; i < bstr.length; i++) {
+                u8arr[i] = bstr.charCodeAt(i);
+            }
+            return new Blob([u8arr], { type: mime });
+        }
 	</script>
 	<style>
 		.center {
@@ -110,9 +189,9 @@
 		}
 
 		.myGroup img {
-			width: 40%;
-			height: 40%;
-			max-width: 250px;
+			object-fit: cover; 
+			width: 200px;
+			height: 200px;
 			border-radius: 50%;
 			margin-bottom: 10px;
 		}
@@ -212,8 +291,9 @@
 
 		/*모달창 내 멤버 프로필 사진*/
 		.modal-content img {
-			width: 40%;
-			height: 40%;
+			width: 200px;
+			height: 200px;
+			object-fit: cover; 
 			border-radius: 50%;
 			margin-bottom: 20px;
 		}
@@ -233,60 +313,82 @@
 		#leave-group, #modal-kickout {
 			color: orangered;
 		}
+		.profile-photo {
+            cursor: pointer;
+        }
+        input[type="submit"] {
+            flex: 0;
+            text-align: right;
+            background: none;
+            border: none;
+            color: #FFA500;
+            font-size: 16px;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top:20px
+        }
 	</style>
 </head>
-
 <body>
-	<div id="navbar" th:replace="/navbar/navbar :: nav"></div>
-	<div class="leftButton">
-		<a href="#">&lt;</a>
-	</div>
-	<div class="container">
-		<div class="myGroup center">
-			<img th:if="${session.selectedGroup.groupProfilePhoto != null}"
-				th:src="@{'/images/' + ${session.selectedGroup.groupProfilePhoto}}">
-			<img th:unless="${session.selectedGroup.groupProfilePhoto != null}" th:src="@{'/images/orange.png'}"
-				alt="기본 이미지">
-			<div class="groupName center">
-				<p style="font-size: 20px;" th:text="${session.selectedGroup.groupName}"></p>
-				<p th:text="'since '+${session.selectedGroup.groupDate}"><i></i></p>
-			</div>
-		</div>
-		<div class="listMember">
-			<label style="color:grey">멤버</label>
-			<div class="member" th:each="user : ${users}" th:data-userno="${user.userNo}"
-				th:data-profile-photo="${user.profilePhoto}" th:data-username="${user.username}"
-				th:data-birthday="${user.birthday}">
-				<img th:if="${user.profilePhoto != null}" th:src="@{${user.profilePhoto}}">
-				<img th:unless="${user.profilePhoto != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
-				<span th:text="${user.username}"></span>
-				<span th:if="${leaderUserNo == user.userNo}">&nbsp;(리더)</span>
-			</div>
-		</div>
-		<div class="inOrOut">
-			<a id="invite-member">멤버 초대하기</a>
-			<a id="leave-group" th:href="@{'/groupInfo/leaveGroup/'+${session.loginUser.userNo}}">그룹 나가기</a>
-		</div>
-	</div>
-	<!-- 모달 창 -->
-	<div id="myModal" class="modal">
-		<div class="modal-content">
-			<span class="close">&times;</span>
-			<div id="modal-content">
-				<img id="modal-photo">
-				<div class="groupName center">
-					<p id="modal-username" style="font-size: 20px;"></p>
-					<p id="modal-birthday"></p>
-				</div>
-				<!--이하 그룹 리더만 보이는 영역-->
-				<div th:if="${leaderUserNo == session.loginUser.userNo}" class="inOrOut">
-					<a id="modal-changeLeader" href="#" >리더 위임하기</a>
-					<a id="modal-kickout" href="#"> 그룹 내보내기</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!--모달창 끝-->
+    <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
+    <div class="leftButton">
+        <a href="javascript:history.back()">&lt;</a>
+    </div>
+    <!-- 파일 업로드 폼 -->
+    <form id="upload-form" action="/groupInfo/uploadProfilePhoto" method="post" enctype="multipart/form-data">
+        <input type="file" id="uploadPhoto" name="photo" style="display: none;">
+        <input type="submit" value="프로필 수정">
+    </form>
+    <div class="container">
+        <div class="myGroup center">
+            <img id="group-profile-photo" class="profile-photo"
+                th:if="${session.selectedGroup.groupProfilePhoto != null}"
+                th:src="@{'/images/' + ${session.selectedGroup.groupProfilePhoto}}">
+            <img id="group-profile-photo" class="profile-photo"
+                th:unless="${session.selectedGroup.groupProfilePhoto != null}"
+                th:src="@{'/images/orange.png'}" alt="기본 이미지">
+            <div class="groupName center">
+                <p style="font-size: 20px;" th:text="${session.selectedGroup.groupName}"></p>
+                <p th:text="'since '+${session.selectedGroup.groupDate}"><i></i></p>
+            </div>
+        </div>
+        <div class="listMember">
+            <label style="color:grey">멤버</label>
+            <div class="member" th:each="user : ${users}" th:data-userno="${user.userNo}"
+                th:data-profile-photo="${user.profilePhoto}" th:data-username="${user.username}"
+                th:data-birthday="${user.birthday}">
+                <img th:if="${user.profilePhoto != null}" th:src="@{${user.profilePhoto}}">
+                <img th:unless="${user.profilePhoto != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+                <span th:text="${user.username}"></span>
+                <span th:if="${leaderUserNo == user.userNo}">&nbsp;(리더)</span>
+            </div>
+        </div>
+        <div class="inOrOut">
+            <a id="invite-member" th:href="@{'/firstpage/inviteLink/'+${session.selectedGroup.groupNo}}">멤버 초대하기</a>
+            <a id="leave-group" th:href="@{'/groupInfo/leaveGroup/'+${session.loginUser.userNo}}">그룹 나가기</a>
+        </div>
+    </div>
+    <!-- 모달 창 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-content">
+                <img id="modal-photo">
+                <div class="groupName center">
+                    <p id="modal-username" style="font-size: 20px;"></p>
+                    <p id="modal-birthday"></p>
+                </div>
+                <!--이하 그룹 리더만 보이는 영역-->
+                <div th:if="${leaderUserNo == session.loginUser.userNo}" class="inOrOut">
+                    <a id="modal-changeLeader" href="#">리더 위임하기</a>
+                    <a id="modal-kickout" href="#"> 그룹 내보내기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--모달창 끝-->
 </body>
+
 
 </html>

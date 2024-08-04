@@ -12,12 +12,30 @@
             $('form').on('submit', function(event) {
                 var groupCode = $('#inviteCode').val().trim();
                 var rightGroupCode = $('#rightInviteCode').val().trim();
+                var groupNo = $('#groupNo').val();
 
                 // 그룹 코드가 일치하는지 확인
                 if (groupCode !== rightGroupCode) {
                     alert('그룹코드를 다시 확인해주세요!');
                     event.preventDefault(); 
+                    return;
                 }
+                
+                $.ajax({
+					url: '/checkMember',
+					type: 'POST',
+					data:{
+						groupNo: groupNo
+					},
+					success: function(re){
+						if(re){
+							alert('이미 이 그룹의 멤버입니다!');
+						}else{
+							$('form').off('submit').submit();
+						}
+					}
+				})
+				 event.preventDefault();
             });
         });
     </script>
@@ -97,7 +115,7 @@
         <input type="hidden" th:value="${group.inviteCode}" id="rightInviteCode">
         <div class="form-container">
             <form action="/firstpage/enterGroup" method="post">
-				<input type="text" th:value="${group.groupNo}" name="groupNo">
+				<input type="hidden" th:value="${group.groupNo}" id="groupNo" name="groupNo">
                 <label for="inviteCode">그룹코드</label>
                 <input type="text" id="inviteCode" required>
                 <input type="submit" value="참여하기 !">

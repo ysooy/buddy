@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -99,6 +100,15 @@ public class GroupService {
 		return gmr.save(m);
 	}
 	
+	//그룹에 이미 그 멤버가 있는지 확인- 그룹 참여하기 전 체크
+	public GroupMember checkMember(long userNo, long groupNo) {
+		return gmr.findByUserNoAndGroupNo(userNo, groupNo);
+	}
+	//그룹 프사 변경
+	public void updateProfilePhoto(long groupNo, String fname) {
+		gtr.updateGroupProfilePhoto(groupNo, fname);
+	}
+	
 	//====이하 사진 관련 메소드들 ====
 	//사진 등록 메소드 -> 파일명 String으로 반환
 	public String uploadPhoto(MultipartFile photoUpload) {
@@ -115,4 +125,15 @@ public class GroupService {
 	         }
 		return fname;
 	}
+	
+	// 사진 삭제 메소드
+    public boolean deletePhoto(String fname) {
+        String path = "src/main/resources/static/images";
+        File file = new File(path + "/" + fname);
+        if (file.exists()) {
+            return file.delete();  // 삭제 성공하면 true, 실패하면 false 반환
+        }
+        return false;  // 파일이 존재하지 않으면 false 반환
+    }
 }
+

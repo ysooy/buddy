@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.entity.GroupMember;
@@ -86,4 +87,19 @@ public class FirstpageController {
 		gs.insertGroupMember(m);
 		return "redirect:/firstpage/firstpage";
 	}
+	
+	//참여하려는 사람이 이미 그룹 멤버인지 확인(클라이언트에서 ajax)
+	@ResponseBody
+	@PostMapping("/checkMember")
+	public boolean checkMember(long groupNo) {
+		boolean re = false;
+		Users loginUser = (Users)session.getAttribute("loginUser");
+		long userNo = loginUser.getUserNo();
+		if(gs.checkMember(userNo, groupNo)!=null) {
+			re = true;
+		}
+		return re;
+	}
+	
+	
 }

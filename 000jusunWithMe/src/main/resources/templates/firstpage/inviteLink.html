@@ -101,6 +101,9 @@
 			color: #FF8C00;
 			font-style: italic;
 		}
+		#inviteCodeShow{
+			font-weight: bold;
+		}
     </style>
 </head>
 <body>
@@ -108,11 +111,12 @@
 	<div class="main-container">
 	    <div class="center" style="margin-bottom: 50px;">
 	        <h1 th:text="${group.groupName}"></h1>
-	        <h3>- 참여 링크 공유 -</h3>
+	        <h2>- 참여 링크 공유 -</h2>
 	    </div>
 	    <div class="form-container">
 	        <form >
 				<label for="groupLink">그룹 참여 링크를 복사해 멤버들과 공유하세요!</label>
+				<div id="inviteCodeShow" class="center" th:text="'그룹 코드: '+${group.inviteCode}"></div>
 				<br>
 	            <div class="copy-link-container" style="margin: 0px;">
 	                <input type="text" id="inviteLink" th:value="'http://localhost:8080/firstpage/enterGroup/'+${group.groupNo}" readonly disabled>
