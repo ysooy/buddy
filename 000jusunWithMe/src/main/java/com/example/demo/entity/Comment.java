@@ -33,5 +33,5 @@ public class Comment {
 	
 	@Column(nullable=false, name="userNo")
 	private long userNo;
-	
+	 
 }

@@ -82,7 +82,7 @@ public class NotificationService {
         if (savedComment.getComNo() == null) {
             throw new IllegalStateException("Comment could not be saved.");
         }
-        
+         
         Notification notification = new Notification();
         notification.setUserNo(savedComment.getUserNo());
         notification.setPostNo(savedComment.getPostNo());

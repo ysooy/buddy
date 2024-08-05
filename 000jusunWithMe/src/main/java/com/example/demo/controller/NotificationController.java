@@ -22,7 +22,7 @@ public class NotificationController {
 
     @Autowired
     private NotificationService ns;
-    
+     
     
     @GetMapping("/notification")
     public String getNotifications(Model model, @RequestParam(required = false) Long userNo, @RequestParam(required = false) Integer groupNo) {

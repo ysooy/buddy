@@ -14,4 +14,4 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 	// 특정 groupNo와 userNo 필터링
     List<Notification> findByUserNoAndGroupNo(Long userNo, int groupNo);
 	
-}
+} 

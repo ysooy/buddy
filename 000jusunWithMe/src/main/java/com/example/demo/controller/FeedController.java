@@ -177,7 +177,7 @@ public class FeedController {
 	
 	
 	//------이하 댓글 관련 ----
-	//댓글 등록
+	//댓글 등록 
 	@PostMapping("/feed/commentWrite")
 	public String commentWrite(Comment comment) {
 		cs.saveComment(comment);

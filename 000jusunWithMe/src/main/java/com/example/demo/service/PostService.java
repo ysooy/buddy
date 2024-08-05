@@ -129,7 +129,6 @@ public class PostService {
     	nf.setChecked("X");
     	nf.setNotiTime(post.getPostTime().toLocalDate());
     	nf.setPostNo(post.getPostNo());
-    	//nf.setComNo(0);	// 댓글은 null값일 수 있으니 우선 0
     	
     	notificationRepository.save(nf);
     	

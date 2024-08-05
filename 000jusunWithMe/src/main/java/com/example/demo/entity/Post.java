@@ -46,7 +46,7 @@ public class Post {
     private long feedNo;
     
     @Field("groupNo") // 그룹 정보
-    private long groupNo;
+    private long groupNo; 
      
 
     @Builder
