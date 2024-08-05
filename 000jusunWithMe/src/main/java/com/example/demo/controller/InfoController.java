@@ -8,6 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.entity.GroupTable;
 import com.example.demo.entity.Users;
@@ -23,6 +27,8 @@ public class InfoController {
 	private GroupService gs;
 	@Autowired
 	private UsersService us;
+	@Autowired
+	private HttpSession session;
 	
 	@GetMapping("/myInfo/myInfo")
     public void myInfoView() {
@@ -47,7 +53,7 @@ public class InfoController {
 	
 	//리더를 다른멤버로 위임
 	@GetMapping("/groupInfo/changeLeader/{userNo}")
-	public String changeLeader(@PathVariable long userNo, HttpSession session) {
+	public String changeLeader(@PathVariable long userNo) {
 		GroupTable selectedGroup = (GroupTable)session.getAttribute("selectedGroup");
 		long groupNo = selectedGroup.getGroupNo();
 		int re = gs.resetLeader(groupNo, userNo); //테스팅 위해 일단 만들어두긴 함
@@ -56,7 +62,7 @@ public class InfoController {
 	
 	//멤버를 그룹에서 내보내기 
 	@GetMapping("/groupInfo/kickout/{userNo}")
-	public String kickout(@PathVariable long userNo,  HttpSession session) {
+	public String kickout(@PathVariable long userNo) {
 		GroupTable selectedGroup = (GroupTable)session.getAttribute("selectedGroup");
 		long groupNo = selectedGroup.getGroupNo();
 		int re = gs.leaveGroup(userNo, groupNo); //제대로 왔나 확인하고 돌려보내면 좋을듯함. 추후 추가?
@@ -64,11 +70,25 @@ public class InfoController {
 	}
 	//그룹 나가기(자발적) *kickout이랑은 랜딩페이지가 달라야 해서 메소드 그냥 따로 만들었음
 	@GetMapping("/groupInfo/leaveGroup/{userNo}")
-	public String leaveGroup(@PathVariable long userNo,  HttpSession session) {
+	public String leaveGroup(@PathVariable long userNo) {
 		GroupTable selectedGroup = (GroupTable)session.getAttribute("selectedGroup");
 		long groupNo = selectedGroup.getGroupNo();
 		int re = gs.leaveGroup(userNo, groupNo);
 		return "redirect:/groupHome/firstpage";
+	}
+	
+	//그룹 프사 바꾸기
+	@PostMapping("/groupInfo/uploadProfilePhoto")
+	@ResponseBody
+	public void changeGroupPhoto(@RequestParam MultipartFile photo) {
+		GroupTable selectedGroup = (GroupTable)session.getAttribute("selectedGroup");
+		long groupNo = selectedGroup.getGroupNo();
+		String oldFname = selectedGroup.getGroupProfilePhoto();
+		String newFname = gs.uploadPhoto(photo);
+		if(oldFname!=null && !oldFname.isEmpty()) {
+			gs.deletePhoto(oldFname);
+		}
+		gs.updateProfilePhoto(groupNo, newFname); //프로필사진 db에 업데이트
 	}
 	
 }

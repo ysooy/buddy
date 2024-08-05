@@ -40,4 +40,7 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
 	@Modifying
 	@Query("DELETE FROM GroupMember gm WHERE gm.userNo = :userNo AND gm.groupNo = :groupNo")
 	int leaveGroup( long userNo, long groupNo);
+	
+	//해당 그룹에 그 멤버가 이미 참여하고있는지 알기 위함
+	GroupMember findByUserNoAndGroupNo(long userNo, long groupNo);
 }

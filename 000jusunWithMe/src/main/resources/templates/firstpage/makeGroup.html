@@ -4,10 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>칭구칭구</title>
-   <link rel="stylesheet" href="/css/common.css">         
+    <link rel="stylesheet" href="/css/common.css">         
     <link rel="stylesheet" href="/css/header.css">    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        $(function() {
+            // 파일 업로드와 미리보기
+            $('#photoUpload').on('change', function(event) {
+                var file = event.target.files[0];
+                
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var img = new Image();
+                        img.onload = function() {
+                            var canvas = document.createElement('canvas');
+                            var ctx = canvas.getContext('2d');
+                            
+                            var maxWidth = 300;
+                            var maxHeight = 300;
+                            var width = img.width;
+                            var height = img.height;
+                            
+                            // 비율을 유지하면서 크기 조정
+                            if (width > height) {
+                                if (width > maxWidth) {
+                                    height *= maxWidth / width;
+                                    width = maxWidth;
+                                }
+                            } else {
+                                if (height > maxHeight) {
+                                    width *= maxHeight / height;
+                                    height = maxHeight;
+                                }
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // 압축된 이미지 URL 생성
+                            var dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                            $('#imagePreview').html('<img src="' + dataUrl + '" alt="Image preview" style="max-width: 100%; height: auto;">');
+
+                            // 생성된 데이터 URL을 Blob으로 변환
+                            var blob = dataURLtoBlob(dataUrl);
+
+                            // 유일 파일명 생성
+                            var uniqueFileName = generateUniqueFileName(file.name);
+
+                            // Blob을 File 객체로 변환
+                            var uniqueFile = new File([blob], uniqueFileName, { type: 'image/jpeg' });
+
+                            // 폼의 파일 입력 필드에 새로운 파일 설정
+                            var dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(uniqueFile);
+                            $('#photoUpload')[0].files = dataTransfer.files;
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // 폼 제출 시 유효성 검사
+            $('form').on('submit', function(event) {
+                var inviteCode = $('#inviteCode').val();
+
+                // 네 자리 숫자인지 검사
+                var inviteCodePattern = /^\d{4}$/;
+                if (!inviteCodePattern.test(inviteCode)) {
+                    alert('그룹 코드는 네 자리 숫자로 입력해주세요!');
+                    event.preventDefault(); 
+                }
+            });
+        });
+
+        // 유일 파일명 만들기
+        function generateUniqueFileName(originalName) {
+            const timestamp = Date.now();
+            const originalNameWithoutExtension = originalName.split('.').slice(0, -1).join('.');
+            const extension = originalName.split('.').pop();
+            return `${timestamp}_${originalNameWithoutExtension}.${extension}`;
+        }
+
+        // DataURL을 Blob으로 변환 (Blob: Binary Large Object)
+        function dataURLtoBlob(dataurl) {
+            const arr = dataurl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            const u8arr = new Uint8Array(bstr.length);
+            for (let i = 0; i < bstr.length; i++) {
+                u8arr[i] = bstr.charCodeAt(i);
+            }
+            return new Blob([u8arr], { type: mime });
+        }
     </script>
     <style>
         .main-container {
@@ -37,15 +129,8 @@
             border-radius: 4px;
         }
 
-        .copy-link-container {
-            display: flex;
-            align-items: flex-start; 
+        .form-container input[type="file"] {
             margin-bottom: 20px;
-        }
-
-        .copy-link-container input[type="text"] {
-            flex: 1;
-            margin-right: 10px;
         }
 
         button, input[type="submit"] {
@@ -61,52 +146,38 @@
             background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
         }
 
-        @media (min-width: 1024px) {
-            .button-container {
-                grid-template-columns: repeat(4, 250px); /* PC 화면에서 4개씩 */
-                justify-content: center; /* 가운데 정렬 */
-            }
-        }
-
-        @media (max-width: 1023px) {
-            .button-container {
-                grid-template-columns: repeat(2, 250px); /* 모바일 화면에서 2개씩 */
-                justify-content: center; /* 가운데 정렬 */
-            }
+        #imagePreview img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 50%;
         }
         
-        h1{
-			font-weight: normal;
-		}
-
+        h1 {
+            font-weight: normal;
+        }
     </style>
 </head>
 <body>
-	<div id="header" th:replace="/header/header :: header"></div>
-	<div class="main-container">
-	    <div class="center" style="margin-bottom: 50px;">
-	        <h1>새 그룹 만들기</h1>
-	    </div>
-	    <div class="form-container">
-	        <form>
-	            <label for="groupName">그룹명</label>
-	            <input type="text" id="groupName" name="groupName">
-	
-	            <label for="groupCode">그룹코드</label>
-	            <input type="text" id="groupCode" name="groupCode">
-				
-				<label for="groupLink">참여 링크 복사</label>
-	            <div class="copy-link-container" style="margin: 0px;">
-	                <input type="text" id="inviteLink" name="inviteLink">
-	                <button type="button">복사</button>
-	            </div>
-	            
-	            <label for="groupImg">그룹 이미지 설정</label>
-	            <input type="file" id="groupImg" name="groupImg"><br>
-	            <br>
-	            <input type="submit" value="그룹 생성 !">
-	        </form>
-	    </div>
+    <div id="header"></div>
+    <div class="main-container">
+        <div class="center" style="margin-bottom: 50px;">
+            <h1>새 그룹 만들기</h1>
+        </div>
+        <div class="form-container">
+            <form action="/firstpage/makeGroup" method="post" enctype="multipart/form-data">
+                <label for="groupName">그룹명</label>
+                <input type="text" id="groupName" name="groupName" required>
+    
+                <label for="inviteCode">그룹 코드 <i>*네 자리 숫자</i></label>
+                <input type="text" id="inviteCode" name="inviteCode">
+                
+                <label for="photoUpload">그룹 프로필 설정</label>
+                <input type="file" id="photoUpload" name="photoUpload"><br>
+                <div id="imagePreview"></div>
+                <br>
+                <input type="submit" value="그룹 생성 !">
+            </form>
+        </div>
     </div>
 </body>
 </html>

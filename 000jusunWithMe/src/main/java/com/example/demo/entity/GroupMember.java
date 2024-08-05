@@ -16,16 +16,16 @@ public class GroupMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberNo;
+    private long memberNo;
 
     @Column(nullable = false)
-    private Long groupNo;
+    private long groupNo;
 
     @Column(nullable = false)
-    private Long userNo;
+    private long userNo;
 
     @Column(nullable = false)
-    private int leader;
+    private int leader = 0;  // 기본값 0으로 설정. 리더일 때만 1
 
 
 }

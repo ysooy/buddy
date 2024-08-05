@@ -8,10 +8,40 @@
     <link rel="stylesheet" href="/css/header.css">    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        $(function(){
+            $('form').on('submit', function(event) {
+                var groupCode = $('#inviteCode').val().trim();
+                var rightGroupCode = $('#rightInviteCode').val().trim();
+                var groupNo = $('#groupNo').val();
+
+                // 그룹 코드가 일치하는지 확인
+                if (groupCode !== rightGroupCode) {
+                    alert('그룹코드를 다시 확인해주세요!');
+                    event.preventDefault(); 
+                    return;
+                }
+                
+                $.ajax({
+					url: '/checkMember',
+					type: 'POST',
+					data:{
+						groupNo: groupNo
+					},
+					success: function(re){
+						if(re){
+							alert('이미 이 그룹의 멤버입니다!');
+						}else{
+							$('form').off('submit').submit();
+						}
+					}
+				})
+				 event.preventDefault();
+            });
+        });
     </script>
     <style>
         .main-container {
-			margin-left:0;
+            margin-left: 0;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -60,28 +90,37 @@
             background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
         }
 
-        h1 span {
-            font-weight: normal; /* bold체 제거 */
+        h1 {
+            font-weight: normal;
         }
-               
-        
 
+        .h1-title {
+            font-weight: bold;
+        }
+        
+        .h1-part {
+            font-weight: normal;
+        }
     </style>
 </head>
 <body>
-	<div id="header" th:replace="/header/header :: header"></div>
-	<div class="main-container">
-	    <div class="center" style="margin-bottom: 50px;">
-	        <h1>'내새끼들' &nbsp;<span>참여하기</span></h1>
-	    </div>
-	    <div class="form-container">
-	        <form>
-	            <label for="groupCode">그룹코드</label>
-	            <input type="text" id="groupCode" name="groupCode">
-				
-	            <input type="submit" value="참여하기 !">
-	        </form>
-	    </div>
+    <div id="header" th:replace="/header/header :: header"></div>
+    <div class="main-container">
+        <div class="center" style="margin-bottom: 50px;">
+            <h1>
+                <span class="h1-title" th:text="${group.groupName}"></span>
+                <span class="h1-part"> 참여하기</span>
+            </h1>
+        </div>
+        <input type="hidden" th:value="${group.inviteCode}" id="rightInviteCode">
+        <div class="form-container">
+            <form action="/firstpage/enterGroup" method="post">
+				<input type="hidden" th:value="${group.groupNo}" id="groupNo" name="groupNo">
+                <label for="inviteCode">그룹코드</label>
+                <input type="text" id="inviteCode" required>
+                <input type="submit" value="참여하기 !">
+            </form>
+        </div>
     </div>
 </body>
 </html>

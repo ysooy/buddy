@@ -17,13 +17,15 @@
             <a th:href="@{'/groupInfo/groupInfo/'+ ${session.selectedGroup.groupNo}}" th:if="${session.selectedGroup != null}">
                 <h2 th:text="${session.selectedGroup.groupName}"></h2>
             </a>
-            <a href="#" th:unless="${session.selectedGroup != null}">
+            <a href="/firstpage/firstpage" th:unless="${session.selectedGroup != null}">
                 <h2>Buddies</h2>
             </a>
         </div>
         <!--마이페이지--> 
         <div class="myPage">
-			<a href="#"><img th:src="${session.loginUser.profilePhoto}" alt="마이페이지"></a>
+			<a href="/myInfo/myInfo">
+				<img th:src="${session.loginUser.profilePhoto}" alt="마이페이지">
+			</a>
         </div> 
     </header>
 </body>
