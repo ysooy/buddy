@@ -20,12 +20,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import com.example.demo.dao.CommentRepository;
+import com.example.demo.dao.NotificationRepository;
 import com.example.demo.dao.PostRepository;
 import com.example.demo.dao.UsersRepository;
 import com.example.demo.dto.CommentDTO;
 import com.example.demo.dto.PostDTO;
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.Feed;
+import com.example.demo.entity.Notification;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.Users;
 
@@ -41,6 +43,9 @@ public class PostService {
     private CommentRepository commentRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
+    
+    @Autowired
+    private NotificationRepository notificationRepository;
 
  
 	//postNo로 post 찾기
@@ -106,6 +111,30 @@ public class PostService {
     	
     	return postRepository.save(post);
     }
+    
+    // 게시글 등록 시 알림창 저장 
+    public void saveNotification(Post post) {
+    	Notification nf = new Notification();
+    	nf.setUserNo(post.getUserNo());
+    	nf.setGroupNo(post.getGroupNo());
+    	
+    	// cOrP값 설정( 글만 있으면 '피드(글)', 사진이 포함되면 '피드(사진)'
+    	if(post.getPostFname() == null || post.getPostFname().isEmpty()) {
+    		nf.setCOrP("피드(글)");
+    	}else {
+    		nf.setCOrP("피드(사진)");
+    	}
+    	
+    	// 알림창 체크유무 (기본 X)
+    	nf.setChecked("X");
+    	nf.setNotiTime(post.getPostTime().toLocalDate());
+    	nf.setPostNo(post.getPostNo());
+    	//nf.setComNo(0);	// 댓글은 null값일 수 있으니 우선 0
+    	
+    	notificationRepository.save(nf);
+    	
+    }
+    
     
     //게시글 수정(save)
     public Post updatePost(Post post) {

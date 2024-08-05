@@ -17,8 +17,7 @@ public class CommentService {
 
 	@Autowired
 	private CommentRepository commentRepository;
-	@Autowired
-	private PostRepository postRepository;
+
 	
 	//댓글 등록
 	public void saveComment(Comment comment) {

@@ -250,6 +250,10 @@
 	<div class="form-container">
 		<form action="/feed/postWrite" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="userNo" th:value="${session.loginUser.userNo}">
+			
+    		<input type="hidden" name="groupNo" th:value="${session.selectedGroup.groupNo}">
+			
+			
 			<input type="date" id="postUserDefDate" name="postUserDefDate">
 			<textarea name="postContent" class="txtarea" placeholder="글 내용 입력..."></textarea>
 			<label for="groupImg">사진 추가하기</label>

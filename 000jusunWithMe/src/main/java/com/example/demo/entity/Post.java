@@ -44,10 +44,13 @@ public class Post {
 
     @Field("feedNo") //게시물이 포함된 피드 번호
     private long feedNo;
+    
+    @Field("groupNo") // 그룹 정보
+    private long groupNo;
      
 
     @Builder
-    public Post(Long postNo, String postContent, LocalDate postUserDefDate, LocalDateTime postTime, long userNo, List<String> postFname, long feedNo) {
+    public Post(Long postNo, String postContent, LocalDate postUserDefDate, LocalDateTime postTime, long userNo, List<String> postFname, long feedNo, long groupNo) {
         this.postNo = postNo;
         this.postUserDefDate = postUserDefDate;
         this.postContent = postContent;
@@ -55,6 +58,7 @@ public class Post {
         this.userNo = userNo;
         this.postFname = postFname;
         this.feedNo = feedNo;
+        this.groupNo = groupNo;
 
     }
 }

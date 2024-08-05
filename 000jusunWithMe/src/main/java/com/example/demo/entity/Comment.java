@@ -18,8 +18,9 @@ import lombok.Data;
 public class Comment {
 	
 	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // comNo에 ID 자동생성
 	@Column(name="comNo")
-	private long comNo;
+	private Long comNo;
 	
 	@Column(nullable=false, name="comContent")
 	private String comContent;
@@ -32,6 +33,5 @@ public class Comment {
 	
 	@Column(nullable=false, name="userNo")
 	private long userNo;
-	
 	
 }

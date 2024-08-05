@@ -20,9 +20,11 @@ import com.example.demo.entity.Comment;
 import com.example.demo.entity.Feed;
 import com.example.demo.entity.GroupTable;
 import com.example.demo.entity.Post;
+import com.example.demo.entity.Users;
 import com.example.demo.service.CommentService;
 import com.example.demo.service.FeedService;
 import com.example.demo.service.GroupService;
+import com.example.demo.service.NotificationService;
 import com.example.demo.service.PostService;
 
 import jakarta.servlet.http.HttpSession;
@@ -42,6 +44,9 @@ public class FeedController {
 	private FeedService fs;
 	@Autowired
 	private GroupService gs;
+	
+	@Autowired
+	private NotificationService ns;
 	
 	@GetMapping("/feed/feed/{groupNo}")
     public String feedView(HttpSession session, Model model, @PathVariable long groupNo) {
@@ -109,9 +114,18 @@ public class FeedController {
 
 	//게시물 등록
 	@PostMapping("/feed/postWrite")
-    public String postWrite(Post post, MultipartFile[] photoUpload) {
+    public String postWrite(Post post, MultipartFile[] photoUpload,  HttpSession session) {
+	    Users loginUser = (Users) session.getAttribute("loginUser");
+	    GroupTable selectedGroup = (GroupTable) session.getAttribute("selectedGroup");
+	    		
+	    Long userNo = loginUser.getUserNo();
+	    Long groupNo = selectedGroup.getGroupNo();
+	    
+	    post.setUserNo(userNo);
+	    post.setGroupNo(groupNo);
+		
 		//**해당 그룹은 현재 session유지된 걸로 가져올 예정!!추후 수정 필요함
-		long groupNo = 1;
+		//long groupNo = 1;
 		//해당그룹에서 해당날짜에 첫 게시물일 시(피드 검색) 피드에 저장
 		//첫 게시물인지 확인
 		Feed oldFeed = fs.checkFeedExists(groupNo, post.getPostUserDefDate());
@@ -148,7 +162,14 @@ public class FeedController {
 			//이미 feed가 있는 경우 기존 feedNo 부여 
 			post.setFeedNo(oldFeed.getFeedNo());
 		}
-		ps.savePost(post, photoUpload);
+		
+		//ps.savePost(post, photoUpload);
+		//포스트 저장 수정(notification)
+		Post savedPost = ps.savePost(post, photoUpload);
+		
+		// 알림에 저장
+		ns.saveNotification(savedPost);
+		
 		return "redirect:/feed/post/"+post.getFeedNo(); 
 	};
 	
@@ -159,8 +180,11 @@ public class FeedController {
 	//댓글 등록
 	@PostMapping("/feed/commentWrite")
 	public String commentWrite(Comment comment) {
-		long feedNo = ps.findByPostNo(comment.getPostNo()).getFeedNo();
 		cs.saveComment(comment);
+
+		long feedNo = ps.findByPostNo(comment.getPostNo()).getFeedNo();
+	    ns.saveCommentNotification(comment);  // 댓글 등록 시 알림 저장
+	    
 		return "redirect:/feed/post/"+feedNo;
 	}
 	
