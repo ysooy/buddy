@@ -8,6 +8,112 @@
     <link rel="stylesheet" href="/css/header.css">    
     <link rel="stylesheet" href="/css/navbar.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+			// username 입력 필드의 값이 변경될 때마다 usernameCopy에 실시간으로 복사
+            $('#username').on('input', function() {
+                $('#usernameCopy').val($(this).val());
+            });
+            
+            // 생일 표시 0000년 0월 0일
+            var dateInput = $('#birthday');
+            var dateValue = $('#birthday').val();
+            dateInput.val(formatDate(dateValue));
+            
+            // 프로필 사진 미리보기, 업로드용
+            var uploadPhoto = $("#uploadPhoto");
+            var myProfilePhoto = $("#my-profile-photo");
+            var uploadForm = $("#upload-form");
+            
+            // 프로필 사진 클릭 시 파일 선택 창 열기
+            myProfilePhoto.click(function () {
+                uploadPhoto.click();
+            });
+            // 파일 선택 시 미리보기 이미지 변경
+            uploadPhoto.change(function (event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        myProfilePhoto.attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            // 폼 제출 처리
+           uploadForm.submit(function (event) {
+                event.preventDefault(); // 기본 제출 동작 방지
+                
+                var formData = new FormData(this);
+
+                // 이미지가 새로 선택된 경우, 파일명 갱신
+                var fileInput = $('#uploadPhoto')[0];
+                if (fileInput.files.length > 0) {
+                   var file = fileInput.files[0];
+                    var uniqueFileName = generateUniqueFileName(file.name);
+                    var blob = dataURLtoBlob(myProfilePhoto.attr('src'));
+
+                    // Blob을 File 객체로 변환
+                    var uniqueFile = new File([blob], uniqueFileName, { type: 'image/jpeg' });
+                    
+                    // FormData에 새로운 파일 추가
+                    formData.delete('photo');
+                    formData.append('photo', uniqueFile);
+                }
+
+                // 폼 데이터에 username 추가
+                formData.delete('username');
+                formData.append('username', $('#username').val());
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // FormData 객체 사용 시 jQuery의 기본 데이터 처리 비활성화
+                    contentType: false, // FormData 객체 사용 시 jQuery의 기본 Content-Type 비활성화
+                    success: function (response) {
+                        alert("성공적으로 업데이트되었습니다.");
+                        // 이미지 URL에 타임스탬프 추가로 캐싱 문제 해결
+                        var newSrc = '/images/' + uniqueFileName + '?' + new Date().getTime();
+                        myProfilePhoto.attr('src', newSrc);
+                    },
+                    error: function (xhr, status, error) {
+                        alert("업데이트에 실패했습니다.");
+                    }
+                });
+            });
+        });
+
+        //===이하 메소드들===
+        // 생일 표시: 0000년 0월 0일 
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1; // JavaScript months are 0-based
+            const day = date.getDate();
+            return `${year}년 ${month}월 ${day}일`;
+        }
+
+        // 유일 파일명 만들기
+        function generateUniqueFileName(originalName) {
+            const timestamp = Date.now();
+            const originalNameWithoutExtension = originalName.split('.').slice(0, -1).join('.');
+            const extension = originalName.split('.').pop();
+            return `${timestamp}_${originalNameWithoutExtension}.${extension}`;
+        }
+
+        // DataURL을 Blob으로 변환
+        function dataURLtoBlob(dataurl) {
+            const arr = dataurl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            const u8arr = new Uint8Array(bstr.length);
+            for (let i = 0; i < bstr.length; i++) {
+                u8arr[i] = bstr.charCodeAt(i);
+            }
+            return new Blob([u8arr], { type: mime });
+        }
+    </script>
     <style>
         .main-container {
             flex-direction: column;
@@ -22,13 +128,15 @@
         }
         
         .myInfo img {
-            width: 40%;
-            height: auto;
+            width: 200px;
+            height: 200px;
+           	object-fit: cover;
             border-radius: 50%;
-            margin-top: 20px;
+            cursor: pointer;
         }
         
         .form-container {
+			width: 80%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -36,7 +144,7 @@
 
         form {
             width: 80%;
-            max-width: 400px; 
+            max-width: 400px;
         }
 
         .form-container label {
@@ -52,10 +160,6 @@
             border-radius: 4px;
         }
 
-        form {
-            width: 80%;
-        }
-
         .copy-link-container {
             display: flex;
             align-items: flex-start; 
@@ -65,19 +169,6 @@
         .copy-link-container input[type="text"] {
             flex: 1;
             margin-right: 10px;
-        }
-
-        form button, input[type="submit"] {
-            background-color: #FFA500; 
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover, input[type="submit"]:hover {
-            background-color: #FF8C00; /* 약간 어두운 주황색으로 변경 */
         }
 
         .leftButton a{
@@ -94,7 +185,7 @@
             padding: 10px;
             box-sizing: border-box;
             position: absolute;
-            top:0px
+            top: 0px;
         }
 
         .head span {
@@ -109,24 +200,21 @@
             padding-right: 20px;
         }
 
-        .head input[type="submit"] {
+        #updateBtn {
             flex: 0;
-            text-align: right;
+            text-align: center;
             background: none;
+            padding: 10px 20px;
             border: none;
             color: #FFA500;
             font-size: 16px;
             cursor: pointer;
         }
 
-        .head input[type="submit"]:hover {
+        .head button:hover {
             color: #FF8C00;
         }
 
-        h1 {
-            font-weight: normal;
-        }
-        
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -189,55 +277,71 @@
         }
         
         .grey {
-            background-color: lightgrey;
+            background-color: rgb(215, 215, 215);
         }
-           /* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
+		#upload-form{
+			width: 60px;
+		}
+        /* 가로 길이가 768px 이상일 때 내비 좌측으로 이동하면 .form-container 시작점 고정 위함*/
         @media (min-width: 768px) {
-            .main-container{
-				margin-left: 100px;
-			    width: calc(100% - 200px);
-			}
+            .main-container {
+                margin-left: 100px;
+                width: calc(100% - 200px);
+            }
         }
+        a{
+			text-decoration: none;
+			color: black;
+		}
     </style>
 </head>
 <body>
-     <div th:if="${session.selectedGroup != null and session.selectedGroup.groupNo != null}">
-		 <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
-	 </div>
-	<div class="main-container">
-	    <div class="form-container">
-	        <div class="head">
-	            <span class="leftButton">
-	                <a href="#">&lt;&nbsp;</a>
-	            </span>
-	            <span style="font-size: 20px;">내 정보</span>
-	            <input type="submit" value="수정">
-	        </div>
-	        <div class="myInfo center">
-	            <img th:src="${session.loginUser.profilePhoto}">
-	        </div>
-	        <form>
-	            <label for="nickname">닉네임</label>
-	            <input type="text" id="nickname" name="nickname">
-	
-	            <label for="birthday">생년월일</label>
-	            <input type="text" id="birthday" name="birthday" class="grey">
-	            
-	            <label for="email">계정</label>
-	            <input type="text" id="email" name="email" class="grey">
-	            
-	            <div class="toggle-switch-container">
-	                <label for="push">푸시알림</label>
-	                <label class="toggle-switch">
-	                    <input type="checkbox">
-	                    <span class="toggle-slider"></span>
-	                </label>
-	            </div>
-	
-	            <p>로그아웃</p><br>
-	            <p>회원 탈퇴</p>
-	        </form>
-	    </div>
+    <div th:if="${session.selectedGroup != null and session.selectedGroup.groupNo != null}">
+        <div id="navbar" th:replace="/navbar/navbar :: nav"></div>
+    </div>
+    <div class="main-container">
+        <div class="form-container">
+            <div class="head">
+                <span class="leftButton">
+                    <a href="javascript:history.back()">&lt;&nbsp;</a>
+                </span>
+                <span style="font-size: 20px;">내 정보</span>
+                 <form id="upload-form" action="/myInfo/uploadMyInfo" method="post" enctype="multipart/form-data">
+					<input type="submit" id="updateBtn" value="수정">
+	                <input type="file" id="uploadPhoto" name="photo" style="display: none;">
+	                <input type="hidden" id="usernameCopy" name="username">
+				</form>
+            </div>
+            <div class="myInfo center" >
+				<div th:with="photoUrl=${session.loginUser.profilePhoto}">
+					<img id="my-profile-photo" th:if="${photoUrl != null}"
+						th:src="${photoUrl.startsWith('http://') ? photoUrl : '/images/' + photoUrl}">
+					<img id="default-profile-photo" th:unless="${photoUrl != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+				</div>
+            </div>
+           
+            <form id="fakeform">
+                <label for="username">닉네임</label>
+                <input type="text" th:value="${session.loginUser.username}" id="username">
+                
+                <label for="birthday">생년월일</label>
+                <input type="text" th:value="${session.loginUser.birthday}" id="birthday" class="grey" readonly>
+                
+                <label for="email">계정</label>
+                <input type="text" th:value="${session.loginUser.email}" id="email" class="grey" readonly>
+                
+                <div class="toggle-switch-container">
+                    <label for="push">푸시알림</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+    
+                <a id="logout" href="/logout">로그아웃</a><br><br>
+                <a id="quitService" href="/quitUser">회원 탈퇴</a>
+            </form>
+        </div>
     </div>
 </body>
 </html>

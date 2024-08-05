@@ -27,4 +27,9 @@ public class UsersService {
     	return dao.findByUserNo(userNo);
     }
     
+    //회원정보수정
+    public Users updateProfile(Users u) {
+    	return dao.save(u);
+    }
+    
 }

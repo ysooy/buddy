@@ -30,11 +30,31 @@ public class InfoController {
 	@Autowired
 	private HttpSession session;
 	
+	//마이페이지 뷰
 	@GetMapping("/myInfo/myInfo")
     public void myInfoView() {
 		
 	};
+
+	//마이페이지 정보 수정 액션: 프사, 닉네임 수정 가능
+	@PostMapping("/myInfo/uploadMyInfo")
+	@ResponseBody
+	public Users uploadMyInfo(@RequestParam MultipartFile photo, @RequestParam String username) {
+		Users user = (Users)session.getAttribute("loginUser");
+		if(photo.getOriginalFilename() !=null &&!photo.getOriginalFilename().isEmpty()) {
+			String oldFname = user.getProfilePhoto();			
+			String newFname = gs.uploadPhoto(photo);
+			System.out.println(newFname);
+			if(oldFname!=null && !oldFname.isEmpty()) {
+				gs.deletePhoto(oldFname);
+			}
+			user.setProfilePhoto(newFname); //새 프로필사진 설정
+		}
+		user.setUsername(username); //새 username 설정
+		return us.updateProfile(user); //save() 이용
+	}
 	
+	//그룹페이지 뷰 
 	@GetMapping("/groupInfo/groupInfo/{groupNo}")
     public String groupInfoView(@PathVariable long groupNo, Model model) {
 		List<Users> users = new ArrayList<>();
@@ -90,5 +110,6 @@ public class InfoController {
 		}
 		gs.updateProfilePhoto(groupNo, newFname); //프로필사진 db에 업데이트
 	}
+	
 	
 }
