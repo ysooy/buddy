@@ -24,7 +24,11 @@
         <!--마이페이지--> 
         <div class="myPage">
 			<a href="/myInfo/myInfo">
-				<img th:src="${session.loginUser.profilePhoto}" alt="마이페이지">
+				<div th:with="photoUrl=${session.loginUser.profilePhoto}">
+					<img id="my-profile-photo" th:if="${photoUrl != null}"
+						th:src="${photoUrl.startsWith('http://') ? photoUrl : '/images/' + photoUrl}">
+					<img id="default-profile-photo" th:unless="${photoUrl != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+				</div>
 			</a>
         </div> 
     </header>

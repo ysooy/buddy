@@ -104,6 +104,9 @@
 				currentUserName = username;
 
 				// 모달창에 프로필사진, 이름, 생일 표시
+				if (!profilePhoto.startsWith("http://") && !profilePhoto.startsWith("https://")) {
+			        profilePhoto = "/images/" + profilePhoto;
+			    }
 				modalPhoto.attr("src", profilePhoto || "/images/orange.png");
 				modalUsername.text(username);
 				modalBirthday.html(formatDate(birthday));
@@ -358,8 +361,11 @@
             <div class="member" th:each="user : ${users}" th:data-userno="${user.userNo}"
                 th:data-profile-photo="${user.profilePhoto}" th:data-username="${user.username}"
                 th:data-birthday="${user.birthday}">
-                <img th:if="${user.profilePhoto != null}" th:src="@{${user.profilePhoto}}">
-                <img th:unless="${user.profilePhoto != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+               <div th:with="photoUrl=${user.profilePhoto}">
+					<img id="my-profile-photo" th:if="${photoUrl != null}"
+						th:src="${photoUrl.startsWith('http://') ? photoUrl : '/images/' + photoUrl}">
+					<img id="default-profile-photo" th:unless="${photoUrl != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+				</div>
                 <span th:text="${user.username}"></span>
                 <span th:if="${leaderUserNo == user.userNo}">&nbsp;(리더)</span>
             </div>

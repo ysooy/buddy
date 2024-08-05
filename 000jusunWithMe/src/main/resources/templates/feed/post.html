@@ -287,8 +287,11 @@
 					<!--포스트 하나-->
 					<div class="post">
 						<div class="writer">
-							<!--일단 프사가 카톡에서가져온 거라 이렇게 하면 되는데 만약 Images에서 가져와야 할 경우 처리해야 함-->
-							<img th:src="${post.profilePhoto}">
+							<span th:with="photoUrl=${post.profilePhoto}">
+								<img id="my-profile-photo" th:if="${photoUrl != null}"
+									th:src="${photoUrl.startsWith('http://') ? photoUrl : '/images/' + photoUrl}">
+								<img id="default-profile-photo" th:unless="${photoUrl != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+							</span>
 							<div>
 								<span th:text="${post.userName}"></span><br>
 								<time class="postTime"
@@ -315,7 +318,11 @@
 							<!--작성된 댓글 리스트-->
 							<div class="commentEach" th:each="comment : ${post.comments}">
 								<div class="writer">
-									<img th:src="${comment.profilePhoto}">
+									<span th:with="photoUrl=${comment.profilePhoto}">
+										<img id="my-profile-photo" th:if="${photoUrl != null}"
+											th:src="${photoUrl.startsWith('http://') ? photoUrl : '/images/' + photoUrl}">
+										<img id="default-profile-photo" th:unless="${photoUrl != null}" th:src="@{'/images/orange.png'}" alt="기본 이미지">
+									</span>
 									<div>
 										<span th:text="${comment.userName}"></span>&nbsp;
 										<time th:attr="time-data=${comment.comTime}"></time>
