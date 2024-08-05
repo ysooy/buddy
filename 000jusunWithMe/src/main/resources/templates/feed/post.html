@@ -89,8 +89,10 @@
 				var date = new Date(timeText);
 				var now = new Date();
 				var secondsAgo = Math.floor((now - date) / 1000);
-
-				if (secondsAgo < 60) { //1분 이내 작성됐으면 'n초 전' 으로 표시 
+				
+				if(secondsAgo<2){ //1초 이내 작성됐으면 '방금 전'으로 표시
+					$(this).text('방금 전');
+				}else if (secondsAgo < 60) { //1분 이내 작성됐으면 'n초 전' 으로 표시 
 					$(this).text(secondsAgo + '초 전');
 				} else if (secondsAgo < 3600) { //1시간 이내 작성됐으면 'n분 전' 으로 표시  
 					var minutesAgo = Math.floor(secondsAgo / 60);
@@ -113,7 +115,7 @@
 			var day = ('0' + date.getDate()).slice(-2);
 			var hours = ('0' + date.getHours()).slice(-2);
 			var minutes = ('0' + date.getMinutes()).slice(-2);
-			return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
+			return year + '년 ' + month + '월 ' + day + '일 ' + hours + ':' + minutes;
 		}
 	</script>
 
@@ -233,7 +235,7 @@
 
 		.btnAddFeed {
 			position: fixed;
-			right: 20px;
+			right: 40px;
 			bottom: 80px;
 			z-index: 1000;
 			/* 다른 요소 위로 배치 */
@@ -249,12 +251,12 @@
 
 		.btnAddFeed img {
 			width: 40px;
-			/* 이미지 크기 */
 			height: 40px;
 		}
 
 		.commentEach {
 			position: relative;
+			padding: 1px;
 		}
 
 		.deleteCommentBtn {
@@ -267,6 +269,10 @@
 			padding: 5px 10px;
 			cursor: pointer;
 			font-size: 12px;
+		}
+		.comment-container{
+			margin-top:10px ;
+			background-color: rgba(255, 238, 208,0.15);
 		}
 	</style>
 </head>
