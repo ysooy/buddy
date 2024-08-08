@@ -7,32 +7,40 @@
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/navbar.css">
-    <link rel="stylesheet" href="/css/notification.css">    
+    <link rel="stylesheet" href="/css/notification.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(function() {
+            // 네비게이션 바 로드
             $("#navbar").load("/navbar/navbar.html");
+            // 헤더 로드 (뒤로 가기 버튼 숨김처리)
             $("#header").load("/header/header.html", function() {
                 $(".leftButton").css("visibility", "hidden");
             });
         });
     </script>
 </head>
+
 <body>
-    <div id="header"></div>
-    <nav id="navbar"></nav> 
-    <div class="main-container">
+	<div id="header" th:replace="~{/header/header :: header}"></div>
+	<div id="navbar" th:replace="~{/navbar/navbar :: nav}"></div>
+    <div class="main-container"> 
         <div class="content">
-            <div class="notifications-container">                
-                <div class="notifications" th:each="notification : ${notifications}">                
-                    <div class="profileIcon" th:style="'background-color:' + ${notification.userNo}"></div>
-                    <div class="notifiText">
-                        <strong th:text="${notification.userNo}">사용자</strong>님이
-                        <span th:text="${#dates.format(notification.notiTime, 'M월 d일')}"></span>에
-                        <span th:text="${notification.cOrP}"></span>
-                        <img th:if="${notification.cOrP.contains('사진')}" src="https://via.placeholder.com/50" alt="첨부된 이미지" style="display: block; margin-top: 10px;">
-                    </div>
-                    <span class="uploadTime" th:text="${#dates.format(notification.notiTime, 'yyyy-MM-dd')}"></span>
+            <div class="notifications-container">
+                <!-- 알림 목록을 순회 -->
+                <div th:each="notification : ${notifications}" class="notifications">
+                        <!-- 사용자 프로필 사진을 표시 -->
+                        <span th:with="photoUrl=${notification.userProfilePhoto}">
+                            <img th:if="${photoUrl != null}" class="profileIcon"
+                                 th:src="${photoUrl.startsWith('http://') ? photoUrl : '/images/' + photoUrl}">
+                            <img th:unless="${photoUrl != null}" th:src="@{'/images/orange.png'}" class="profileIcon">
+                        </span>
+                        <div class="notifiText">
+                            <strong th:text="${notification.userName}"></strong>님이
+                            <span th:text="${#temporals.format(notification.notiTime, 'M월 d일')}">날짜</span>
+                            <span th:text="${notification.cOrP == '댓글' ? '댓글을 남겼습니다.' : (notification.cOrP == '피드(글)' ? '글을 추가하였습니다' : '사진을 추가하였습니다')}"></span>
+                        </div>
+                        <span class="uploadTime" th:text="${notification.notiTime}">업로드 시간</span>
                 </div>
             </div>
         </div>

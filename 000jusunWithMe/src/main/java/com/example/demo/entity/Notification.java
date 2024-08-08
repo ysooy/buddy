@@ -6,10 +6,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -41,4 +43,16 @@ public class Notification {
     
     @Column(name = "comNo", nullable = true)
     private Long comNo;
+    
+    @Transient // 데이터베이스에 저장되지 않는 필드로 설정했음
+    private String userName;
+
+    @Transient
+    private String userProfilePhoto;
+    
+    @Transient     
+    private String formattedDate; // 포맷된 날짜를 저장하기 위한 필드
+    
+//    @Transient
+//    private List<String> postFname;
 }
