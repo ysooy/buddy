@@ -10,37 +10,60 @@
     <link rel="stylesheet" href="/css/notification.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(function() {
-            // 네비게이션 바 로드
-            $("#navbar").load("/navbar/navbar.html");
-            // 헤더 로드 (뒤로 가기 버튼 숨김처리)
-            $("#header").load("/header/header.html", function() {
-                $(".leftButton").css("visibility", "hidden");
-            });
+    $(function() {
+        // 각 알림의 시간 표시를 업데이트
+        $('.notifications').each(function() {
+            var notiTimeText = $(this).find('.notiTime').text();
+            var notiTime = new Date(notiTimeText); // 서버에서 전달된 시간을 그대로 사용
+
+            // 업로드 시간을 "yyyy년 MM월 dd일 HH:mm:ss" 형식으로 표시
+            var formattedUploadTime = formatDateTime(notiTime);
+            $(this).find('.uploadTime').text(formattedUploadTime);
+            
+            // 알림 시간을 "월 일" 형식으로 표시
+            var formattedNotiTime = formatDate(notiTime);
+            $(this).find('.notiTime').text(formattedNotiTime);
         });
+    });
+
+    function formatDateTime(date) {
+        var year = date.getFullYear();
+        var month = String(date.getMonth() + 1).padStart(2, '0');
+        var day = String(date.getDate()).padStart(2, '0');
+        var hours = String(date.getHours()).padStart(2, '0');
+        var minutes = String(date.getMinutes()).padStart(2, '0');
+        var seconds = String(date.getSeconds()).padStart(2, '0');
+
+        return year + '년 ' + month + '월 ' + day + '일 ' + hours + ':' + minutes + ':' + seconds;
+    }
+
+    function formatDate(date) {
+        var options = { month: 'long', day: 'numeric' }; // 월 일 형식으로 설정
+        return date.toLocaleDateString('ko-KR', options); // "8월 15일" 형식으로 변환
+    }
     </script>
 </head>
 
 <body>
-	<div id="header" th:replace="~{/header/header :: header}"></div>
-	<div id="navbar" th:replace="~{/navbar/navbar :: nav}"></div>
+    <div id="header" th:replace="~{/header/header :: header}"></div>
+    <div id="navbar" th:replace="~{/navbar/navbar :: nav}"></div>
     <div class="main-container"> 
         <div class="content">
             <div class="notifications-container">
                 <!-- 알림 목록을 순회 -->
                 <div th:each="notification : ${notifications}" class="notifications">
-                        <!-- 사용자 프로필 사진을 표시 -->
-                        <span th:with="photoUrl=${notification.userProfilePhoto}">
-                            <img th:if="${photoUrl != null}" class="profileIcon"
-                                 th:src="${photoUrl.startsWith('http://') ? photoUrl : '/images/' + photoUrl}">
-                            <img th:unless="${photoUrl != null}" th:src="@{'/images/orange.png'}" class="profileIcon">
-                        </span>
-                        <div class="notifiText">
-                            <strong th:text="${notification.userName}"></strong>님이
-                            <span th:text="${#temporals.format(notification.notiTime, 'M월 d일')}">날짜</span>
-                            <span th:text="${notification.cOrP == '댓글' ? '댓글을 남겼습니다.' : (notification.cOrP == '피드(글)' ? '글을 추가하였습니다' : '사진을 추가하였습니다')}"></span>
-                        </div>
-                        <span class="uploadTime" th:text="${notification.notiTime}">업로드 시간</span>
+                    <!-- 사용자 프로필 사진을 표시 -->
+                    <span th:with="photoUrl=${notification.userProfilePhoto}">
+                        <img th:if="${photoUrl != null}" class="profileIcon"
+                             th:src="${photoUrl.startsWith('http://') ? photoUrl : '/images/' + photoUrl}">
+                        <img th:unless="${photoUrl != null}" th:src="@{'/images/orange.png'}" class="profileIcon">
+                    </span>
+                    <div class="notifiText">
+                        <strong th:text="${notification.userName}"></strong>님이
+                        <span class="notiTime" th:text="${notification.notiTime}">날짜</span>
+                        <span th:text="${notification.cOrP == '댓글' ? '댓글을 남겼습니다.' : (notification.cOrP == '피드(글)' ? '글을 추가하였습니다' : '사진을 추가하였습니다')}"></span>
+                    </div>
+                    <span class="uploadTime">업로드 시간</span>
                 </div>
             </div>
         </div>

@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -9,7 +11,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dao.CommentRepository;
 import com.example.demo.dao.NotificationRepository;
@@ -59,23 +60,23 @@ public class NotificationService {
 //    } 
     
     
-    // 그룹에서 현재 로그인중인 사용자를 제외한 다른 정보 가져오기
+ // 그룹에서 현재 로그인중인 사용자를 제외한 다른 정보 가져오기
     public List<Notification> getNotificationsByGroupExUser(Long groupNo, Long userNo) {
         List<Notification> notifications = nr.findByGroupNoAndUserNoNot(groupNo, userNo);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        for (Notification notification : notifications) {
+        
+        // 알림목록 최신순으로 정렬
+        notifications.sort((n1, n2) -> n2.getNotiTime().compareTo(n1.getNotiTime()));
+
+        for (Notification nf : notifications) {
             // 사용자 이름과 프로필 사진 설정
-            Users user = ur.findById(notification.getUserNo()).orElse(null);
+            Users user = ur.findById(nf.getUserNo()).orElse(null);
             if (user != null) {
-                notification.setUserName(user.getUsername());
-                notification.setUserProfilePhoto(user.getProfilePhoto());
+                nf.setUserName(user.getUsername());
+                nf.setUserProfilePhoto(user.getProfilePhoto());
             }
-            // 날짜형식 포맷 바꾸기(post와 comment 날짜 형식이 다름)             
-            LocalDate notiTime = notification.getNotiTime();
-            notification.setFormattedDate(notiTime.format(formatter));
         }
         return notifications;
-    }
+    } 
 
 
     // 알림 확인 시 checked 상태 변경 (default X > O)
@@ -93,61 +94,61 @@ public class NotificationService {
 
     // 게시글 등록 시 알림을 저장하는 메서드
     public void saveNotification(Post post) {
-        Notification notification = new Notification();
-        notification.setUserNo(post.getUserNo());
-        notification.setGroupNo(post.getGroupNo());
+        Notification nf = new Notification();
+        nf.setUserNo(post.getUserNo());
+        nf.setGroupNo(post.getGroupNo());
 
         // cOrP값 설정( 글만 있으면 '피드(글)', 사진이 포함되면 '피드(사진)'
         if (post.getPostFname() == null || post.getPostFname().isEmpty()) {
-            notification.setCOrP("피드(글)");
+            nf.setCOrP("피드(글)");
         } else {
-            notification.setCOrP("피드(사진)");
+            nf.setCOrP("피드(사진)");
         }
 
         // 알림창 체크유무 (기본 X)
-        notification.setChecked("X");
-        notification.setNotiTime(post.getPostTime().toLocalDate());
-        notification.setPostNo(post.getPostNo());
-        notification.setComNo(null); // 댓글이 없는 경우 null로 설정
+        nf.setChecked("X");
+        nf.setNotiTime(post.getPostTime());
+        nf.setPostNo(post.getPostNo());
+        nf.setComNo(null); // 댓글이 없는 경우 null로 설정
 
-        nr.save(notification);
+        nr.save(nf);
     }
 
     // 댓글 등록 시 알림 저장
     public void saveCommentNotification(Comment comment) {
-        Comment savedComment = cr.save(comment); // 주입된 인스턴스를 사용
+        Comment savedComment = cr.save(comment);
 
         if (savedComment.getComNo() == null) {
-            throw new IllegalStateException("Comment could not be saved.");
+            throw new IllegalStateException("댓글을 저장할 수 없습니다.");
         }
          
-        Notification notification = new Notification();
-        notification.setUserNo(savedComment.getUserNo());
-        notification.setPostNo(savedComment.getPostNo());
-        notification.setComNo(savedComment.getComNo());
+        Notification nf = new Notification();
+        nf.setUserNo(savedComment.getUserNo());
+        nf.setPostNo(savedComment.getPostNo());
+        nf.setComNo(savedComment.getComNo());
 
         Post post = pr.findByPostNo(savedComment.getPostNo());
         if (post != null) {
-            notification.setGroupNo(post.getGroupNo()); // Post에서 groupNo 가져오기
+            nf.setGroupNo(post.getGroupNo()); // Post에서 groupNo 가져오기
         } else {
             System.out.println("해당 포스트 번호에 대한 Post를 찾을 수 없습니다: " + savedComment.getPostNo());
         }
         // cOrP 값 설정 (댓글에 대한 알림임을 표시)
-        notification.setCOrP("댓글");
-        notification.setChecked("X");
+        nf.setCOrP("댓글");
+        nf.setChecked("X");
 
         // Date를 LocalDate로 변환하여 notiTime에 설정
         Date comTime = savedComment.getComTime();
         if (comTime != null) {
             Instant instant = comTime.toInstant();
             ZoneId zoneId = ZoneId.systemDefault(); // 기본 시스템 시간대를 사용
-            LocalDate localDate = instant.atZone(zoneId).toLocalDate();
-            notification.setNotiTime(localDate);
+            LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+            nf.setNotiTime(localDateTime);
         } else {
-            notification.setNotiTime(LocalDate.now()); // comTime이 null일 경우 현재 날짜를 사용
+            nf.setNotiTime(LocalDateTime.now()); // comTime이 null일 경우 현재 날짜를 사용
         }
 
-        nr.save(notification);
+        nr.save(nf);
     }
     
     // notiTime 형식 지정(feedDate(LocalDate)와 comTime(Date) 형식 변환 위함)

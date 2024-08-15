@@ -10,6 +10,7 @@ import jakarta.persistence.Transient;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class Notification {
     private String checked = "X";
 
     @Column(name = "notiTime", nullable = false)
-    private LocalDate notiTime;
+    private LocalDateTime notiTime;
 
     @Column(name = "postNo", nullable = false)
     private long postNo;

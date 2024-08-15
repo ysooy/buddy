@@ -127,7 +127,7 @@ public class PostService {
     	
     	// 알림창 체크유무 (기본 X)
     	nf.setChecked("X");
-    	nf.setNotiTime(post.getPostTime().toLocalDate());
+    	nf.setNotiTime(post.getPostTime());
     	nf.setPostNo(post.getPostNo());
     	
     	notificationRepository.save(nf);
