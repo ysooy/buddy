@@ -168,7 +168,7 @@ public class FeedController {
 		Post savedPost = ps.savePost(post, photoUpload);
 		
 		// 알림에 저장
-		ns.saveNotification(savedPost);
+		ns.saveNotification(savedPost, userNo);
 		
 		return "redirect:/feed/post/"+post.getFeedNo(); 
 	};

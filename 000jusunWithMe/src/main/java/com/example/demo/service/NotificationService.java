@@ -81,7 +81,7 @@ public class NotificationService {
 
     // 알림 확인 시 checked 상태 변경 (default X > O)
     public void markNotificationsAsChecked(Long userNo, Long groupNo) {
-        List<Notification> notifications = nr.findByUserNoAndGroupNo(userNo, groupNo);
+        List<Notification> notifications = nr.findByGroupNoAndUserNoNot(groupNo, userNo);
         // 'X'로 설정된 알림만 'O'로 변경 (알림창 확인 시 O로 업데이트 후 추가 업데이트 없음)
         notifications.forEach(notification -> {
             if ("X".equals(notification.getChecked())) {
@@ -93,26 +93,30 @@ public class NotificationService {
     }
 
     // 게시글 등록 시 알림을 저장하는 메서드
-    public void saveNotification(Post post) {
-        Notification nf = new Notification();
-        nf.setUserNo(post.getUserNo());
-        nf.setGroupNo(post.getGroupNo());
+    public void saveNotification(Post post, Long loginUserNo) {
+        // 로그인한 유저의 글에 대해 알림을 생성하지 않음
+        if (post.getUserNo() != loginUserNo) {
+            Notification nf = new Notification();
+            nf.setUserNo(post.getUserNo());
+            nf.setGroupNo(post.getGroupNo());
 
-        // cOrP값 설정( 글만 있으면 '피드(글)', 사진이 포함되면 '피드(사진)'
-        if (post.getPostFname() == null || post.getPostFname().isEmpty()) {
-            nf.setCOrP("피드(글)");
-        } else {
-            nf.setCOrP("피드(사진)");
+            // cOrP값 설정( 글만 있으면 '피드(글)', 사진이 포함되면 '피드(사진)'
+            if (post.getPostFname() == null || post.getPostFname().isEmpty()) {
+                nf.setCOrP("피드(글)");
+            } else {
+                nf.setCOrP("피드(사진)");
+            }
+
+            // 알림창 체크유무 (기본 X)
+            nf.setChecked("X");
+            nf.setNotiTime(post.getPostTime());
+            nf.setPostNo(post.getPostNo());
+            nf.setComNo(null); // 댓글이 없는 경우 null로 설정
+
+            nr.save(nf);
         }
-
-        // 알림창 체크유무 (기본 X)
-        nf.setChecked("X");
-        nf.setNotiTime(post.getPostTime());
-        nf.setPostNo(post.getPostNo());
-        nf.setComNo(null); // 댓글이 없는 경우 null로 설정
-
-        nr.save(nf);
     }
+
 
     // 댓글 등록 시 알림 저장
     public void saveCommentNotification(Comment comment) {

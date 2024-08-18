@@ -31,3 +31,8 @@
             color: #777;
             display: block;
         }
+        
+        /* 새 알림 배경색 변경 */
+        .highlight {
+		    background-color: #ffefd5;
+		}

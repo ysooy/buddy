@@ -14,33 +14,68 @@
         // 각 알림의 시간 표시를 업데이트
         $('.notifications').each(function() {
             var notiTimeText = $(this).find('.notiTime').text();
-            var notiTime = new Date(notiTimeText); // 서버에서 전달된 시간을 그대로 사용
+            var notiTime = new Date(notiTimeText);
 
-            // 업로드 시간을 "yyyy년 MM월 dd일 HH:mm:ss" 형식으로 표시
-            var formattedUploadTime = formatDateTime(notiTime);
+            // 업로드 시간을 상대적인 시간으로 표시
+            var formattedUploadTime = calculateTimeAgo(notiTime);
             $(this).find('.uploadTime').text(formattedUploadTime);
-            
+
             // 알림 시간을 "월 일" 형식으로 표시
             var formattedNotiTime = formatDate(notiTime);
             $(this).find('.notiTime').text(formattedNotiTime);
+
+            // 알림창 업데이트 확인 시 배경색 변경(check가 X면 배경색, O면 배경색 없애기)
+            var checkedStatus = $(this).data('checked');
+
+            if (checkedStatus === 'X') {
+            	// 아직 확인하지 않은 알림창을 배경색으로 표시
+                $(this).addClass('highlight');
+            }
+        });
+
+        // 페이지를 떠나기 전에 checked 상태를 업데이트
+        $(window).on('beforeunload', function(event) {
+            var groupNo = $('.notifications-container').data('group-no');	// group-no 속성값 가져오기
+            updateCheckedStatus(groupNo);
         });
     });
 
-    function formatDateTime(date) {
-        var year = date.getFullYear();
-        var month = String(date.getMonth() + 1).padStart(2, '0');
-        var day = String(date.getDate()).padStart(2, '0');
-        var hours = String(date.getHours()).padStart(2, '0');
-        var minutes = String(date.getMinutes()).padStart(2, '0');
-        var seconds = String(date.getSeconds()).padStart(2, '0');
+    // 알림상태 업데이트
+    function updateCheckedStatus(groupNo) {
+    	// 서버에 post요청 보내는 메서드!
+        $.post('/notification/check', { groupNo: groupNo });
+    }
 
-        return year + '년 ' + month + '월 ' + day + '일 ' + hours + ':' + minutes + ':' + seconds;
+    function calculateTimeAgo(date) {
+        var now = new Date(); // 현재 시각        
+        var duration = (now - date) / 1000; // 밀리초를 초로 변환
+
+        var minutes = Math.floor(duration / 60);
+        var hours = Math.floor(minutes / 60);
+        var days = Math.floor(hours / 24);
+
+        if (minutes < 60) {
+            return minutes + "분 전";
+        } else if (hours < 24) {
+            return hours + "시간 전";
+        } else if (days < 7) {
+            return days + "일 전";
+        } else if (days < 14) {
+            return "일 주 전";
+        } else if (days < 21) {
+            return "이 주 전";
+        } else if (days < 31) {
+            return "삼 주 전";
+        } else {
+            return "한 달 전";
+        }
     }
 
     function formatDate(date) {
         var options = { month: 'long', day: 'numeric' }; // 월 일 형식으로 설정
-        return date.toLocaleDateString('ko-KR', options); // "8월 15일" 형식으로 변환
+        return date.toLocaleDateString('ko-KR', options); 
     }
+
     </script>
 </head>
 
@@ -49,9 +84,9 @@
     <div id="navbar" th:replace="~{/navbar/navbar :: nav}"></div>
     <div class="main-container"> 
         <div class="content">
-            <div class="notifications-container">
+			<div class="notifications-container" th:data-group-no="${selectedGroup.groupNo}">
                 <!-- 알림 목록을 순회 -->
-                <div th:each="notification : ${notifications}" class="notifications">
+                <div th:each="notification : ${notifications}" class="notifications" th:data-checked="${notification.checked}">
                     <!-- 사용자 프로필 사진을 표시 -->
                     <span th:with="photoUrl=${notification.userProfilePhoto}">
                         <img th:if="${photoUrl != null}" class="profileIcon"
