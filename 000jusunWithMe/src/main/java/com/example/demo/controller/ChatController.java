@@ -16,10 +16,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.dao.UsersRepository;
 import com.example.demo.dto.ChatMessageRequestDTO;
 import com.example.demo.dto.ChatMessageResponseDTO;
 import com.example.demo.entity.Chat;
+import com.example.demo.entity.GroupTable;
+import com.example.demo.entity.Users;
 import com.example.demo.service.ChatService;
+
+import jakarta.servlet.http.HttpSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,18 +41,29 @@ public class ChatController {
 
     @Autowired
     private ChatService cs; 
+    
+    @Autowired
+    private UsersRepository ur;
 
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public ChatMessageResponseDTO sendMessage(ChatMessageRequestDTO chatMessageRequestDTO) {
-        // DTO를 엔티티로 변환
+        // 이 부분에서 로그인한 유저의 userNo를 가져옴
+        long userNo = chatMessageRequestDTO.getUserNo();
+
+        Users user = ur.findByUserNo(userNo);
+        if (user == null) {
+            throw new IllegalStateException("유효하지 않은 사용자입니다.");
+        }
+
+        // 메시지 생성
         Chat chatMessage = Chat.builder()
                 .messageNo(0) // 메시지 번호는 저장 시 설정.
                 .sentTime(new Date())
                 .content(chatMessageRequestDTO.getContent())
                 .msgFname(chatMessageRequestDTO.getMsgFname())
                 .msgType(chatMessageRequestDTO.getMsgType()) // 메시지 타입 설정 (예: 1은 텍스트, 2는 이미지)
-                .userNo(chatMessageRequestDTO.getUserNo())
+                .userNo(userNo) // 이 부분에서 userNo를 설정
                 .groupNo(chatMessageRequestDTO.getGroupNo())
                 .build();
 
@@ -64,7 +80,8 @@ public class ChatController {
                 chatMessage.getMsgType(),
                 chatMessage.getSentTime()
         );
-    }  
+    }
+
     
     @PostMapping("/uploadImage")
     public ResponseEntity<Map<String, String>> handleFileUpload(@RequestParam("file") MultipartFile file) {
@@ -125,10 +142,31 @@ public class ChatController {
 //    } 
     
     // 채팅 메세지 정보 반환 (특정 그룹)
-    @GetMapping("/chat")
-    public String getChatGroup(Model model, @RequestParam(defaultValue = "111") int groupNo) {
+    @GetMapping("/chat/{groupNo}")
+    public String getChatGroup(@PathVariable long groupNo, HttpSession session, Model model) {
+    	// 세션에서 로그인 유저 정보, 그룹 정보 확인
+        Users user = (Users)session.getAttribute("loginUser");
+        if (user == null) {
+            return "redirect:/login";  // 로그인 페이지로 리디렉션
+        }
+    	
+        GroupTable gt = (GroupTable) session.getAttribute("selectedGroup");
+        if (gt == null || gt.getGroupNo() != groupNo) {
+            gt = new GroupTable();
+            gt.setGroupNo(groupNo);
+            session.setAttribute("selectedGroup", gt);
+        }
+    	
+    	// 그룹 정보 세션저장
+//        session.setAttribute("loginUser", user);        
+//    	session.setAttribute("selectedGroup", groupNo);
+    	
+    	// 그룹에 해당하는 채팅 불러오기
         List<Chat> messages = cs.getMessagesByGroupNo(groupNo);
+        
+        
         model.addAttribute("messages", messages);
+        model.addAttribute("userNo", user.getUserNo());
         return "chat/chat";
     }
 }

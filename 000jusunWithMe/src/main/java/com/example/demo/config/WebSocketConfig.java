@@ -29,7 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 웹소켓에 연결할 수 있는 엔드포인트 설정!
-    	registry.addEndpoint("/websocket")
+        registry.addEndpoint("/websocket")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();	
     			// SockJS를 사용하여 웹소켓을 지원하지 않는 브라우저에서도 웹소켓 연결 사용 가능
@@ -40,7 +40,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setMessageSizeLimit(200 * 1024); // 메시지 크기 제한을 200KB로 설정
+        registration.setMessageSizeLimit(300 * 1024); // 메시지 크기 제한을 200KB로 설정
         registration.setSendBufferSizeLimit(512 * 1024); // 보낼 버퍼 크기 제한을 512KB로 설정
         registration.setSendTimeLimit(20 * 10000); // 보내는 시간 제한을 200초로 설정
     }

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ChatRepository extends MongoRepository<Chat, ObjectId> {
 	// 그룹번호로 채팅방 찾기
-    List<Chat> findByGroupNo(int groupNo); 
+    List<Chat> findByGroupNo(long groupNo); 
     
     // MongoDB에 있는 가장 큰 messageNo를 찾고 새롭게 생성
     Chat findTopByOrderByMessageNoDesc();

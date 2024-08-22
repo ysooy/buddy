@@ -17,9 +17,27 @@ function isNewDate(message, lastMessage) {
 $(document).ready(function() {
 	
 	var lastMessage = null; // 마지막 메세지 저장용(날짜 표시 위함)
+    var lastDateSeparator = null; // 마지막 date-separator의 날짜 저장
+	
+	
+    // 페이지 로드 시 가장 마지막 메시지를 lastMessage로 설정
+    const loadedMessages = $('#chatContainer .chat-message');
+    if (loadedMessages.length > 0) {
+        const lastLoadedMessage = loadedMessages.last().data('message');
+        lastMessage = lastLoadedMessage;
+        
+		// 마지막 date-separator의 날짜를 저장
+        const lastSeparator = $('#chatContainer .date-separator-container').last();
+        if (lastSeparator.length > 0) {
+            lastDateSeparator = lastSeparator.text().trim();
+        }
+    }	
 	
     var socket = new SockJS('/websocket');
     var stompClient = Stomp.over(socket);
+    
+    var originalInputContainerHtml = $('.chat-input-container').html();
+
     
     // 현재 선택된 검색 결과 인덱스 (유효한 인덱스는 0부터 시작, -1 : 검색결과 아직 선택 안된 상황)
     var currentSearchIndex = -1;
@@ -34,25 +52,30 @@ $(document).ready(function() {
     }); 
 
     // 입력한 메세지 전송버튼 클릭 시 서버로 전송
-    function sendMessage() {
-        const input = $('.chat-input');
-        const message = input.val();
-        if (message.trim() !== '') {
-            var chatMessage = {
-                sentTime: new Date(),
-                content: message,
-                msgFname: '',
-                msgType: 1,
-                userNo: 1236,
-                groupNo: 111,
-                imgBase64: ''                
-            };
-            stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
-            input.val('');
-            input.css('height', 'auto');
-        }
-    }
-    
+	// 입력한 메세지 전송버튼 클릭 시 서버로 전송
+	function sendMessage() {
+	    const input = $('.chat-input');
+	    const message = input.val();
+	    if (message.trim() !== '') {
+	        var chatMessage = {
+	            sentTime: new Date().toISOString(), // 시간을 ISO 형식으로 전송
+	            content: message,
+	            msgFname: '',
+	            msgType: 1,
+	            userNo: userNo,
+	            groupNo: groupNo,
+	            imgBase64: ''                
+	        };
+	        stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+	        
+	        // 클라이언트에서 화면에 추가하는 부분 제거 (서버 응답 후 화면에 추가)
+	        input.val('');
+	        input.css('height', 'auto');
+	    }
+	}
+
+	
+	
     // 이미지 메시지 전송
 	function sendImageMessage(fileName) {
 	    var chatMessage = {
@@ -60,38 +83,49 @@ $(document).ready(function() {
 	        content: '',
 	        msgFname: fileName,
 	        msgType: 2, // 이미지 타입
-	        userNo: 1236,
-	        groupNo: 111,
-	        imgBase64: '' // 더 이상 필요하지 않음
+	        userNo: userNo,
+	        groupNo: groupNo,
+	        imgBase64: ''
 	    };
 	    stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
 	} 
 
-    // 수신한 메시지 채팅창에 표시
-    function showMessage(message) {
-        const chatContainer = $('#chatContainer');
-        
-    // 메시지가 해당 날짜의 첫 메시지인 경우 날짜 표시하기
-    if (isNewDate(message, lastMessage)) {
+// 수신한 메시지 채팅창에 표시
+function showMessage(message) {
+    const chatContainer = $('#chatContainer');
+
+    // 새 메시지의 날짜를 포맷
+    const messageDate = new Date(message.sentTime).toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    
+    // 동일한 날짜의 구분선이 이미 있는지 확인
+    const existingSeparator = chatContainer.find('.date-separator-container').filter(function() {
+        return $(this).text().trim() === messageDate;
+    });
+    
+    // 메시지 추가 전 마지막 date-separator와 새 메시지 날짜 비교    
+    if (existingSeparator.length === 0 && messageDate !== lastDateSeparator) { // 같은 날짜의 구분선이 없다면 추가
         const dateSeparator = $('<div>').addClass('date-separator-container').html(
-            '<div class="date-separator">' + new Date(message.sentTime).toLocaleDateString('ko-KR', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            }) + '</div>'
+            '<div class="date-separator">' + messageDate + '</div>'
         );
         chatContainer.append(dateSeparator);
+
+        // 마지막 date-separator 업데이트
+        lastDateSeparator = messageDate;
     }
 
-    
+    // 메시지를 화면에 추가하는 코드
+    const isMyMessage = parseInt(message.userNo, 10) === parseInt(userNo, 10);
+    const chatMessage = $('<div>').addClass('chat-message').addClass(isMyMessage ? 'my-chat' : 'friend-chat');
 
-        
-    const chatMessage = $('<div>').addClass('chat-message').addClass(message.userNo === 1236 ? 'my-chat' : 'friend-chat');
     if (message.msgType === 2) { // 이미지 타입
         chatMessage.html(
-            '<div class="chat-bubble-container ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+            '<div class="chat-bubble-container ' + (isMyMessage ? 'my-chat' : 'friend-chat') + '">'
             + '<img src="' + message.msgFname + '" class="chat-image">'
-            + '<div class="timeAndRead ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+            + '<div class="timeAndRead ' + (isMyMessage ? 'my-chat' : 'friend-chat') + '">'
             + '<div class="unread">2</div>'
             + '<div class="time">' + new Date(message.sentTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true }) + '</div>'
             + '</div>'
@@ -99,21 +133,24 @@ $(document).ready(function() {
         );
     } else {
         chatMessage.html(
-            '<div class="chat-bubble-container ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
-            + '<div class="chat-bubble ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+            '<div class="chat-bubble-container ' + (isMyMessage ? 'my-chat' : 'friend-chat') + '">'
+            + '<div class="chat-bubble ' + (isMyMessage ? 'my-chat' : 'friend-chat') + '">'
             + message.content.replace(/\n/g, '<br>') + '</div>'
-            + '<div class="timeAndRead ' + (message.userNo === 1236 ? 'my-chat' : 'friend-chat') + '">'
+            + '<div class="timeAndRead ' + (isMyMessage ? 'my-chat' : 'friend-chat') + '">'
             + '<div class="unread">2</div>'
             + '<div class="time">' + new Date(message.sentTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true }) + '</div>'
             + '</div>'
             + '</div>'
         );
     }
+
     chatContainer.append(chatMessage);
 
     // 마지막 메시지 업데이트
     lastMessage = message;
 }
+
+
     
 
     // 이미지 파일 선택 시 서버에 업로드
@@ -129,11 +166,10 @@ $(document).ready(function() {
             contentType: false,
             success: function(response) {
                 // 업로드 성공 후 이미지 메시지 전송
-                console.log("Image uploaded successfully:", response.fileName); // 디버깅을 위해 로그 추가
                 sendImageMessage(response.fileName);
             },
             error: function() {
-                console.error('Image upload failed');
+                console.error('이미지 업로드에 실패했습니다.');
             }
         });
     }
@@ -142,7 +178,6 @@ $(document).ready(function() {
     function previewImage(event) {
         const file = event.target.files[0];
         if (file) {
-            console.log("Image selected for upload:", file); // 디버깅을 위해 로그 추가
             uploadImage(file);
         }
     }

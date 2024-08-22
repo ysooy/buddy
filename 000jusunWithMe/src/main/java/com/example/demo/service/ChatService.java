@@ -21,7 +21,7 @@ public class ChatService {
     private MongoTemplate mongoTemplate;
 
     // 각 채팅방 별 메세지 조회
-    public List<Chat> getMessagesByGroupNo(int groupNo) {
+    public List<Chat> getMessagesByGroupNo(long groupNo) {
         return chatRepository.findByGroupNo(groupNo);
     }
 

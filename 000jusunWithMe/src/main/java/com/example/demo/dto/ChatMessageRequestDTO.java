@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 public class ChatMessageRequestDTO {
 	
 	// 클라이언트 > 서버로 메세지 보내기 (서버에서 DTO를 받아 Chat 엔티티로 변환 후 db저장)
-    private int groupNo;
-    private int userNo;
+    private long groupNo;
+    private long userNo;
     private String content;
     private String msgFname;
     private int msgType; // 메시지 타입 추가 (1은 텍스트, 2는 이미지)    

@@ -33,16 +33,16 @@ public class Chat {
     private int msgType;
 
     @Field("userNo")
-    private int userNo;
+    private long userNo;
 
     @Field("groupNo")
-    private int groupNo;
+    private long groupNo;
 
     @Field("imgBase64")
     private String imgBase64;
     
     @Builder
-    public Chat(long messageNo, Date sentTime, String content, String msgFname, int msgType, int userNo, int groupNo, String imgBase64) {
+    public Chat(long messageNo, Date sentTime, String content, String msgFname, int msgType, long userNo, long groupNo, String imgBase64) {
         this.messageNo = messageNo;
         this.sentTime = sentTime;
         this.content = content;

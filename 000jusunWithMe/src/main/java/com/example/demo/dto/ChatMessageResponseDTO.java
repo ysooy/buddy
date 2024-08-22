@@ -12,15 +12,15 @@ import lombok.Setter;
 public class ChatMessageResponseDTO {
 	
 	// 서버 > 클라이언트로 응답(Chat엔티티 조회하여 ResponseDTO로 변환 후 클라이언트에 전달)
-    private Long messageNo;
-    private int groupNo;
-    private int userNo;
+    private long messageNo;
+    private long groupNo;
+    private long userNo;
     private String content;
     private String msgFname;
     private int msgType;
     private Date sentTime;
 
-    public ChatMessageResponseDTO(Long messageNo, int groupNo, int userNo, String content, String msgFname, int msgType, Date sentTime) {
+    public ChatMessageResponseDTO(Long messageNo, long groupNo, long userNo, String content, String msgFname, int msgType, Date sentTime) {
         this.messageNo = messageNo;
         this.groupNo = groupNo;
         this.userNo = userNo;
