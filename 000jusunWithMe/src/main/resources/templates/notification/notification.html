@@ -43,7 +43,7 @@
     // 알림상태 업데이트
     function updateCheckedStatus(groupNo) {
     	// 서버에 post요청 보내는 메서드!
-        $.post('/notification/check', { groupNo: groupNo });
+        $.post('/notification/check', { groupNo: groupNo })
     }
 
     function calculateTimeAgo(date) {
@@ -61,11 +61,11 @@
         } else if (days < 7) {
             return days + "일 전";
         } else if (days < 14) {
-            return "일 주 전";
+            return "일주일 전";
         } else if (days < 21) {
-            return "이 주 전";
+            return "이 주일 전";
         } else if (days < 31) {
-            return "삼 주 전";
+            return "삼 주일 전";
         } else {
             return "한 달 전";
         }
