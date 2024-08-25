@@ -49,4 +49,9 @@ public class ChatService {
         // chat객체를 db에 저장하고 객체 반환
         return chatRepository.save(chat);
     }
+    
+    // messageNo를 기준으로 채팅 메시지 조회
+    public Chat getMessageByMessageNo(long messageNo) {
+        return chatRepository.findByMessageNo(messageNo);
+    }
 }

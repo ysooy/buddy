@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.dao.GroupMemberRepository;
 import com.example.demo.dao.UsersRepository;
 import com.example.demo.dto.ChatMessageRequestDTO;
 import com.example.demo.dto.ChatMessageResponseDTO;
 import com.example.demo.entity.Chat;
+import com.example.demo.entity.GroupMember;
 import com.example.demo.entity.GroupTable;
 import com.example.demo.entity.Users;
 import com.example.demo.service.ChatService;
@@ -44,6 +46,9 @@ public class ChatController {
     
     @Autowired
     private UsersRepository ur;
+    
+    @Autowired
+    private GroupMemberRepository gmr;
 
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
@@ -55,6 +60,11 @@ public class ChatController {
         if (user == null) {
             throw new IllegalStateException("유효하지 않은 사용자입니다.");
         }
+        
+        // 그룹 멤버 수 가져오기
+        List<Long> groupMembers = gmr.findUserNoByGroupNo(chatMessageRequestDTO.getGroupNo());
+        int unreadCount = groupMembers.size() - 1; // 본인 제외
+        
 
         // 메시지 생성
         Chat chatMessage = Chat.builder()
@@ -65,6 +75,7 @@ public class ChatController {
                 .msgType(chatMessageRequestDTO.getMsgType()) // 메시지 타입 설정 (예: 1은 텍스트, 2는 이미지)
                 .userNo(userNo) // 이 부분에서 userNo를 설정
                 .groupNo(chatMessageRequestDTO.getGroupNo())
+                .unread(unreadCount) 
                 .build();
 
         // 메시지 저장
@@ -78,9 +89,41 @@ public class ChatController {
                 chatMessage.getContent(),
                 chatMessage.getMsgFname(),
                 chatMessage.getMsgType(),
-                chatMessage.getSentTime()
+                chatMessage.getSentTime(),
+                chatMessage.getUnread()
         );
     }
+    
+    
+    // 채팅방 읽은 사람 수
+    @MessageMapping("/message/read")
+    @SendTo("/topic/messages")
+    public ChatMessageResponseDTO markMessageAsRead(Map<String, Long> messageUserNo) {
+        long messageNo = messageUserNo.get("messageNo");
+        long userNo = messageUserNo.get("userNo");
+
+        Chat chatMessage = cs.getMessageByMessageNo(messageNo);
+        
+        // 현재 사용자(userNo)가 메시지를 읽었을 때 처리
+        if (chatMessage.getUnread() > 0) {	// 아직 메세지를 읽지 않은 사용자가 있는지?
+            chatMessage.setUnread(chatMessage.getUnread() - 1);	// 특정 사용자가 메세지 읽으면 1씩 줄어든다.
+            cs.saveMessage(chatMessage);	// 수정된 unread값 반영하여 db 저장
+        }
+        
+        // 갱신된 메시지를 클라이언트에 전송
+        return new ChatMessageResponseDTO(
+            chatMessage.getMessageNo(),
+            chatMessage.getGroupNo(),
+            chatMessage.getUserNo(),
+            chatMessage.getContent(),
+            chatMessage.getMsgFname(),
+            chatMessage.getMsgType(),
+            chatMessage.getSentTime(),
+            chatMessage.getUnread()
+        );
+    } 
+
+    
 
     
     @PostMapping("/uploadImage")

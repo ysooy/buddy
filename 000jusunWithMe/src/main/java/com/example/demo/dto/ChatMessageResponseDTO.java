@@ -19,8 +19,9 @@ public class ChatMessageResponseDTO {
     private String msgFname;
     private int msgType;
     private Date sentTime;
+    private int unread;
 
-    public ChatMessageResponseDTO(Long messageNo, long groupNo, long userNo, String content, String msgFname, int msgType, Date sentTime) {
+    public ChatMessageResponseDTO(Long messageNo, long groupNo, long userNo, String content, String msgFname, int msgType, Date sentTime, int unread) {
         this.messageNo = messageNo;
         this.groupNo = groupNo;
         this.userNo = userNo;
@@ -28,5 +29,6 @@ public class ChatMessageResponseDTO {
         this.msgFname = msgFname;
         this.msgType = msgType;
         this.sentTime = sentTime;
+        this.unread = unread; 
     }
 }

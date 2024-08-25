@@ -41,8 +41,11 @@ public class Chat {
     @Field("imgBase64")
     private String imgBase64;
     
+    @Field("unread")
+    private int unread;
+    
     @Builder
-    public Chat(long messageNo, Date sentTime, String content, String msgFname, int msgType, long userNo, long groupNo, String imgBase64) {
+    public Chat(long messageNo, Date sentTime, String content, String msgFname, int msgType, long userNo, long groupNo, String imgBase64, int unread) {
         this.messageNo = messageNo;
         this.sentTime = sentTime;
         this.content = content;
@@ -51,6 +54,6 @@ public class Chat {
         this.userNo = userNo;
         this.groupNo = groupNo;
         this.imgBase64 = imgBase64;
-        
+        this.unread = unread;
     }
 }

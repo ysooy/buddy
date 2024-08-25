@@ -15,5 +15,9 @@ public interface ChatRepository extends MongoRepository<Chat, ObjectId> {
     
     // MongoDB에 있는 가장 큰 messageNo를 찾고 새롭게 생성
     Chat findTopByOrderByMessageNoDesc();
+    
+
+    // messageNo를 기준으로 채팅 메시지 찾기
+    Chat findByMessageNo(long messageNo);
 
 }

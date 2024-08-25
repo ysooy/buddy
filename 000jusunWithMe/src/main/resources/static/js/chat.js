@@ -50,8 +50,22 @@ $(document).ready(function() {
             showMessage(JSON.parse(messageOutput.body));
         });
     });
+    
+    // 클라이언트에서 메시지를 읽은 경우 서버에 알림하는 함수 추가
+    function markMessageAsRead(messageNo) {
+        stompClient.send("/app/message/read", {}, JSON.stringify({
+            messageNo: messageNo,
+            userNo: userNo
+        }));
+    }    
+    
+    // 메세지를 클릭하거나 스크롤하여 표시할 때 읽음 처리 추가
+    $(document).on('click', '.chat-message', function() {
+        const messageNo = $(this).data('messageNo');
+        markMessageAsRead(messageNo);
+    });    
+    
 
-    // 입력한 메세지 전송버튼 클릭 시 서버로 전송
     // 입력한 메세지 전송버튼 클릭 시 서버로 전송
     function sendMessage() {
         const input = $('.chat-input');
@@ -126,7 +140,8 @@ $(document).ready(function() {
                 '<div class="chat-bubble-container ' + (isMyMessage ? 'my-chat' : 'friend-chat') + '">' +
                 '<img src="' + message.msgFname + '" class="chat-image">' +
                 '<div class="timeAndRead ' + (isMyMessage ? 'my-chat' : 'friend-chat') + '">' +
-                '<div class="unread">2</div>' +
+                //'<div class="unread">2</div>' +
+            	(message.unread > 0 ? '<div class="unread">' + message.unread + '</div>' : '') + // unread가 0보다 큰 경우에만 표시
                 '<div class="time">' + new Date(message.sentTime).toLocaleTimeString('ko-KR', {
                     hour: '2-digit',
                     minute: '2-digit',
@@ -141,7 +156,8 @@ $(document).ready(function() {
                 '<div class="chat-bubble ' + (isMyMessage ? 'my-chat' : 'friend-chat') + '">' +
                 message.content.replace(/\n/g, '<br>') + '</div>' +
                 '<div class="timeAndRead ' + (isMyMessage ? 'my-chat' : 'friend-chat') + '">' +
-                '<div class="unread">2</div>' +
+                //'<div class="unread">2</div>' +
+	            (message.unread > 0 ? '<div class="unread">' + message.unread + '</div>' : '') + // unread가 0보다 큰 경우에만 표시              
                 '<div class="time">' + new Date(message.sentTime).toLocaleTimeString('ko-KR', {
                     hour: '2-digit',
                     minute: '2-digit',

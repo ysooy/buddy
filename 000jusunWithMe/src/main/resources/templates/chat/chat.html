@@ -46,7 +46,8 @@
                     <div th:if="${message.msgType != 2}" class="chat-bubble" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'" th:text="${message.content}"></div>
                     <!-- 시간 표시, 읽음 여부 -->
                     <div class="timeAndRead" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
-                        <div class="unread">2</div>
+                    	<!-- 읽은 사람 숫자(본인 제외 -1값) -->
+                        <div class="unread" th:if="${message.unread > 0}" th:text="${message.unread}"></div>
                         <div class="time" th:text="${#dates.format(message.sentTime, 'a hh:mm')}"></div>
                     </div>
                 </div>
