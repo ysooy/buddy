@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +9,13 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/chat.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    
+
     <script th:inline="javascript">
         var userNo = /*[[${userNo}]]*/ 0;
         var groupNo = /*[[${groupNo}]]*/ 0;
     </script>
 </head>
+
 <body>
     <th:block th:replace="~{/header/header :: header}"></th:block>
     <!-- 채팅 검색 -->
@@ -21,28 +23,23 @@
         <input type="text" class="search-input" placeholder="채팅 검색하기">
         <button class="search-button">검색</button>
     </div>
-    
+
     <div class="chat-container" id="chatContainer">
         <!-- 채팅 메시지 불러오기 -->
-        <div th:each="message, iterStat : ${messages}"> <!-- 메세지 반복 처리 위함 -->
-            <!-- 날짜 구분선 -->
-            <!-- 첫번째이거나 현재 메세지(iterStat.index == 0) 날짜와 이전 메세지 날짜가 다르면 구분선 추가 -->
-<!--             <div th:if="${#dates.format(message.sentTime, 'yyyyMMdd') != #dates.format(#dates.createNow(), 'yyyyMMdd')}" class="date-separator-container">
-                <div class="date-separator">
-                    <span th:text="${#dates.format(message.sentTime, 'yyyy년 MM월 dd일')}"></span>
+        <div id="chat" onscroll="scrollFn()">
+            <!-- 여기에 id와 onscroll 이벤트를 추가 -->
+            <div th:each="message, iterStat : ${messages}">
+                <!-- 날짜 구분선 -->
+                <div th:if="${iterStat.index == 0 or #dates.format(message.sentTime, 'yyyyMMdd') != #dates.format(messages[iterStat.index - 1].sentTime, 'yyyyMMdd')}" class="date-separator-container">
+                    <div class="date-separator">
+                        <span th:text="${#dates.format(message.sentTime, 'yyyy년 M월 d일')}"></span>
                 </div>
-            </div> -->
-		    <div th:if="${iterStat.index == 0 or #dates.format(message.sentTime, 'yyyyMMdd') != #dates.format(messages[iterStat.index - 1].sentTime, 'yyyyMMdd')}" class="date-separator-container">
-		        <div class="date-separator">
-		            <span th:text="${#dates.format(message.sentTime, 'yyyy년 MM월 dd일')}"></span>
-		        </div>
-		    </div>
+            </div>
             <!-- 채팅 메세지 표시 -->
-		    <div class="chat-message" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
-                
-		        <div class="chat-bubble-container" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
+            <div class="chat-message" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
+                <div class="chat-bubble-container" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
                     <!-- 메세지가 이미지일 경우 -->
-		            <div th:if="${message.msgType == 2}">
+                    <div th:if="${message.msgType == 2}">
                         <img th:src="@{${message.msgFname}}" class="chat-image">
                     </div>
                     <!-- 텍스트 메세지일 경우 -->
@@ -56,6 +53,8 @@
             </div>
         </div>
     </div>
+</div>
+
 
     <div class="chat-input-container" id="chatInputContainer">
         <button class="photo-button">사진</button>

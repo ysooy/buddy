@@ -69,7 +69,7 @@ public class ChatController {
 
         // 메시지 저장
         chatMessage = cs.saveMessage(chatMessage);
-
+        
         // 엔티티를 DTO로 변환하여 반환
         return new ChatMessageResponseDTO(
                 chatMessage.getMessageNo(),
