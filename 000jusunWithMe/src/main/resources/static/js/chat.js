@@ -1,3 +1,10 @@
+
+// 스크롤을 채팅창의 최하단으로 이동시키는 함수
+function scrollToBottom() {
+    const chatContainer = $('.chat-container');
+    chatContainer.scrollTop(chatContainer[0].scrollHeight);
+}
+
 // 텍스트 입력 시 높이 자동 조절 (최대 100px)
 function resizeInput(textarea) {
     textarea.style.height = 'auto';
@@ -15,19 +22,23 @@ function isNewDate(message, lastMessage) {
 
 
 $(document).ready(function() {
+    // 페이지 로드 후 약간의 지연을 준 후 스크롤을 최하단으로 이동
+    setTimeout(function() {
+        scrollToBottom();
+    }, 100); // 100ms 지연, 필요에 따라 조정 가능
 
     var lastMessage = null; // 마지막 메세지 저장용(날짜 표시 위함)
     var lastDateSeparator = null; // 마지막 date-separator의 날짜 저장
 
 
     // 페이지 로드 시 가장 마지막 메시지를 lastMessage로 설정
-    const loadedMessages = $('#chatContainer .chat-message');
+    const loadedMessages = $('.chat-container .chat-message');
     if (loadedMessages.length > 0) {
         const lastLoadedMessage = loadedMessages.last().data('message');
         lastMessage = lastLoadedMessage;
 
         // 마지막 date-separator의 날짜를 저장
-        const lastSeparator = $('#chatContainer .date-separator-container').last();
+        const lastSeparator = $('.chat-container .date-separator-container').last();
         if (lastSeparator.length > 0) {
             lastDateSeparator = lastSeparator.text().trim();
         }
@@ -42,8 +53,6 @@ $(document).ready(function() {
     // 현재 선택된 검색 결과 인덱스 (유효한 인덱스는 0부터 시작, -1 : 검색결과 아직 선택 안된 상황)
     var currentSearchIndex = -1;
     var searchResults = [];
-    // 원래 입력 컨테이너
-    var originalInputContainerHtml = $('.chat-input-container').html();
 
     stompClient.connect({}, function() {
         stompClient.subscribe('/topic/messages', function(messageOutput) {
@@ -107,7 +116,7 @@ $(document).ready(function() {
 
     // 수신한 메시지 채팅창에 표시
     function showMessage(message) {
-        const chatContainer = $('#chatContainer');
+        const chatContainer = $('.chat-container');
 
         // 새 메시지의 날짜를 yyyy년 M월 d일 형식으로
         const messageDate = new Date(message.sentTime).toLocaleDateString('ko-KR', {
@@ -172,12 +181,17 @@ $(document).ready(function() {
 
         // 마지막 메시지 업데이트
         lastMessage = message;
+        
+        // 메시지 추가 후 스크롤을 최하단으로 이동
+        setTimeout(function() {
+            scrollToBottom();
+        }, 100); // 약간의 지연을 주니 더 빠르게 출력됨
     }
 
 
     // 스크롤을 채팅창의 최하단으로 이동시키는 함수
     //    function scrollToBottom() {
-    //        const chatContainer = $('#chatContainer');
+    //        const chatContainer = $('.chat-container');
     //        chatContainer.scrollTop(chatContainer[0].scrollHeight);
     //    }
 
@@ -289,7 +303,7 @@ $(document).ready(function() {
         currentSearchIndex = index;
         const element = searchResults[currentSearchIndex];
         element.addClass('highlight'); // 현재 검색 결과 하이라이트
-        $('#chatContainer').scrollTop(element.offset().top - $('#chatContainer').offset().top + $('#chatContainer').scrollTop());
+        $('.chat-container').scrollTop(element.offset().top - $('.chat-container').offset().top + $('.chat-container').scrollTop());
     }
 
     // 문자 검색시 채팅 입력창을 검색모드로 바꾸기

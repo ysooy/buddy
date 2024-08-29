@@ -1,3 +1,22 @@
+/* 감싸는 래퍼로 전체 높이 관리 */
+.chat-wrapper {
+    position: absolute;
+    top: 120px; /* header와 search-container 높이만큼 위로 띄움 */
+    bottom: 60px; /* navbar 높이만큼 아래로 띄움 */
+    left: 0;
+    right: 0;
+    overflow: hidden; /* wrapper에서 스크롤 숨기기 */
+}
+
+/* 실제 채팅 영역 */
+.chat-container {
+    height: 100%;
+    overflow-y: auto; /* chatContainer 내부에서 스크롤 */
+    margin: 0;
+    padding: 10px 20px; /* 좌우 여백 추가 */
+}
+
+
 /* 메세지 전송 시 날짜 표시 */
 .date-separator{
 	text-align: center;
@@ -12,13 +31,6 @@
 }
 .date-separator-container {
 	text-align: center;	
-}
-
-.chat-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px 20px 70px; /* 헤더와 겹치지 않도록 추가 */
-    margin-top: 150px;
 }
 
 .chat-message {

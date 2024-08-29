@@ -24,36 +24,35 @@
         <button class="search-button">검색</button>
     </div>
 
-    <div class="chat-container" id="chatContainer">
-        <!-- 채팅 메시지 불러오기 -->
-        <div id="chat" onscroll="scrollFn()">
-            <!-- 여기에 id와 onscroll 이벤트를 추가 -->
+    <div class="chat-wrapper">
+        <div class="chat-container">
+            <!-- 채팅 메시지 불러오기 -->
             <div th:each="message, iterStat : ${messages}">
                 <!-- 날짜 구분선 -->
                 <div th:if="${iterStat.index == 0 or #dates.format(message.sentTime, 'yyyyMMdd') != #dates.format(messages[iterStat.index - 1].sentTime, 'yyyyMMdd')}" class="date-separator-container">
                     <div class="date-separator">
                         <span th:text="${#dates.format(message.sentTime, 'yyyy년 M월 d일')}"></span>
-                </div>
-            </div>
-            <!-- 채팅 메세지 표시 -->
-            <div class="chat-message" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
-                <div class="chat-bubble-container" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
-                    <!-- 메세지가 이미지일 경우 -->
-                    <div th:if="${message.msgType == 2}">
-                        <img th:src="@{${message.msgFname}}" class="chat-image">
-                    </div>
-                    <!-- 텍스트 메세지일 경우 -->
-                    <div th:if="${message.msgType != 2}" class="chat-bubble" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'" th:text="${message.content}"></div>
-                    <!-- 시간 표시, 읽음 여부 -->
-                    <div class="timeAndRead" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
-                    	<!-- 읽은 사람 숫자(본인 제외 -1값) -->
-                        <div class="unread" th:if="${message.unread > 0}" th:text="${message.unread}"></div>
-                        <div class="time" th:text="${#dates.format(message.sentTime, 'a hh:mm')}"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	                </div>
+	            </div>
+	            <!-- 채팅 메세지 표시 -->
+	            <div class="chat-message" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
+	                <div class="chat-bubble-container" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
+	                    <!-- 메세지가 이미지일 경우 -->
+	                    <div th:if="${message.msgType == 2}">
+	                        <img th:src="@{${message.msgFname}}" class="chat-image">
+	                    </div>
+	                    <!-- 텍스트 메세지일 경우 -->
+	                    <div th:if="${message.msgType != 2}" class="chat-bubble" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'" th:text="${message.content}"></div>
+	                    <!-- 시간 표시, 읽음 여부 -->
+	                    <div class="timeAndRead" th:classappend="${message.userNo == userNo} ? 'my-chat' : 'friend-chat'">
+	                    	<!-- 읽은 사람 숫자(본인 제외 -1값) -->
+	                        <div class="unread" th:if="${message.unread > 0}" th:text="${message.unread}"></div>
+	                        <div class="time" th:text="${#dates.format(message.sentTime, 'a hh:mm')}"></div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	</div>
 </div>
 
 
