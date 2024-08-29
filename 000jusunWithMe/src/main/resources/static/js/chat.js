@@ -22,10 +22,10 @@ function isNewDate(message, lastMessage) {
 
 
 $(document).ready(function() {
-    // 페이지 로드 후 약간의 지연을 준 후 스크롤을 최하단으로 이동
+    // 페이지 로드 후 약간 지연 이후 스크롤을 최하단으로 이동(페이지 로드 시 스크롤이 가장 아래로 위치하도록)
     setTimeout(function() {
         scrollToBottom();
-    }, 100); // 100ms 지연, 필요에 따라 조정 가능
+    }, 100);
 
     var lastMessage = null; // 마지막 메세지 저장용(날짜 표시 위함)
     var lastDateSeparator = null; // 마지막 date-separator의 날짜 저장
