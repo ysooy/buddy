@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
+    var groupNoElement = document.getElementById('groupNo');
+
+    // groupNoElement가 null이 아닌지 확인
+    if (groupNoElement) {
+        var groupNo = groupNoElement.value;
+    } else {
+        return; // groupNo를 찾지 못하면 이후 코드를 실행X
+    }
+
     // 네비게이션 바 로드
     $("#navbar").load("/navbar/navbar.html");
     // 헤더 로드 (뒤로 가기 버튼 숨김처리)
@@ -24,44 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         colorPalette.appendChild(colorCircle);
     });
 
-    // 일정 등록 모달창 설정
-    $(document).on('click', '#openModal', function() {
-        var today = new Date().toISOString().slice(0, 10);
-        $("#startDate").val(today);
-        $("#endDate").val(today);
-        $("#schedule").val('');
-        $(".modalSubmit").text('등록').removeClass('updateEvent').addClass('addEvent');
-        $(".modalDelete").hide(); // 등록 모달에서는 삭제 버튼 숨기기
-        $("#myModal").css("display", "flex");
-        // 컬러팔레트 선택 상태 초기화
-        $('.colorCircle').removeClass('selected');
-        selectedColor = null;
-    });
 
-    // 모달창 닫기
-    $(document).on('click', '.closeModal', function() {
-        $("#myModal").css("display", "none");
-        // 컬러 선택 상태 초기화
-        $('.colorCircle').removeClass('selected');
-        selectedColor = null;
-    });
-
-    // 색상 선택
-    $(document).on('click', '.colorCircle', function() {
-        $('.colorCircle').removeClass('selected');
-        $(this).addClass('selected');
-        selectedColor = $(this).css('background-color');
-        // 색상 선택 시(일정이 이틀 이상) rgb로 변하는 것 다시 변환
-        selectedColor = rgbTohex(selectedColor);
-    });
-
-    // 날짜 선택창(달력에서 날짜 선택하면 날짜가 입력됨)
-    $("#startDate, #endDate").datepicker({
-        dateFormat: "yy-mm-dd", // 원하는 날짜 형식
-        onSelect: function(dateText) {
-            $(this).val(dateText);
-        }
-    });
 
     // 달력 설정
     var calendarEl = document.getElementById('calendar');
@@ -72,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         headerToolbar: { // 헤더 툴바 설정
             left: 'prev',
             center: 'title',
-            right: 'next' 
+            right: 'next'
         },
         editable: true, // 달력 이벤트를 드래그 앤 드롭으로 편집
         selectable: true, // 달력에서 날짜 선택 가능
@@ -139,14 +111,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 서버로 수정된 일정 정보 전송
             $.ajax({
-                url: '/calendar/update',
+                url: '/calendar/update/' + groupNo,
                 type: 'POST',
                 data: {
                     calendarNo: updatedEvent.extendedProps.calendarNo, // 수정할 이벤트 calendarNo
                     cContent: updatedEvent.title,
                     startDate: newStartDate.toISOString().slice(0, 10), // 시작 날짜에 1일 추가
                     endDate: newEndDate.toISOString().slice(0, 10), // 종료 날짜에 1일 추가
-                    selectedColor: updatedEvent.backgroundColor // 선택된 색상 또는 기존 색상
+                    selectedColor: updatedEvent.backgroundColor, // 선택된 색상 또는 기존 색상
+                    groupNo: groupNo
                 },
                 success: function(response) { // 요청 성공시 실행
                     alert(response);
@@ -162,24 +135,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     });
 
+
     // DB에서 이벤트 데이터를 불러와서 캘린더에 추가
     $.ajax({
-        url: '/calendar/schedules', // URL 변경됨
+        url: '/calendar/' + groupNo + '/schedules',
         type: 'GET',
         success: function(data) {
             data.forEach(function(event) {
                 calendar.addEvent({
                     title: event.title,
                     start: event.start,
-                    // db에는 종료날짜가 +1 되어서 들어감(FullCalendar는 종료날짜를 포함하지 않으므로 그대로 사용)
-                    end: event.end, // 종료 날짜 그대로 사용(유저가 선택한 날짜)
+                    end: event.end,
                     allDay: true,
                     color: event.color,
-                    extendedProps: { // 이벤트 객체에 임의로 추가한 속성 직접 정의
+                    extendedProps: {
                         calendarNo: event.calendarNo
                     }
                 });
             });
+            calendar.render();
         },
         error: function(xhr, status, error) {
             console.error("xhr: ", xhr); // 응답객체(요청에 대한 정보)
@@ -189,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    calendar.render();
+    //calendar.render();
 
     // 모달창 일정 등록 버튼 클릭 시
     $(document).on('click', '.addEvent', function() {
@@ -197,6 +171,13 @@ document.addEventListener('DOMContentLoaded', function() {
         var startDate = $("#startDate").val(); // 시작 날짜
         var endDate = $("#endDate").val(); // 종료 날짜
         var selectedColor = $('.colorCircle.selected').css('background-color'); // 색상 선택
+
+        // 색상이 선택되지 않았을 경우
+        if (!selectedColor) {
+            alert("일정, 날짜 및 색상을 모두 입력해주세요.");
+            return;
+        }
+
 
         // RGB 색상 값을 hex 값으로 변환하는 함수 호출
         selectedColor = rgbTohex(selectedColor);
@@ -210,7 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     cContent: cContent,
                     startDate: startDate,
                     endDate: new Date(new Date(endDate).getTime() + (1000 * 60 * 60 * 24)).toISOString().slice(0, 10), // 종료 날짜 +1로 저장
-                    selectedColor: selectedColor
+                    selectedColor: selectedColor,
+                    groupNo: groupNo
                 },
                 success: function(response) { // 요청 성공시 실행
                     alert(response.message); // 응답 메시지
@@ -250,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (confirm('정말 삭제하시겠습니까?')) {
                 // 서버로 삭제 요청
                 $.ajax({
-                    url: `/calendar/delete/111/${registeredEvent.extendedProps.calendarNo}`,
+                    url: '/calendar/delete/' + groupNo + '/' + registeredEvent.extendedProps.calendarNo,
                     type: 'GET',
                     success: function(response) { // 요청 성공시 실행
                         alert(response);
@@ -273,14 +255,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // RGB색상값을 hex값으로 변환하는 함수
-    function rgbTohex(rgb) {
-        rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/); // RGB값에서 숫자만 추출
-        function hex(x) {
-            return ("0" + parseInt(x).toString(16)).slice(-2); // 각 색상값을 16진수로 변환
-        }
-        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]); // hex색상값 반환
-    }
 
     // 모달창에서 '수정'버튼 클릭 시 일정 업데이트 (등록되어있는 이벤트 클릭)
     $(document).on('click', '.updateEvent', function() {
@@ -305,17 +279,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 서버로 수정된 일정 정보 전송
             $.ajax({
-                url: '/calendar/update', // 서버의 /calendar/update 엔드포인트로 요청
+                url: '/calendar/update/' + groupNo,
                 type: 'POST',
                 data: {
                     calendarNo: registeredEvent.extendedProps.calendarNo, // 수정할 이벤트 calendarNo
                     cContent: cContent,
                     startDate: startDate,
                     endDate: new Date(new Date(endDate).getTime() + (1000 * 60 * 60 * 24)).toISOString().slice(0, 10), // 종료 날짜 +1로 저장
-                    selectedColor: newSelectedColor // 선택된 색상 또는 기존 색상
+                    selectedColor: newSelectedColor, // 선택된 색상 또는 기존 색상
+                    groupNo: groupNo
                 },
                 success: function(response) { // 요청 성공시 실행
                     alert(response);
+                    
                     // 캘린더의 일정 정보 업데이트
                     registeredEvent.setProp('title', cContent);
                     registeredEvent.setStart(startDate);
@@ -342,6 +318,56 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } else {
             alert("일정, 날짜 및 색상을 모두 입력해주세요.");
+        }
+    });
+
+
+    // RGB색상값을 hex값으로 변환하는 함수
+    function rgbTohex(rgb) {
+        rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/); // RGB값에서 숫자만 추출
+        function hex(x) {
+            return ("0" + parseInt(x).toString(16)).slice(-2); // 각 색상값을 16진수로 변환
+        }
+        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]); // hex색상값 반환
+    }
+
+
+    // 일정 등록 모달창 설정
+    $(document).on('click', '#openModal', function() {
+        var today = new Date().toISOString().slice(0, 10);
+        $("#startDate").val(today);
+        $("#endDate").val(today);
+        $("#schedule").val('');
+        $(".modalSubmit").text('등록').removeClass('updateEvent').addClass('addEvent');
+        $(".modalDelete").hide(); // 등록 모달에서는 삭제 버튼 숨기기
+        $("#myModal").css("display", "flex");
+        // 컬러팔레트 선택 상태 초기화
+        $('.colorCircle').removeClass('selected');
+        selectedColor = null;
+    });
+
+    // 모달창 닫기
+    $(document).on('click', '.closeModal', function() {
+        $("#myModal").css("display", "none");
+        // 컬러 선택 상태 초기화
+        $('.colorCircle').removeClass('selected');
+        selectedColor = null;
+    });
+
+    // 색상 선택
+    $(document).on('click', '.colorCircle', function() {
+        $('.colorCircle').removeClass('selected');
+        $(this).addClass('selected');
+        selectedColor = $(this).css('background-color');
+        // 색상 선택 시(일정이 이틀 이상) rgb로 변하는 것 다시 변환
+        selectedColor = rgbTohex(selectedColor);
+    });
+
+    // 날짜 선택창(달력에서 날짜 선택하면 날짜가 입력됨)
+    $("#startDate, #endDate").datepicker({
+        dateFormat: "yy-mm-dd", // 원하는 날짜 형식
+        onSelect: function(dateText) {
+            $(this).val(dateText);
         }
     });
 });

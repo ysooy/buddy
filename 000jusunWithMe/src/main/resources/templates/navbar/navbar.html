@@ -20,7 +20,7 @@
         <img src="/images/chat_white.png" alt="채팅">
         <span>채팅</span>
     </a>
-    <a class="navButton" href="/calendar/calendar.html">
+    <a class="navButton" th:href="@{'/calendar/calendar/' + ${session.selectedGroup.groupNo}}">
         <img src="/images/calendar_white.png" alt="스케줄">
         <span>스케줄</span>
     </a>

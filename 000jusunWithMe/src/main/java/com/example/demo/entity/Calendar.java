@@ -20,10 +20,10 @@ public class Calendar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "calendarNo")
-    private Integer calendarNo;
+    private long calendarNo;
 
     @Column(name = "groupNo")
-    private Integer groupNo;
+    private long groupNo;
 
     @Column(name = "cStartDate")
     @JsonProperty("start")

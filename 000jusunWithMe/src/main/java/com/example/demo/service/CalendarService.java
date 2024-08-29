@@ -12,25 +12,32 @@ import org.springframework.stereotype.Service;
 public class CalendarService {
 
     @Autowired
-    private CalendarRepository calendarRepository;
+    private CalendarRepository cr;
 
     // 일정 등록
     public Calendar saveDiary(Calendar allEvent) {
-        return calendarRepository.save(allEvent);
+        return cr.save(allEvent);
     }
     
     // 일정 불러오기
     public List<Calendar> getAllDiary() {
-        return calendarRepository.findAll();
+        return cr.findAll();
     }
     
     // 일정 조회
-    public Calendar getDiaryById(Integer calendarNo) {
-        return calendarRepository.findById(calendarNo).orElse(null);
+    public Calendar getDiaryById(long calendarNo) {
+        return cr.findById(calendarNo).orElse(null);
     }    
     
     // 일정 삭제
-    public void deleteDiary(Integer calendarNo) {
-    	calendarRepository.deleteById(calendarNo);
+    public void deleteDiary(long calendarNo) {
+    	cr.deleteById(calendarNo);
     }
+    
+    // 특정 그룹 일정만 가져오기
+    public List<Calendar> getDiaryByGroupNo(Long groupNo) {
+        List<Calendar> result = cr.findByGroupNo(groupNo);
+        return result;
+    }
+
 }

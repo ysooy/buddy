@@ -18,9 +18,9 @@
 </head>
 
 <body>
-    <div id="header"></div>
-    <nav id="navbar"></nav>
-    <div class="main-container">
+	<div id="header" th:replace="/header/header :: header"></div>
+	<input type="hidden" id="groupNo" th:value="${groupNo}">
+	<div id="navbar" th:replace="/navbar/navbar :: nav"></div>    <div class="main-container">
         <div class="content">
             <div id='calendar'></div>
         </div>
@@ -30,7 +30,7 @@
         <div class="modalContent">
             <span class="closeModal">&times;</span>
             <div class="groupName">
-                <h2> 대학교 동기 </h2>
+                <h2 th:text="${groupName}"> 그룹 이름 </h2>
             </div>
             <div class="modalForm">
                 <label for="schedule">일정</label>
