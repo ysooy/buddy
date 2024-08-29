@@ -135,5 +135,11 @@ public class GroupService {
         }
         return false;  // 파일이 존재하지 않으면 false 반환
     }
+    
+
+    // groupNo에서 그룹 이름을 조회
+    public String getGroupNameById(long groupNo) {
+        return gtr.findGroupNameByGroupNo(groupNo);
+    }
 }
 

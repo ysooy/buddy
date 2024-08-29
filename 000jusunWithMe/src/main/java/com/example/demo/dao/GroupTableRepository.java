@@ -16,4 +16,8 @@ public interface GroupTableRepository extends JpaRepository<GroupTable, Long> {
     @Transactional
     @Query("UPDATE GroupTable g SET g.groupProfilePhoto = :photo WHERE g.groupNo = :groupNo")
     void updateGroupProfilePhoto(long groupNo, String photo);
+
+	// 특정 groupNo에 대한 groupName 찾기
+    @Query("select g.groupName from GroupTable g where g.groupNo = :groupNo")
+	String findGroupNameByGroupNo(long groupNo);
 }
