@@ -49,7 +49,7 @@ $(document).ready(function() {
     // 웹소켓 연결 함수
     function connect() {
         stompClient.connect({}, function(frame) {
-            console.log('Connected to WebSocket');
+            console.log('웹소켓에 연결됨');
             stompClient.subscribe('/topic/messages', function(messageOutput) {
                 console.log('수신한 메세지 : ', messageOutput.body);		
                 showMessage(JSON.parse(messageOutput.body));
@@ -78,33 +78,8 @@ $(document).ready(function() {
     var currentSearchIndex = -1;
     var searchResults = [];
 
-
-
+   
     
-    // 클라이언트에서 메시지를 읽은 경우 서버에 알림하는 함수 추가
-    function markMessageAsRead(messageNo) {
-        stompClient.send("/app/message/read", {}, JSON.stringify({
-            messageNo: messageNo,
-            userNo: userNo
-        }));
-    }    
-    
-    // 메세지를 클릭하거나 스크롤하여 표시할 때 읽음 처리 추가
-$(document).on('click', '.chat-message', function() {
-    const messageNo = $(this).data('messageNo'); // 클릭한 메시지의 messageNo 가져오기
-    const userNo = userNo; // 사용자 번호 가져오기
-
-    if (messageNo) {
-        stompClient.send("/app/message/read", {}, JSON.stringify({
-            messageNo: messageNo,
-            userNo: userNo
-        }));
-    } else {
-        console.error("messageNo가 null입니다.");
-    }
-});
-    
-
     // 입력한 메세지 전송버튼 클릭 시 서버로 전송
     function sendMessage() {
         const input = $('.chat-input');
@@ -146,6 +121,12 @@ $(document).on('click', '.chat-message', function() {
 
     // 수신한 메시지 채팅창에 표시
     function showMessage(message) {
+		
+        // 현재 로그인한 userNo 변수 참조
+        const currentUserNo = userNo;
+		
+		console.log("message.userNo:", message.userNo, "currentUserNo:", currentUserNo);
+
 	    console.log('실시간 메세지 표시:', message);		
         const chatContainer = $('.chat-container');
 
@@ -170,9 +151,10 @@ $(document).on('click', '.chat-message', function() {
             // 마지막 date-separator 업데이트
             lastDateSeparator = messageDate;
         }
-
+        
+        
         // 메시지를 화면에 추가하는 코드
-        const isMyMessage = parseInt(message.userNo, 10) === parseInt(userNo, 10);
+        const isMyMessage = parseInt(message.userNo, 10) === parseInt(currentUserNo, 10);
         const chatMessage = $('<div>').addClass('chat-message').addClass(isMyMessage ? 'my-chat' : 'friend-chat');
 
         if (message.msgType === 2) { // 이미지 타입
