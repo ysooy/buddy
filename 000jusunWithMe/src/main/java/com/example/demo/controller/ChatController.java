@@ -99,8 +99,8 @@ public class ChatController {
     @MessageMapping("/message/read")
     @SendTo("/topic/messages")
     public ChatMessageResponseDTO markMessageAsRead(Map<String, Long> messageUserNo) {
-        long messageNo = messageUserNo.get("messageNo");
-        long userNo = messageUserNo.get("userNo");
+    	Long messageNo = messageUserNo.get("messageNo");
+        Long userNo = messageUserNo.get("userNo");
 
         Chat chatMessage = cs.getMessageByMessageNo(messageNo);
         
@@ -110,6 +110,8 @@ public class ChatController {
             cs.saveMessage(chatMessage);	// 수정된 unread값 반영하여 db 저장
         }
         
+        
+       
         // 갱신된 메시지를 클라이언트에 전송
         return new ChatMessageResponseDTO(
             chatMessage.getMessageNo(),

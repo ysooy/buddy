@@ -46,7 +46,31 @@ $(document).ready(function() {
 
     var socket = new SockJS('/websocket');
     var stompClient = Stomp.over(socket);
+    // 웹소켓 연결 함수
+    function connect() {
+        stompClient.connect({}, function(frame) {
+            console.log('Connected to WebSocket');
+            stompClient.subscribe('/topic/messages', function(messageOutput) {
+                console.log('수신한 메세지 : ', messageOutput.body);		
+                showMessage(JSON.parse(messageOutput.body));
+            });
+        }, function(error) {
+            console.log('웹소켓 연결 실패:', error);
+        });
+    }
 
+    // 웹소켓 연결 시도
+    connect();
+
+    // 웹소켓 연결 종료 시 재연결 시도
+    stompClient.onclose = function() {
+        setTimeout(function() {
+            connect();  // 웹소켓 재연결 시도
+        }, 5000);  // 5초 후에 재연결 시도
+    };
+    
+    
+    
     var originalInputContainerHtml = $('.chat-input-container').html();
 
 
@@ -54,11 +78,8 @@ $(document).ready(function() {
     var currentSearchIndex = -1;
     var searchResults = [];
 
-    stompClient.connect({}, function() {
-        stompClient.subscribe('/topic/messages', function(messageOutput) {
-            showMessage(JSON.parse(messageOutput.body));
-        });
-    });
+
+
     
     // 클라이언트에서 메시지를 읽은 경우 서버에 알림하는 함수 추가
     function markMessageAsRead(messageNo) {
@@ -69,10 +90,19 @@ $(document).ready(function() {
     }    
     
     // 메세지를 클릭하거나 스크롤하여 표시할 때 읽음 처리 추가
-    $(document).on('click', '.chat-message', function() {
-        const messageNo = $(this).data('messageNo');
-        markMessageAsRead(messageNo);
-    });    
+$(document).on('click', '.chat-message', function() {
+    const messageNo = $(this).data('messageNo'); // 클릭한 메시지의 messageNo 가져오기
+    const userNo = userNo; // 사용자 번호 가져오기
+
+    if (messageNo) {
+        stompClient.send("/app/message/read", {}, JSON.stringify({
+            messageNo: messageNo,
+            userNo: userNo
+        }));
+    } else {
+        console.error("messageNo가 null입니다.");
+    }
+});
     
 
     // 입력한 메세지 전송버튼 클릭 시 서버로 전송
@@ -116,6 +146,7 @@ $(document).ready(function() {
 
     // 수신한 메시지 채팅창에 표시
     function showMessage(message) {
+	    console.log('실시간 메세지 표시:', message);		
         const chatContainer = $('.chat-container');
 
         // 새 메시지의 날짜를 yyyy년 M월 d일 형식으로
